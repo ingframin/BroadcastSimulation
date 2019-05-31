@@ -17,13 +17,26 @@ public class WiFiSSID{
 		return nodes;
 
 	}
+	public static Node[] generateNodes(int Nd, int Ts,int Tn, int Tb,WiFiState s,WiFiState n, WiFiState b){
+		
+		Node[] nodes = new Node[Nd];
+		for(int i=0;i<Nd;i++){
+			var nd = new Node(Ts,Tn,Tb);
+			nd.setScanTransitions(s.getPs(), s.getPn(), s.getPb());
+			nd.setNetworkTransitions(n.getPs(), n.getPn(), n.getPb());
+			nd.setBroadcastTransitions(b.getPs(),b.getPn(),b.getPb());
+			nodes[i] = nd;
+		}
+		return nodes;
+
+	}
   public static void main(String[] args){
-	ArrayList<Double> res = ConfigReader.readConfigFile("config1.txt");
+	ArrayList<WiFiState> res = ConfigReader.readConfigFile("config1.txt");
 	for(var r:res){
 		System.out.println(r);
 	}
-	int n_nodes = 2;
-	var nodes = generateNodes(n_nodes, 120, 30, 100, new double[]{0.45,0.1,0.45}, new double[]{0.45,0.1,0.45}, new double[]{0.45,0.1,0.45});		
+	int n_nodes = 20;
+	var nodes = generateNodes(n_nodes, 120, 30, 100, res.get(0),res.get(1),res.get(2));		
 		for(int i=0;i<n_nodes;i++){
 			var n = nodes[i];
 			var l = new Logger("./results/d"+i+"-result.txt");
