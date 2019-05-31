@@ -25,3 +25,5 @@ results/d5-result.txt
 results/d6-result.txt
 results/d7-result.txt
 results/d8-result.txt
+build/classes/sim/main/ConfigReader.class
+src/sim/main/ConfigReader.class
