@@ -32,9 +32,7 @@ public class WiFiSSID{
 	}
   public static void main(String[] args){
 	ArrayList<WiFiState> res = ConfigReader.readConfigFile("config1.txt");
-	for(var r:res){
-		System.out.println(r);
-	}
+	
 	int n_nodes = 20;
 	var nodes = generateNodes(n_nodes, 120, 30, 100, res.get(0),res.get(1),res.get(2));		
 		for(int i=0;i<n_nodes;i++){
