@@ -1,5 +1,7 @@
 package sim.main;
 import sim.engine.*;
+import sim.gui.*;
+import javax.swing.SwingUtilities;
 
 public class BroadcastSimulator{
 	private BroadcastSimulator(){}
@@ -16,6 +18,7 @@ public class BroadcastSimulator{
 	}
 	
   public static void main(String[] args){
+	
 	var res = ConfigReader.readConfigFile("config1.txt");
 	//Temporary code
 	var config = res.get(0);
