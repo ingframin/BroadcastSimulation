@@ -31,4 +31,16 @@ public class Logger{
             ioe.printStackTrace();
         }
     }
+    public void dump(String separator){
+        try(FileWriter fw = new FileWriter(path,true)){
+            fw.append(separator);
+            for(var s: logContent){
+                fw.append(s);
+            }
+            logContent.clear();
+        }
+        catch(IOException ioe){
+            ioe.printStackTrace();
+        }
+    }
 }

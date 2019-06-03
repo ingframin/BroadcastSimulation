@@ -10,7 +10,7 @@ final class ConfigReader{
     public static ArrayList<WiFiConfig> readConfigFile(String filename){
         //Improve parsing:
         //- Add read of multiple configurations
-        //- Get rid of WiFiState
+
         ArrayList<WiFiConfig> res = new ArrayList<>();
         File file = new File(filename);
         try(Scanner s = new Scanner(file)){
