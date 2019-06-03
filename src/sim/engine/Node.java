@@ -3,6 +3,7 @@ package sim.engine;
 import java.util.Random;
 
 public class Node {
+	//Get rid of WiFiState
 	WiFiState current;
 	Random r;
 	static long id_counter = 0;
