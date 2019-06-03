@@ -16,6 +16,9 @@ public class Logger{
     public void log(String txt){
         logContent.add(txt);
     }
+    public void log(char txt){
+        logContent.add(String.valueOf(txt));
+    }
 
     public void dump(boolean append){
         try(FileWriter fw = new FileWriter(path,append)){

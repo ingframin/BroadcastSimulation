@@ -3,8 +3,8 @@ package sim.engine;
 import java.util.Random;
 
 public class Node {
-	//Get rid of WiFiState
-	WiFiState current;
+	static final char[] states={'S','N','B'};
+	char current;
 	Random r;
 	static long id_counter = 0;
 	long ID;
@@ -13,23 +13,64 @@ public class Node {
 	double[] Vs;
 	double[] Vb;
 	double[] Vn;
+	private double Ps,Pn,Pb;
 
 	public Node(int Trx, int Tn, int Ttx){
-		current = new WiFiState();
 		r = new Random();
+		current = states[r.nextInt(2)];
 		ID = id_counter;
 		id_counter++;
 		timer = 0;
 		this.Trx = Trx;
 		this.Ttx = Ttx;
 		this.Tn = Tn;
+		
 		Vs = new double[]{0.3,0.4,0.3};
 		Vn = new double[]{0.3,0.4,0.3};
 		Vb = new double[]{0.3,0.4,0.3};
+		changeState(current);
+		
+	}
+
+	public Node(int Trx, int Tn, int Ttx, double[]vs, double[]vn, double[]vb){
+		r = new Random();
+		current = states[r.nextInt(2)];
+		ID = id_counter;
+		id_counter++;
+		timer = 0;
+		this.Trx = Trx;
+		this.Ttx = Ttx;
+		this.Tn = Tn;
+		
+		Vs = vs.clone();
+		Vn = vn.clone();
+		Vb = vb.clone();
+		changeState(current);
+		
+	}
+
+	private void changeState(char state){
+		switch(state){
+			case 'S':
+				Ps = Vs[0];
+				Pn = Vs[1];
+				Pb = Vs[2];
+				break;
+			case 'N':
+				Ps = Vn[0];
+				Pn = Vn[1];
+				Pb = Vn[2];
+				break;
+			case 'B':
+				Ps = Vb[0];
+				Pn = Vb[1];
+				Pb = Vb[2];
+				break;
+		}
 	}
 
 	public void run(){
-		switch(current.name){
+		switch(current){
 			case 'S':
 				if(timer < Trx){
 					timer++;
@@ -50,33 +91,24 @@ public class Node {
 				break;
 		}
 		timer = 0;
-		double thr1 = current.Ps;
-		double thr2 = current.Pb+thr1;
+		double thr1 = Ps;
+		double thr2 = Pb+thr1;
 		double v = r.nextDouble();
 		
 		if(v < thr1){
-			current.name = 'S';
-			current.Ps = Vs[0];
-			current.Pn = Vs[1];
-			current.Pb = Vs[2];
+			changeState('S');
 		}
 		else if(v < thr2){
-			current.name = 'B';
-			current.Ps = Vb[0];
-			current.Pn = Vb[1];
-			current.Pb = Vb[2];
+			changeState('B');
 		}
 		else{
-			current.name = 'N';
-			current.Ps = Vn[0];
-			current.Pn = Vn[1];
-			current.Pb = Vn[2];
+			changeState('N');
 		}
 		
 	}
 
-	public WiFiState getCurrentState(){
-		return new WiFiState(current);
+	public char getCurrentState(){
+		return current;
 	}
 
 	public long getID(){
