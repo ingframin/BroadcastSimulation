@@ -4,16 +4,17 @@ import java.util.Random;
 
 public class Node {
 	static final char[] states={'S','N','B'};
-	char current;
-	Random r;
-	static long id_counter = 0;
-	long ID;
-	int timer;
-	int Trx,Ttx,Tn;
-	double[] Vs;
-	double[] Vb;
-	double[] Vn;
+	private char current;
 	private double Ps,Pn,Pb;
+	private Random r;
+	private static long id_counter = 0;
+	private long ID;
+	private int timer;
+	private int Trx,Ttx,Tn;
+	private double[] Vs;
+	private double[] Vb;
+	private double[] Vn;
+	
 
 	public Node(int Trx, int Tn, int Ttx){
 		r = new Random();
@@ -55,16 +56,19 @@ public class Node {
 				Ps = Vs[0];
 				Pn = Vs[1];
 				Pb = Vs[2];
+				current = 'S';
 				break;
 			case 'N':
 				Ps = Vn[0];
 				Pn = Vn[1];
 				Pb = Vn[2];
+				current = 'N';
 				break;
 			case 'B':
 				Ps = Vb[0];
 				Pn = Vb[1];
 				Pb = Vb[2];
+				current = 'B';
 				break;
 		}
 	}
@@ -97,9 +101,11 @@ public class Node {
 		
 		if(v < thr1){
 			changeState('S');
+			
 		}
 		else if(v < thr2){
 			changeState('B');
+			
 		}
 		else{
 			changeState('N');
