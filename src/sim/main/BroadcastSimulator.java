@@ -2,6 +2,7 @@ package sim.main;
 import sim.engine.*;
 import sim.gui.*;
 import javax.swing.SwingUtilities;
+import static sim.main.ConfigReader.*;
 
 public class BroadcastSimulator{
 	private BroadcastSimulator(){}
@@ -18,15 +19,15 @@ public class BroadcastSimulator{
 	}
 	
   public static void main(String[] args){
-	SwingUtilities.invokeLater(()->{
+	/*SwingUtilities.invokeLater(()->{
 		new MainWindow();
-	});
-	/*
-	var res = ConfigReader.readConfigFile("config1.txt");
+	});*/
+	
+	var res = readConfigFile("config1.txt");
 	//Temporary code
 	var config = res.get(0);
 	int n_nodes = 4;
-	var nodes = generateNodes(n_nodes, 1, 1, 1, config.Vs,config.Vn,config.Vb);		
+	var nodes = generateNodes(n_nodes, config.Trx, config.Tn, config.Ttx, config.Vs,config.Vn,config.Vb);		
 		for(int i=0;i<n_nodes;i++){
 			var n = nodes[i];
 			var l = new Logger("./results/d"+i+"-result.txt");
@@ -36,7 +37,7 @@ public class BroadcastSimulator{
 			}
 			l.dump(false);
 			
-		}		*/
+		}		
 
 	}
 	

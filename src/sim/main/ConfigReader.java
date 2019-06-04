@@ -18,9 +18,27 @@ final class ConfigReader{
             double[] Ps = null;
             double[] Pn = null;
             double[] Pb = null;
-
+            int trx=100,tn=100,ttx=100;
             while(s.hasNextLine()){
                 String tmp = s.nextLine();
+                if(tmp.isBlank() || tmp.isEmpty()){
+                    continue;
+                }
+                if(tmp.contains("Ttx")){
+                    String[] split = tmp.split("=");
+                    ttx = Integer.parseInt(split[1].strip());
+                    continue;
+                }
+                else if(tmp.contains("Trx")) {
+                    String[] split = tmp.split("=");
+                    trx = Integer.parseInt(split[1].strip());
+                    continue;
+                }
+                else if(tmp.contains("Tn")){
+                    String[] split = tmp.split("=");
+                    tn = Integer.parseInt(split[1].strip());
+                    continue;
+                }
                 String [] split = tmp.split(";");
                 n = split[0].charAt(0);
                 switch(n){
@@ -36,7 +54,7 @@ final class ConfigReader{
                 }
             }
             if(Ps != null && Pn != null && Pb != null){
-                res.add(new WiFiConfig(Ps,Pn,Pb));
+                res.add(new WiFiConfig(trx,tn,ttx,Ps,Pn,Pb));
             }
             else{
                 throw new Exception("Incomplete configuration file");

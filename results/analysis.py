@@ -12,79 +12,72 @@ f3 = open("d2-result.txt")
 raw3 = f3.read()
 f3.close()
 
+f4 = open("d3-result.txt")
+raw4 = f4.read()
+f4.close()
+
 good = 0
 b1 = []
-b2 = []
-b3 = []
-s1 = []
-for i in range(len(raw1)):
+
+i = 0
+Ttx = 8
+Trx = 120
+while i < len(raw1) - Ttx :
     if raw1[i] == 'B':
         b1.append(i)
-    if raw2[i] == 'B':
-        b2.append('B')
-    if raw3[i] == 'B':
-        b3.append('B')
-    if raw1[i] == 'S':
-        s1.append(i)
+    i+=1
+Es = 0
+for c in raw1:
+    if c =='S':
+        Es+=1
 
-#print(b1[0:100])
-    
+print("P(S) = %.6f"%(Es/len(raw1)))
 
-l1 = len(b1)/len(raw1)
-l2 = len(b2)/len(raw1)
-l3 = len(b3)/len(raw1)
-ls = len(s1)/len(raw1)
-print("P(B) = %.6f"%((l1+l2+l3)/3))
-print("P(S)= %.6f"%ls)
 
-D = []
-for i in range(1,len(b1)):
-    D.append(b1[i]-b1[i-1])
+l1 = 1000*len(b1) / (Ttx*len(raw1))
 
-D.sort()
+t = 120e-3
+rt = l1*t
+print("P(B) = %.6f"%(len(b1)/len(raw1)))
+print("r(B) = %.6f"%(l1))
+print("rt = %.6f"%(l1*t))
+Erx1 = 0
+Erx2 = 0
+Erx3 = 0
 
-H = {}
+def count_erx(Vb,Raw):
+    erx = 0
+    for b in Vb:
+        for s in range(b,b+Ttx):
+            if Raw[s] == 'S':
+                erx += 1
+                break
+    return erx
 
-for d in D:
-    if d in H:
-        H[d] += 1
-    else:
-        H[d] = 1
+print(count_erx(b1,raw2)/len(b1))
+print(count_erx(b1,raw3)/len(b1))
+print(count_erx(b1,raw4)/len(b1))
 
-#print(len(H))
-#print(H)
-hv = [H[i]/len(b1) for i in H.keys()]
-#print(hv)
+
 P1 = []
 
-for k in range(len(hv)):
-    v = 1.25*e**(k*log(l1)-l1-log(gamma((k+1))))
+for k in range(20):
+    v = e**(k*log(rt)-rt-log(gamma((k+1))))
     
     P1.append(v)
-#     #P1.append((t*l1*e**(-l1*t))/factorial(t))       
-# #     P2 = e**(k*log(l2*10)-l2*10-log(gamma(k+1)))
-# #     P3 = e**(k*log(l3*10)-l3*10-log(gamma(k+1)))
-# #    # Ps = e**(k*log(ls*120)-ls*120-log(gamma(k+1)))
-# #     #print(gamma(k+1))
-# #     #input()
-# #     pv1.append(P1)
-# #     pv2.append(P2)
-# #     pv3.append(P3)
-# #     #ps.append(Ps)
-# x = D[0:len(P1)]
-# print(hv[0:100])
-# print(D[0:100])
-# print(len(x))
-# print(len(D)-len(P1))
-print([hv[i]-P1[i] for i in range(len(hv))])
-# pt.plot(H.keys(),hv,'r',label="Simulation")
-# pt.plot(H.keys(),P1[0:len(hv)],'g',label="Analytical")
-# pt.legend()
-# pt.show()
 
-f = open('fun.txt','w')
-for k,v in zip(H.keys(),hv):
-    print("%.12f\t%.12f"%(k,v),file = f)
-f.close()
-# # pt.plot(range(100),pv1,'r',range(100),pv2,'b',range(100),pv3,'g')#,range(300),ps,'y')
-# # pt.show()
+print(sum(P1[1:]))
+print(1-e**(-rt))
+
+
+pt.plot(range(20),P1,'r',label="Analytical")
+# # pt.plot(H.keys(),P1[0:len(hv)],'g',label="Analytical")
+pt.legend()
+pt.show()
+
+# f = open('fun.txt','w')
+# for k,v in zip(H.keys(),hv):
+#     print("%.12f\t%.12f"%(k,v),file = f)
+# f.close()
+# # # pt.plot(range(100),pv1,'r',range(100),pv2,'b',range(100),pv3,'g')#,range(300),ps,'y')
+# # # pt.show()

@@ -76,19 +76,19 @@ public class Node {
 	public void run(){
 		switch(current){
 			case 'S':
-				if(timer < Trx){
+				if(timer < Trx-1){
 					timer++;
 					return;
 				}
 				break;
 			case 'B':
-				if(timer < Ttx){
+				if(timer < Ttx-1){
 					timer++;
 					return;
 				}
 				break;
 			case 'N':
-				if(timer < Tn){
+				if(timer < Tn-1){
 					timer++;
 					return;
 				}
