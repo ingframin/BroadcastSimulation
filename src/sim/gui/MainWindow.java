@@ -1,12 +1,16 @@
 package sim.gui;
 
-import javax.swing.GroupLayout;
+import javax.swing.JLabel;
 import javax.swing.JFrame;
+import javax.swing.JTextField;
+import java.awt.BorderLayout;
 import java.awt.Dimension;
+import javax.swing.JPanel;
 
 public class MainWindow extends JFrame{
 
     private static final long serialVersionUID = 1L;
+    JTextField numNodesField;
 
     public MainWindow(){
         setTitle("Drone SSID broadcast simulator");
@@ -19,11 +23,11 @@ public class MainWindow extends JFrame{
     }
 
     private void initUI(){
-        var pane = getContentPane();
-        var gl = new GroupLayout(pane);
-        pane.setLayout(gl);
-        gl.setAutoCreateGaps(true);
-        gl.setAutoCreateContainerGaps(true);
+        JLabel nNodes = new JLabel("#Nodes");
+        numNodesField = new JTextField(8);
+
+        add(nNodes,BorderLayout.WEST); 
+        add(numNodesField,BorderLayout.WEST);
         
 
 

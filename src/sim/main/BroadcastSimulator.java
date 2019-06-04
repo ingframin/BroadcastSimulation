@@ -18,7 +18,10 @@ public class BroadcastSimulator{
 	}
 	
   public static void main(String[] args){
-	
+	SwingUtilities.invokeLater(()->{
+		new MainWindow();
+	});
+	/*
 	var res = ConfigReader.readConfigFile("config1.txt");
 	//Temporary code
 	var config = res.get(0);
@@ -33,7 +36,7 @@ public class BroadcastSimulator{
 			}
 			l.dump(false);
 			
-		}		
+		}		*/
 
 	}
 	
