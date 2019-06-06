@@ -1,18 +1,18 @@
 from math import e, factorial,log, gamma, sqrt
 from matplotlib import pyplot as pt
-f1 = open("r5-d0-result.txt")
+f1 = open("r1-d0-result.txt")
 raw1 = f1.read()
 f1.close()
 
-f2 = open("r5-d1-result.txt")
+f2 = open("r1-d1-result.txt")
 raw2 = f2.read()
 f2.close()
 
-f3 = open("r5-d2-result.txt")
+f3 = open("r1-d2-result.txt")
 raw3 = f3.read()
 f3.close()
 
-f4 = open("r5-d3-result.txt")
+f4 = open("r1-d3-result.txt")
 raw4 = f4.read()
 f4.close()
 
@@ -81,6 +81,8 @@ for i in range(len(hist1)):
     hist1[i] /= len(Cb1)
 
 print(hist1)
+print(sum(hist1)/len(hist1))
+l = sum(hist1)/len(hist1)
 for k in Cb2:
     hist2[int(Cb2[k])] += 1
 for i in range(len(hist2)):
@@ -94,15 +96,15 @@ for i in range(len(hist3)):
 
 
 P1 = []
-geo = []
-espd = []
+P2 = []
 for k in range(20):
-    v = e**(k*log(rt)-rt-log(gamma((k+1))))
-    g = (Pb)*(1-(Pb))**k
-    ed = rt*e**(-rt*k)
-    P1.append(v)
-    geo.append(g)
-    espd.append(ed)
+    #v = e**(k*log(hist1[0])-hist1[0]-log(gamma((k+1))))
+    v1 = e**(k*log(rt)-rt-log(gamma((k+1))))
+    v2 = e**(k*log(l)-l-log(gamma((k+1))))
+    
+    P1.append(v1)
+    P2.append(v2)
+    
 
 
 rmsp = 0
@@ -111,19 +113,17 @@ for p,h in zip(P1,hist1):
 
 rmsp = sqrt(rmsp/len(P1))
 print("RMSE Poisson= %.6f"%rmsp) 
+rmsp = 0
+for p,h in zip(P2,hist1):
+    rmsp += (p-h)**2
 
-rmsg = 0
-for p,h in zip(geo,hist1):
-    rmsg += (p-h)**2
+rmsp = sqrt(rmsp/len(P2))
+print("RMSE Poisson= %.6f"%rmsp) 
 
-rmsg = sqrt(rmsg/len(P1))
-print("RMSE Geo= %.6f"%rmsg) 
 
 pt.plot(range(20),hist1,'r',label='Simulation')
 pt.plot(range(20),P1,'g',label='Poisson')
-pt.plot(range(20),geo,'b',label='Geometric')
-pt.plot(range(20),espd,'y',label='Esponential')
-
+pt.plot(range(20),P2,'g',label='Poisson')
 pt.legend()
 pt.axis([0,20,0,0.8])
 pt.xticks(range(20), [str(int(n)) for n in range(20)])
