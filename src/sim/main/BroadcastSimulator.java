@@ -17,27 +17,32 @@ public class BroadcastSimulator{
 		return nodes;
 
 	}
-	
-  public static void main(String[] args){
-	/*SwingUtilities.invokeLater(()->{
-		new MainWindow();
-	});*/
-	
-	var res = readConfigFile("config1.txt");
-	//Temporary code
-	var config = res.get(0);
-	int n_nodes = 4;
-	var nodes = generateNodes(n_nodes, config.Trx, config.Tn, config.Ttx, config.Vs,config.Vn,config.Vb);		
-		for(int i=0;i<n_nodes;i++){
+
+	public static void run(String runID, Node[] nodes){
+		for(int i=0;i<nodes.length;i++){
 			var n = nodes[i];
-			var l = new Logger("./results/d"+i+"-result.txt");
-			for(int k=0;k <24_000_000;k++){
+			var l = new Logger("./results/r"+runID+"-d"+i+"-result.txt");
+			for(int k=0;k <15_000_000;k++){
 				n.run();
 				l.log(n.getCurrentState());
 			}
 			l.dump(false);
 			
 		}		
+	}
+
+	
+	
+  public static void main(String[] args){
+
+	int n_nodes = 4;
+			
+	for(int i=1;i<10;i++){
+		var res = readConfigFile("config"+String.valueOf(i)+".txt");
+		var config = res.get(0);
+		var nodes = generateNodes(n_nodes, config.Trx, config.Tn, config.Ttx, config.Vs,config.Vn,config.Vb);
+		run(String.valueOf(i),nodes);
+	}
 
 	}
 	

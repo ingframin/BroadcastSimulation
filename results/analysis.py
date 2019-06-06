@@ -1,18 +1,18 @@
 from math import e, factorial,log, gamma, sqrt
 from matplotlib import pyplot as pt
-f1 = open("d0-result.txt")
+f1 = open("r5-d0-result.txt")
 raw1 = f1.read()
 f1.close()
 
-f2 = open("d1-result.txt")
+f2 = open("r5-d1-result.txt")
 raw2 = f2.read()
 f2.close()
 
-f3 = open("d2-result.txt")
+f3 = open("r5-d2-result.txt")
 raw3 = f3.read()
 f3.close()
 
-f4 = open("d3-result.txt")
+f4 = open("r5-d3-result.txt")
 raw4 = f4.read()
 f4.close()
 
@@ -21,8 +21,8 @@ b1 = []
 Es = 0
 En = 0
 i = 0
-Ttx = 10
-Trx = 120
+Ttx = 15
+Trx = 150
 while i < len(raw1) - Ttx :
     if raw1[i] == 'B':
         b1.append(i)
@@ -32,13 +32,14 @@ while i < len(raw1) - Ttx :
         En += 1
     i+=1
 
+Pb = len(b1)/len(raw1)
 print("P(S) = %.6f"%(Es/len(raw1)))
 print("P(N) = %.6f"%(En/len(raw1)))
 print("P(B) = %.6f"%(len(b1)/len(raw1)))
 
 l1 = 1000*len(b1) / (Ttx*len(raw1))
 
-t = 120e-3
+t = Trx/1000
 rt = l1*t
 
 print("r(B) = %.6f"%(l1))
@@ -79,7 +80,7 @@ for k in Cb1:
 for i in range(len(hist1)):
     hist1[i] /= len(Cb1)
 
-
+print(hist1)
 for k in Cb2:
     hist2[int(Cb2[k])] += 1
 for i in range(len(hist2)):
@@ -93,28 +94,43 @@ for i in range(len(hist3)):
 
 
 P1 = []
-
+geo = []
+espd = []
 for k in range(20):
     v = e**(k*log(rt)-rt-log(gamma((k+1))))
+    g = (Pb)*(1-(Pb))**k
+    ed = rt*e**(-rt*k)
     P1.append(v)
+    geo.append(g)
+    espd.append(ed)
 
-rms = 0
+
+rmsp = 0
 for p,h in zip(P1,hist1):
-    rms += (p-h)**2
+    rmsp += (p-h)**2
 
-rms = sqrt(rms/len(P1))
-print("RMSE= %.6f"%rms) 
+rmsp = sqrt(rmsp/len(P1))
+print("RMSE Poisson= %.6f"%rmsp) 
+
+rmsg = 0
+for p,h in zip(geo,hist1):
+    rmsg += (p-h)**2
+
+rmsg = sqrt(rmsg/len(P1))
+print("RMSE Geo= %.6f"%rmsg) 
 
 pt.plot(range(20),hist1,'r',label='Simulation')
-pt.plot(range(20),P1,'g',label='Analytical')
+pt.plot(range(20),P1,'g',label='Poisson')
+pt.plot(range(20),geo,'b',label='Geometric')
+pt.plot(range(20),espd,'y',label='Esponential')
+
 pt.legend()
-pt.axis([0,20,0,0.5])
+pt.axis([0,20,0,0.8])
 pt.xticks(range(20), [str(int(n)) for n in range(20)])
 pt.xlabel(r'$\mathcal{k}$', fontsize = 18)
 pt.ylabel(r'P(k-messages-received)')
 pt.grid(True)
-pt.annotate("RMSE= %.6f"%rms,(3,0.2),fontsize=16,
-            horizontalalignment='left', verticalalignment='bottom', backgroundcolor='white')
+
 pt.show()
 
 # input()
