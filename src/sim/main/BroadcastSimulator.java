@@ -34,7 +34,7 @@ public class BroadcastSimulator{
 	
 	
   public static void main(String[] args){
-
+	
 	int n_nodes = 4;
 			
 	for(int i=1;i<10;i++){

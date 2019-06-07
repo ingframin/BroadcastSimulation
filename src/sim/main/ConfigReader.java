@@ -3,7 +3,7 @@ import java.io.File;
 import java.util.Scanner;
 import java.util.ArrayList;
 
-final class ConfigReader{
+public final class ConfigReader{
 
     private ConfigReader(){}
     

@@ -1,20 +1,12 @@
 from math import e, factorial,log, gamma, sqrt
 from matplotlib import pyplot as pt
-f1 = open("r1-d0-result.txt")
+f1 = open("r0-d0-result.txt")
 raw1 = f1.read()
 f1.close()
 
-f2 = open("r1-d1-result.txt")
+f2 = open("r0-d1-result.txt")
 raw2 = f2.read()
 f2.close()
-
-f3 = open("r1-d2-result.txt")
-raw3 = f3.read()
-f3.close()
-
-f4 = open("r1-d3-result.txt")
-raw4 = f4.read()
-f4.close()
 
 good = 0
 b1 = []
@@ -22,7 +14,7 @@ Es = 0
 En = 0
 i = 0
 Ttx = 15
-Trx = 150
+Trx = 120
 while i < len(raw1) - Ttx :
     if raw1[i] == 'B':
         b1.append(i)
@@ -66,12 +58,10 @@ def count_BS(V1,V2):
     return Cb
 
 Cb1 = count_BS(raw2,raw1) 
-Cb2 = count_BS(raw3,raw1) 
-Cb3 = count_BS(raw4,raw1) 
+ 
 
 hist1 = [0 for x in range(20)]
-hist2 = [0 for x in range(20)]
-hist3 = [0 for x in range(20)]
+
 
 
 
@@ -83,29 +73,16 @@ for i in range(len(hist1)):
 print(hist1)
 print(sum(hist1)/len(hist1))
 l = sum(hist1)/len(hist1)
-for k in Cb2:
-    hist2[int(Cb2[k])] += 1
-for i in range(len(hist2)):
-    hist2[i] /= len(Cb2)
-
-for k in Cb3:
-    hist3[int(Cb3[k])] += 1
-for i in range(len(hist3)):
-    hist3[i] /= len(Cb3)
-
-
 
 P1 = []
 P2 = []
+ex = []
 for k in range(20):
     #v = e**(k*log(hist1[0])-hist1[0]-log(gamma((k+1))))
     v1 = e**(k*log(rt)-rt-log(gamma((k+1))))
-    v2 = e**(k*log(l)-l-log(gamma((k+1))))
-    
+    exd = hist1[0]*(1-hist1[0])**k
     P1.append(v1)
-    P2.append(v2)
-    
-
+    ex.append(exd)
 
 rmsp = 0
 for p,h in zip(P1,hist1):
@@ -113,17 +90,18 @@ for p,h in zip(P1,hist1):
 
 rmsp = sqrt(rmsp/len(P1))
 print("RMSE Poisson= %.6f"%rmsp) 
-rmsp = 0
-for p,h in zip(P2,hist1):
-    rmsp += (p-h)**2
 
-rmsp = sqrt(rmsp/len(P2))
-print("RMSE Poisson= %.6f"%rmsp) 
+rmse = 0
+for p,h in zip(ex,hist1):
+    rmse += (p-h)**2
 
+rmse = sqrt(rmse/len(P1))
+print("RMSE Exponential= %.6f"%rmse) 
 
 pt.plot(range(20),hist1,'r',label='Simulation')
 pt.plot(range(20),P1,'g',label='Poisson')
-pt.plot(range(20),P2,'g',label='Poisson')
+pt.plot(range(20),ex,'b',label='Exponential')
+
 pt.legend()
 pt.axis([0,20,0,0.8])
 pt.xticks(range(20), [str(int(n)) for n in range(20)])

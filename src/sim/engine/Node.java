@@ -14,7 +14,6 @@ public class Node {
 	private double[] Vs;
 	private double[] Vb;
 	private double[] Vn;
-	
 
 	public Node(int Trx, int Tn, int Ttx){
 		r = new Random();
@@ -115,6 +114,11 @@ public class Node {
 
 	public char getCurrentState(){
 		return current;
+	}
+
+	public double[][] getPm(){
+		var m = new double[][]{Vs,Vn,Vb};
+		return m;
 	}
 
 	public long getID(){

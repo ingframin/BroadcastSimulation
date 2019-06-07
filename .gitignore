@@ -1,6 +1,6 @@
 ./build
 ./results
 *.jar
-results/*.txt
+results/*/*.txt
 *.class
 
