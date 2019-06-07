@@ -4,7 +4,7 @@ f1 = open("r0-d0-result.txt")
 raw1 = f1.read()
 f1.close()
 
-f2 = open("r0-d1-result.txt")
+f2 = open("r0-d3-result.txt")
 raw2 = f2.read()
 f2.close()
 
@@ -14,7 +14,7 @@ Es = 0
 En = 0
 i = 0
 Ttx = 15
-Trx = 120
+Trx = 150
 while i < len(raw1) - Ttx :
     if raw1[i] == 'B':
         b1.append(i)
@@ -40,27 +40,32 @@ print("rt = %.6f"%(l1*t))
 
 def count_BS(V1,V2):
     Cb = {}
-    i_s = 0
-    
-    while i_s < len(V2):
-        if V2[i_s] == 'S':
-            Cb[i_s] = 0
-            for i_b in range(i_s,i_s+Trx):
-                try:
-                    if V1[i_b] == 'B':
-                        Cb[i_s] += 1
-                except:
-                    break
-            Cb[i_s] /= Ttx
-            i_s += Trx
+    evt = 0
+    for i in range(len(V2)):
+        if V2[i] != 'S':
+            continue
         else:
-            i_s += 1
+            
+            if V2[i-1] != 'S' or evt == 0:
+                Cb[i] = 0
+            evt += 1
+            if evt == Trx:
+                evt = 0
+    for k in Cb:
+        try:
+            for i in range(k,Trx+k):
+                if V1[i] == 'B':
+                    Cb[k] += 1
+            Cb[k] /= Ttx
+        except:
+            break
+    
     return Cb
 
 Cb1 = count_BS(raw2,raw1) 
  
 
-hist1 = [0 for x in range(20)]
+hist1 = [0 for x in range(30)]
 
 
 
@@ -77,10 +82,10 @@ l = sum(hist1)/len(hist1)
 P1 = []
 P2 = []
 ex = []
-for k in range(20):
+for k in range(30):
     #v = e**(k*log(hist1[0])-hist1[0]-log(gamma((k+1))))
     v1 = e**(k*log(rt)-rt-log(gamma((k+1))))
-    exd = hist1[0]*(1-hist1[0])**k
+    exd = hist1[0]*(1-hist1[0])**(k-1)
     P1.append(v1)
     ex.append(exd)
 
@@ -96,15 +101,15 @@ for p,h in zip(ex,hist1):
     rmse += (p-h)**2
 
 rmse = sqrt(rmse/len(P1))
-print("RMSE Exponential= %.6f"%rmse) 
+print("RMSE Geometric= %.6f"%rmse) 
 
-pt.plot(range(20),hist1,'r',label='Simulation')
-pt.plot(range(20),P1,'g',label='Poisson')
-pt.plot(range(20),ex,'b',label='Exponential')
+pt.plot(range(30),hist1,'r',label='Simulation')
+pt.plot(range(30),P1,'g',label='Poisson')
+pt.plot(range(30),ex,'b',label='Exponential')
 
 pt.legend()
-pt.axis([0,20,0,0.8])
-pt.xticks(range(20), [str(int(n)) for n in range(20)])
+pt.axis([0,30,0,0.8])
+pt.xticks(range(30), [str(int(n)) for n in range(20)])
 pt.xlabel(r'$\mathcal{k}$', fontsize = 18)
 pt.ylabel(r'P(k-messages-received)')
 pt.grid(True)

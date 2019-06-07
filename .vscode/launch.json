@@ -2,6 +2,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "CodeLens (Launch) - BroadcastSimulator",
+            "request": "launch",
+            "mainClass": "sim.main.BroadcastSimulator",
+            "projectName": "BroadcastSimulation"
+        },
+        {
+            "type": "java",
             "name": "CodeLens (Launch) - MainWindow",
             "request": "launch",
             "mainClass": "sim.gui.MainWindow",
