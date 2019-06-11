@@ -14,7 +14,7 @@ Es = 0
 En = 0
 i = 0
 Ttx = 15
-Trx = 300
+Trx = 160
 while i < len(raw1) - Ttx :
     if raw1[i] == 'B':
         b1.append(i)
@@ -58,6 +58,8 @@ def count_BS(V1,V2):
                 if V1[i] == 'B':
                     Cb[k] += 1
             Cb[k] = floor(Cb[k]/Ttx)
+            #Cb[k] = Cb[k]/Ttx
+            
         except:
             break
     
@@ -73,7 +75,8 @@ hist1 = [0 for x in range(20)]
 
 for k in Cb1:
     if int(Cb1[k]) < 20:
-        hist1[int(Cb1[k])] += 1
+        hist1[round(Cb1[k])] += 1
+print(hist1)
 for i in range(len(hist1)):
     hist1[i] /= len(Cb1)
 print(len(Cb1))
@@ -84,6 +87,7 @@ l = sum(hist1)/len(hist1)
 P1 = []
 P2 = []
 ex = []
+intg = []
 #exp = []
 for k in range(20):
     #v1 = e**(k*log(max(hist1))-max(hist1)-log(gamma((k+1))))
@@ -93,7 +97,10 @@ for k in range(20):
     #exp.append(hist1[0] * e**(-hist1[0]*k)) 
     P1.append(v1)
     ex.append(exd)
-    
+
+for i in range(len(hist1)):
+    intg.append(sum(hist1[0:i]))
+
 print("k=0 %.6f"%(1-e**(-rt)))
 print(sum(hist1[1:]))
 rmsp = 0
@@ -114,9 +121,10 @@ print("RMSE Geometric= %.6f"%rmse)
 pt.plot(range(20),P1,label='Poisson')
 pt.plot(range(20),ex,label='Geometric')
 pt.bar(range(20),hist1)
+pt.plot(range(20),intg)
 #pt.plot(range(20),exp, label='Exponential')
 pt.legend()
-pt.axis([0,20,0,0.5])
+pt.axis([0,20,0,1])
 pt.xticks(range(20), [str(int(n)) for n in range(20)])
 pt.xlabel(r'$\mathcal{k}$', fontsize = 18)
 pt.ylabel(r'P(k-messages-received)')
