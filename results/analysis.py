@@ -91,9 +91,10 @@ intg = []
 #exp = []
 for k in range(20):
     #v1 = e**(k*log(max(hist1))-max(hist1)-log(gamma((k+1))))
-    v1 = e**(k*log(rt)-rt-log(gamma((k+1))))
+    v1 = e**(k*log(rt)-(rt)-log(gamma((k+1))))
     
     exd = hist1[0]*(1-hist1[0])**(k)
+    
     #exp.append(hist1[0] * e**(-hist1[0]*k)) 
     P1.append(v1)
     ex.append(exd)
@@ -118,7 +119,7 @@ rmse = sqrt(rmse/len(P1))
 print("RMSE Geometric= %.6f"%rmse) 
 
 # pt.plot(range(20),hist1,'r',label='Simulation')
-pt.plot(range(20),P1,label='Poisson')
+pt.plot(range(20),P1,'r',label='Poisson')
 pt.plot(range(20),ex,label='Geometric')
 pt.bar(range(20),hist1)
 pt.plot(range(20),intg)
@@ -129,5 +130,5 @@ pt.xticks(range(20), [str(int(n)) for n in range(20)])
 pt.xlabel(r'$\mathcal{k}$', fontsize = 18)
 pt.ylabel(r'P(k-messages-received)')
 pt.grid(True)
-
+print(1/hist1[0])
 pt.show()
