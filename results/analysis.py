@@ -1,4 +1,4 @@
-from math import e, factorial,log, gamma, sqrt
+from math import e, factorial,log, gamma, sqrt, floor
 from matplotlib import pyplot as pt
 f1 = open("r0-d0-result.txt")
 raw1 = f1.read()
@@ -30,6 +30,7 @@ print("P(N) = %.6f"%(En/len(raw1)))
 print("P(B) = %.6f"%(len(b1)/len(raw1)))
 
 l1 = 1000*len(b1) / (Ttx*len(raw1))
+#l1 = len(b1) / (len(raw1))
 
 t = Trx/1000
 rt = l1*t
@@ -56,11 +57,12 @@ def count_BS(V1,V2):
             for i in range(k,Trx+k):
                 if V1[i] == 'B':
                     Cb[k] += 1
-            Cb[k] = Cb[k]/Ttx
+            Cb[k] = floor(Cb[k]/Ttx)
         except:
             break
     
     return Cb
+
 
 Cb1 = count_BS(raw2,raw1) 
 
@@ -74,24 +76,26 @@ for k in Cb1:
         hist1[int(Cb1[k])] += 1
 for i in range(len(hist1)):
     hist1[i] /= len(Cb1)
-
+print(len(Cb1))
 print(hist1)
-print(sum(hist1)/len(hist1))
+
 l = sum(hist1)/len(hist1)
 
 P1 = []
 P2 = []
 ex = []
-exp = []
+#exp = []
 for k in range(20):
-    #v = e**(k*log(hist1[0])-hist1[0]-log(gamma((k+1))))
+    #v1 = e**(k*log(max(hist1))-max(hist1)-log(gamma((k+1))))
     v1 = e**(k*log(rt)-rt-log(gamma((k+1))))
+    
     exd = hist1[0]*(1-hist1[0])**(k)
-    exp.append(hist1[0] * e**(-hist1[0]*k)) 
+    #exp.append(hist1[0] * e**(-hist1[0]*k)) 
     P1.append(v1)
     ex.append(exd)
     
-
+print("k=0 %.6f"%(1-e**(-rt)))
+print(sum(hist1[1:]))
 rmsp = 0
 for p,h in zip(P1,hist1):
     rmsp += (p-h)**2
@@ -107,54 +111,15 @@ rmse = sqrt(rmse/len(P1))
 print("RMSE Geometric= %.6f"%rmse) 
 
 # pt.plot(range(20),hist1,'r',label='Simulation')
-# pt.plot(range(20),P1,'g',label='Poisson')
-# pt.plot(range(20),ex,'b',label='Geometric')
+pt.plot(range(20),P1,label='Poisson')
+pt.plot(range(20),ex,label='Geometric')
 pt.bar(range(20),hist1)
-pt.plot(range(20),exp)
+#pt.plot(range(20),exp, label='Exponential')
 pt.legend()
-pt.axis([0,20,0,0.8])
+pt.axis([0,20,0,0.5])
 pt.xticks(range(20), [str(int(n)) for n in range(20)])
 pt.xlabel(r'$\mathcal{k}$', fontsize = 18)
 pt.ylabel(r'P(k-messages-received)')
 pt.grid(True)
 
 pt.show()
-
-# input()
-# def count_erx(Vb,Raw):
-#     erx = 0
-    
-#     for b in Vb:
-#         for s in range(b,b+Ttx):
-#             if Raw[s] == 'S':
-#                 erx += 1
-#                 break
-#     return erx
-
-# print(count_erx(b1,raw2)/len(b1))
-# print(count_erx(b1,raw3)/len(b1))
-# print(count_erx(b1,raw4)/len(b1))
-
-
-# P1 = []
-
-# for k in range(20):
-#     v = e**(k*log(rt)-rt-log(gamma((k+1))))
-    
-#     P1.append(v)
-
-# print(sum(P1[1:]))
-# print(1-e**(-rt))
-
-
-#pt.plot(range(20),P1,'r',label="Analytical")
-# # pt.plot(H.keys(),P1[0:len(hv)],'g',label="Analytical")
-#pt.legend()
-#pt.show()
-
-# f = open('fun.txt','w')
-# for k,v in zip(H.keys(),hv):
-#     print("%.12f\t%.12f"%(k,v),file = f)
-# f.close()
-# # # pt.plot(range(100),pv1,'r',range(100),pv2,'b',range(100),pv3,'g')#,range(300),ps,'y')
-# # # pt.show()
