@@ -1,45 +1,23 @@
 from math import e, factorial,log, gamma, sqrt, floor
 from matplotlib import pyplot as pt
-f1 = open("r0-d0-result.txt")
-raw1 = f1.read()
-f1.close()
+from numpy.random import geometric, poisson, exponential
+from scipy.stats import ks_2samp
 
-f2 = open("r0-d1-result.txt")
-raw2 = f2.read()
-f2.close()
+def computeEvents(V, ttx, trx, tn):
+    Eb = 0
+    Es = 0
+    En = 0
 
-good = 0
-b1 = []
-Es = 0
-En = 0
-i = 0
-Ttx = 15
-Trx = 160
-while i < len(raw1) - Ttx :
-    if raw1[i] == 'B':
-        b1.append(i)
-    elif raw1[i] == 'S':
-        Es += 1
-    elif raw1[i] == 'N':
-        En += 1
-    i+=1
+    for c in V:
+        if c == 'B':
+            Eb += 1
+        elif c == 'S':
+            Es += 1
+        else:
+            En += 1
+    return (Eb/ttx,Es/trx,En/tn)
 
-Pb = len(b1)/len(raw1)
-print("P(S) = %.6f"%(Es/len(raw1)))
-print("P(N) = %.6f"%(En/len(raw1)))
-print("P(B) = %.6f"%(len(b1)/len(raw1)))
-
-l1 = 1000*len(b1) / (Ttx*len(raw1))
-#l1 = len(b1) / (len(raw1))
-
-t = Trx/1000
-rt = l1*t
-
-print("r(B) = %.6f"%(l1))
-print("rt = %.6f"%(l1*t))
-
-
-def count_BS(V1,V2):
+def countSuccess(V1,V2,Trx,Ttx):
     Cb = {}
     evt = 0
     for i in range(len(V2)):
@@ -65,70 +43,103 @@ def count_BS(V1,V2):
     
     return Cb
 
+def buildHistogram(Cb,Trx,Ttx):
+    hist = [0 for x in range(int(2*Trx/Ttx))]
+    n = 1/len(Cb)
+    for k in Cb:
+        try:
+            hist[round(Cb[k])] += n
+        except:
+            print(round(Cb[k]))
+    return hist
 
-Cb1 = count_BS(raw2,raw1) 
+def geom(p,maxK):
+    return [p*(1-p)**k for k in range(0,maxK)]
 
-hist1 = [0 for x in range(20)]
+def poisson_dist(lam,maxK):
+    return [e**(k*log(lam)-(lam)-log(gamma((k+1)))) for k in range(0,maxK)]
 
+def exponential_dist(lam, maxK):
+    return [lam*(e**(-lam*k)) for k in range(0,maxK)]
 
+def rmse(v1,v2):
+    rmse = 0
+    for x1,x2 in zip(v1,v2):
+        rmse += (x1-x2)**2
+    return sqrt(rmse/len(v1))
 
+if __name__ == '__main__':
 
-for k in Cb1:
-    if int(Cb1[k]) < 20:
-        hist1[round(Cb1[k])] += 1
-print(hist1)
-for i in range(len(hist1)):
-    hist1[i] /= len(Cb1)
-print(len(Cb1))
-print(hist1)
+    f1 = open("r5-d0-result.txt")
+    raw1 = f1.read()
+    f1.close()
 
-l = sum(hist1)/len(hist1)
+    f2 = open("r5-d1-result.txt")
+    raw2 = f2.read()
+    f2.close()
 
-P1 = []
-P2 = []
-ex = []
-intg = []
-#exp = []
-for k in range(20):
-    #v1 = e**(k*log(max(hist1))-max(hist1)-log(gamma((k+1))))
-    v1 = e**(k*log(rt)-(rt)-log(gamma((k+1))))
+    f3 = open("r5-d2-result.txt")
+    raw3 = f3.read()
+    f3.close()
+
+    Eb = 0
+    Es = 0
+    En = 0
+
+    Ttx = 15
+    Trx = 160
+    Tn = 1
+
+    Eb,Es,En = computeEvents(raw1,Ttx,Trx,Tn)
+
+    print("P(S) = %.6f"%(Es/len(raw1)))
+    print("P(N) = %.6f"%(En/len(raw1)))
+    print("P(B) = %.6f"%(Eb/len(raw1)))
+
+    l1 = 1000*Eb / (len(raw1))
+
+    t = Trx/1000
+    rt = l1*t
+
+    print("r(B)(Events/s) = %.6f"%(l1))
+    print("rt = %.6f"%(l1*t))
+
+    Cb1 = countSuccess(raw2,raw1, Trx,Ttx)
+    Cb2 = countSuccess(raw3,raw1, Trx,Ttx) 
     
-    exd = hist1[0]*(1-hist1[0])**(k)
+    hist1 = buildHistogram(Cb1,Trx,Ttx)
+    geodata = list(geometric(hist1[0],len(Cb1.values())))
+    poidata = poisson(0.860605 ,len(Cb1.values()))
+    expdata = exponential(rt,len(Cb1.values()))
+    cbd1 = list(Cb1.values())
+    cbd2 = list(Cb2.values())
+    with open("cbdata.txt","w") as cbf:
+        for d in cbd1:
+            print(d,file=cbf)
+
+    print(ks_2samp(cbd1,cbd2))
+    print(ks_2samp(cbd1,geodata))
+    print(ks_2samp(cbd2,geodata))
+    print(ks_2samp(cbd1,poidata))
+    print(ks_2samp(cbd2,poidata))
+    print(ks_2samp(cbd1,expdata))
+    print(ks_2samp(cbd2,expdata))
     
-    #exp.append(hist1[0] * e**(-hist1[0]*k)) 
-    P1.append(v1)
-    ex.append(exd)
+    P1 = poisson_dist(hist1[0],len(hist1))
+    ex = geom(hist1[0],len(hist1))
+    print(hist1)
+    print("Success probability= %.6f"%sum(hist1[1:]))
+    print("RMSE Poisson= %.6f"%rmse(P1,hist1)) 
+    print("RMSE Geometric= %.6f"%rmse(ex,hist1)) 
 
-for i in range(len(hist1)):
-    intg.append(sum(hist1[0:i]))
+    # pt.plot(range(len(hist1)),P1,'r',label='Poisson')
+    # pt.plot(range(len(hist1)),ex,label='Geometric')
+    # pt.bar(range(len(hist1)),hist1)
 
-print("k=0 %.6f"%(1-e**(-rt)))
-print(sum(hist1[1:]))
-rmsp = 0
-for p,h in zip(P1,hist1):
-    rmsp += (p-h)**2
-
-rmsp = sqrt(rmsp/len(P1))
-print("RMSE Poisson= %.6f"%rmsp) 
-
-rmse = 0
-for p,h in zip(ex,hist1):
-    rmse += (p-h)**2
-
-rmse = sqrt(rmse/len(P1))
-print("RMSE Geometric= %.6f"%rmse) 
-
-# pt.plot(range(20),hist1,'r',label='Simulation')
-pt.plot(range(20),P1,'r',label='Poisson')
-pt.plot(range(20),ex,label='Geometric')
-pt.bar(range(20),hist1)
-pt.plot(range(20),intg)
-#pt.plot(range(20),exp, label='Exponential')
-pt.legend()
-pt.axis([0,20,0,1])
-pt.xticks(range(20), [str(int(n)) for n in range(20)])
-pt.xlabel(r'$\mathcal{k}$', fontsize = 18)
-pt.ylabel(r'P(k-messages-received)')
-pt.grid(True)
-print(1/hist1[0])
-pt.show()
+    # pt.legend()
+    # pt.axis([0,len(hist1),0,1.0])
+    # pt.xticks(range(len(hist1)), [str(int(n)) for n in range(len(hist1))])
+    # pt.xlabel(r'$\mathcal{k}$', fontsize = 18)
+    # pt.ylabel(r'P(k-messages-received)')
+    # pt.grid(True)
+    # pt.show()

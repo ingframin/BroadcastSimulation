@@ -22,7 +22,7 @@ public class BroadcastSimulator{
 		for(int i=0;i<nodes.length;i++){
 			var n = nodes[i];
 			var l = new Logger("./results/r"+runID+"-d"+i+"-result.txt");
-			for(int k=0;k <30_000_000;k++){
+			for(int k=0;k <16_000_000;k++){
 				n.run();
 				l.log(n.getCurrentState());
 			}
