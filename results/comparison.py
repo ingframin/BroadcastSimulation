@@ -1,7 +1,6 @@
-from math import e, factorial,log, gamma, sqrt, floor, fsum
 from matplotlib import pyplot as pt
 from analysis import *
-from scipy.stats import ks_2samp
+
 
 f= open("histograms.txt","w")
 
@@ -18,8 +17,8 @@ for i in range(1,10):
     Es = 0
     En = 0
 
-    Ttx = 15
-    Trx = 160
+    Ttx = 1
+    Trx = 11
     Tn = 1
 
     Eb,Es,En = computeEvents(raw1,Ttx,Trx,Tn)
@@ -31,23 +30,14 @@ for i in range(1,10):
 
     hist1 = buildHistogram(Cb1,Trx,Ttx)
     f.write(str(hist1))
-    print(len(hist1))
-    lam  = hist1[0]
-    ex = geom(hist1[0],len(hist1))
-    expd = exponential(lam,len(hist1))
-    pois = poisson(lam,len(hist1))
-    print("geom ks= "+str(ks_2samp(hist1,ex)))
-    print("exponential ks= "+str(ks_2samp(hist1,expd)))
-    print("poisson ks= "+str(ks_2samp(hist1,pois)))
+    # print(len(hist1))
     DB = round(100*Ttx*Eb/len(raw1),2)
-    print("RMSE Geometric= %.6f"%rmse(ex,hist1))
-    pt.plot(range(len(hist1)),ex,label="P(Rx)= %.3f,T(B)/T(Total)= %.2f%%"%(sum(hist1[1:]),DB))
-    print("RMSE Exponential= %.6f"%rmse(expd,hist1))
-    #pt.plot(range(len(hist1)),expd,label="P(Rx)= %.3f,T(B)/T(Total)= %.2f%%"%(sum(hist1[1:]),DB))
-    pt.plot(range(len(hist1)),pois)
+
+    pt.plot(range(len(hist1)),hist1,label="P(Rx)= %.3f,T(B)/T(Total)= %.2f%%"%(sum(hist1[1:]),DB))
+
 
 pt.axis([0,len(hist1),0,1.0])
-#pt.legend()
+pt.legend()
 pt.xticks(range(len(hist1)), [str(int(n)) for n in range(len(hist1))])
 pt.xlabel(r'$\mathcal{k}$', fontsize = 18)
 pt.ylabel(r'P(k-messages-received)')

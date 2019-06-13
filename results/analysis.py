@@ -15,7 +15,17 @@ def computeEvents(V, ttx, trx, tn):
             Es += 1
         else:
             En += 1
+    
     return (Eb/ttx,Es/trx,En/tn)
+
+def countSuccessT1(V1,V2):
+    Cb = []
+    i = 0
+    for b,s in zip(V1,V2):
+        if b =='B' and s =='S':
+            Cb.append(i)
+        i+=1
+    return Cb
 
 def countSuccess(V1,V2,Trx,Ttx):
     Cb = {}
@@ -53,6 +63,21 @@ def buildHistogram(Cb,Trx,Ttx):
             print(round(Cb[k]))
     return hist
 
+def buildHistogramV(V, l = 0):
+    hist = None
+    if l:
+        hist = [0 for x in range(len(V))]
+    else:
+        hist = [0 for x in range(len(V))]
+
+    for k in V:
+        try:
+            hist[k] += 1
+        except:
+            break
+        
+    return hist
+
 def geom(p,maxK):
     return [p*(1-p)**k for k in range(0,maxK)]
 
@@ -68,17 +93,18 @@ def rmse(v1,v2):
         rmse += (x1-x2)**2
     return sqrt(rmse/len(v1))
 
+
 if __name__ == '__main__':
 
-    f1 = open("r5-d0-result.txt")
+    f1 = open("r1-d0-result.txt")
     raw1 = f1.read()
     f1.close()
 
-    f2 = open("r5-d1-result.txt")
+    f2 = open("r1-d1-result.txt")
     raw2 = f2.read()
     f2.close()
 
-    f3 = open("r5-d2-result.txt")
+    f3 = open("r1-d2-result.txt")
     raw3 = f3.read()
     f3.close()
 
@@ -86,15 +112,15 @@ if __name__ == '__main__':
     Es = 0
     En = 0
 
-    Ttx = 15
-    Trx = 160
+    Ttx = 1
+    Trx = 11
     Tn = 1
 
     Eb,Es,En = computeEvents(raw1,Ttx,Trx,Tn)
 
-    print("P(S) = %.6f"%(Es/len(raw1)))
-    print("P(N) = %.6f"%(En/len(raw1)))
-    print("P(B) = %.6f"%(Eb/len(raw1)))
+    print("P(S) = %.6f"%(Trx*Es/len(raw1)))
+    print("P(N) = %.6f"%(Tn*En/len(raw1)))
+    print("P(B) = %.6f"%(Ttx*Eb/len(raw1)))
 
     l1 = 1000*Eb / (len(raw1))
 
@@ -108,38 +134,21 @@ if __name__ == '__main__':
     Cb2 = countSuccess(raw3,raw1, Trx,Ttx) 
     
     hist1 = buildHistogram(Cb1,Trx,Ttx)
-    geodata = list(geometric(hist1[0],len(Cb1.values())))
-    poidata = poisson(0.860605 ,len(Cb1.values()))
-    expdata = exponential(rt,len(Cb1.values()))
-    cbd1 = list(Cb1.values())
-    cbd2 = list(Cb2.values())
-    with open("cbdata.txt","w") as cbf:
-        for d in cbd1:
-            print(d,file=cbf)
-
-    print(ks_2samp(cbd1,cbd2))
-    print(ks_2samp(cbd1,geodata))
-    print(ks_2samp(cbd2,geodata))
-    print(ks_2samp(cbd1,poidata))
-    print(ks_2samp(cbd2,poidata))
-    print(ks_2samp(cbd1,expdata))
-    print(ks_2samp(cbd2,expdata))
-    
-    P1 = poisson_dist(hist1[0],len(hist1))
-    ex = geom(hist1[0],len(hist1))
+        
+    pois_d = poisson_dist(1.8082184855152998,len(hist1))
+    #geom_d = geom(hist1[0],len(hist1))
     print(hist1)
     print("Success probability= %.6f"%sum(hist1[1:]))
-    print("RMSE Poisson= %.6f"%rmse(P1,hist1)) 
-    print("RMSE Geometric= %.6f"%rmse(ex,hist1)) 
+    print("RMSE Poisson= %.6f"%rmse(pois_d,hist1)) 
+    
+    pt.plot(range(len(hist1)),pois_d,'r',label='Poisson')
+    
+    pt.bar(range(len(hist1)),hist1,label="P(Rx)= %.3f,T(B)/T(Total)= %.2f%%"%(sum(hist1[1:]),100*Ttx*Eb/len(raw1)))
 
-    # pt.plot(range(len(hist1)),P1,'r',label='Poisson')
-    # pt.plot(range(len(hist1)),ex,label='Geometric')
-    # pt.bar(range(len(hist1)),hist1)
-
-    # pt.legend()
-    # pt.axis([0,len(hist1),0,1.0])
-    # pt.xticks(range(len(hist1)), [str(int(n)) for n in range(len(hist1))])
-    # pt.xlabel(r'$\mathcal{k}$', fontsize = 18)
-    # pt.ylabel(r'P(k-messages-received)')
-    # pt.grid(True)
-    # pt.show()
+    pt.legend()
+    pt.axis([0,len(hist1),0,1.0])
+    pt.xticks(range(len(hist1)), [str(int(n)) for n in range(len(hist1))])
+    pt.xlabel(r'$\mathcal{k}$', fontsize = 18)
+    pt.ylabel(r'P(k-messages-received)')
+    pt.grid(True)
+    pt.show()

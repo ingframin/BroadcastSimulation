@@ -1,23 +1,21 @@
 from math import e, factorial,log, gamma, sqrt
 from matplotlib import pyplot as pt
-
-Ps = {}
-
-for i in range(1,20):
-    Ps[i] = []
-    for k in range(25):
-        v = e**(k*log(i)-i-log(gamma((k+1))))
-        Ps[i].append(v)
-    
+from numpy.random import geometric, poisson, exponential
+from scipy.stats import ks_2samp
 
 
-for i in range(1,20):
-    pt.plot(range(25),Ps[i])
+f = open("cbdata.txt")
+v = [int(x)+1 for x in f.readlines()]
+f.close()
+lam = 0.5275924670273324
+poidata = poisson(lam ,len(v))
+expdata = exponential(lam,len(v))
+geodata = geometric(lam,len(v))
+e= ks_2samp(v,expdata)
+d = ks_2samp(v,poidata)
+g = ks_2samp(v,geodata)
+print('exponential',e)
+print('poisson',d)
+print('geometric',g)
 
-pt.axis([0,25,0,1.0])
-pt.xticks(range(25), [str(int(n)) for n in range(25)])
-pt.xlabel(r'$\mathcal{k}$', fontsize = 18)
-pt.ylabel(r'P(k-messages-received)')
-pt.grid(True)
 
-pt.show()
