@@ -135,7 +135,7 @@ if __name__ == '__main__':
     
     hist1 = buildHistogram(Cb1,Trx,Ttx)
         
-    pois_d = poisson_dist(1.8082184855152998,len(hist1))
+    pois_d = poisson_dist(0.0454545,len(hist1))
     #geom_d = geom(hist1[0],len(hist1))
     print(hist1)
     print("Success probability= %.6f"%sum(hist1[1:]))
