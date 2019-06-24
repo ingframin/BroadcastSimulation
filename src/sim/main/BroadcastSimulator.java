@@ -1,7 +1,5 @@
 package sim.main;
 import sim.engine.*;
-import sim.gui.*;
-import javax.swing.SwingUtilities;
 import static sim.main.ConfigReader.*;
 
 public class BroadcastSimulator{
@@ -24,7 +22,7 @@ public class BroadcastSimulator{
 			var l = new Logger("./results/r"+runID+"-d"+i+"-result.txt");
 			var log_m = new Logger("./results/m"+runID+"-d"+i+"-result.txt");
 			boolean flag = false;
-			for(int k=0;k <16_000_000;k++){
+			for(int k=0;k <15_000_000;k++){
 				n.run();
 				char s= n.getCurrentState();
 				l.log(s);
