@@ -5,3 +5,4 @@ results/*/*.txt
 results/*.txt
 *.class
 *result*
+*.pyc
