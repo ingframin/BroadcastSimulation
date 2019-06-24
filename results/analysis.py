@@ -2,7 +2,7 @@ from math import e, factorial,log, gamma, sqrt, floor
 from matplotlib import pyplot as pt
 from numpy.random import geometric, poisson, exponential
 from scipy.stats import ks_2samp
-from scipy.stats import norm,poisson
+from scipy.stats import norm#,poisson
 from numpy import linspace
 
 def computeEvents(V, ttx, trx, tn):
@@ -124,15 +124,15 @@ def rmse(v1,v2):
 
 if __name__ == '__main__':
 
-    f1 = open("r3-d0-result.txt")
+    f1 = open("r5-d0-result.txt")
     raw1 = f1.read()
     f1.close()
 
-    f2 = open("r3-d1-result.txt")
+    f2 = open("r5-d1-result.txt")
     raw2 = f2.read()
     f2.close()
 
-    f3 = open("r3-d2-result.txt")
+    f3 = open("r5-d2-result.txt")
     raw3 = f3.read()
     f3.close()
 
@@ -163,21 +163,29 @@ if __name__ == '__main__':
     
     Cb2 = countBroadcast(raw3,raw1, Trx,Ttx) 
     
+    v = countSuccessT1(raw1,raw2)
+    dk = []
+    for i in range(1,len(v)):
+        dk.append(v[i]-v[i-1])
+
+    expdata = poisson(rt,len(dk))
+
+    print(ks_2samp(dk,expdata))
 
     hist1 = buildHistogram(Cb1,Trx,Ttx)
         
-    pois_d = poisson_dist(2*rt,len(hist1))
+    pois_d = poisson_dist(rt,len(hist1))
     #geom_d = geom(hist1[0],len(hist1))
     print(hist1)
     print("Success probability= %.6f"%sum(hist1[1:]))
     print("RMSE Poisson= %.6f"%rmse(pois_d,hist1)) 
     x = linspace(0,len(hist1))
     # fitted distribution
-    rv = poisson(2*rt)
+    rv = poisson(rt)
     print(rv)
 
     pt.plot(range(len(hist1)),pois_d,'r',label='Poisson')
-    pt.plot(range(len(hist1)),rv.pmf([x for x in range(len(hist1))]))
+    #pt.plot(range(len(hist1)),rv.pmf([x for x in range(len(hist1))]))
     pt.bar(range(len(hist1)),hist1,label="P(Rx)= %.3f,T(B)/T(Total)= %.2f%%"%(sum(hist1[1:]),100*Ttx*Eb/len(raw1)))
 
     pt.legend()

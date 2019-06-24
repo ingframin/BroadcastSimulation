@@ -4,4 +4,4 @@
 results/*/*.txt
 results/*.txt
 *.class
-
+*result*

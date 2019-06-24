@@ -4,11 +4,11 @@ from numpy.random import geometric, poisson, exponential
 from scipy.stats import ks_2samp
 
 
-f1 = open("r1-d0-result.txt")
+f1 = open("r7-d0-result.txt")
 raw1 = f1.read()
 f1.close()
 
-f2 = open("r1-d1-result.txt")
+f2 = open("r7-d1-result.txt")
 raw2 = f2.read()
 f2.close()
 
@@ -30,7 +30,7 @@ for n in h:
 x = sorted(list(h.keys()))
 y = [h[n] for n in x]
 
-expdata = exponential(1/y[0],len(dk))
+expdata = poisson(y[0],len(dk))
 
 print(ks_2samp(dk,expdata))
 
