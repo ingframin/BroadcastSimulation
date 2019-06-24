@@ -6,3 +6,4 @@ results/*.txt
 *.class
 *result*
 *.pyc
+*cpython*
