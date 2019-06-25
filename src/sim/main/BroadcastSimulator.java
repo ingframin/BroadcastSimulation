@@ -48,7 +48,7 @@ public class BroadcastSimulator{
 	
 	int n_nodes = 4;
 			
-	for(int i=1;i<10;i++){
+	for(int i=1;i<20;i++){
 		var res = readConfigFile("config"+String.valueOf(i)+".txt");
 		var config = res.get(0);
 		var nodes = generateNodes(n_nodes, config.Trx, config.Tn, config.Ttx, config.Vs,config.Vn,config.Vb);
