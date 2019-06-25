@@ -2,5 +2,8 @@
 ./results
 *.jar
 results/*/*.txt
+results/*.txt
 *.class
-
+*result*
+*.pyc
+*cpython*
