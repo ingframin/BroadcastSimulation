@@ -1,11 +1,11 @@
 from math import e, factorial,log, gamma, sqrt, floor
 from matplotlib import pyplot as pt
-f1 = open("r0-d1-result.txt")
+f1 = open("r1-d1-result.txt")
 raw1 = f1.read()
 f1.close()
 
 ToA = []
-Ttx = 15
+Ttx = 1
 flag = False
 
 for i in range(len(raw1)):
@@ -57,7 +57,7 @@ for k in range(1,19):
 
 expected_value = 1/y[0]
 print(1/y[0])
-pt.bar(x,y, width=120, label="Time difference between consecutive transmissions")
+pt.bar(x,y, width=2, label="Time difference between consecutive transmissions")
 pt.plot(x,exp[0:len(x)],'r',label="Analytical")
 pt.xticks(x, [str(int(n)) for n in x])
 pt.legend()
