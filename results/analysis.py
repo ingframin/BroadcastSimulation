@@ -106,7 +106,7 @@ def buildHistogramV(V, l = 0):
         
     return hist
 
-def geom(p,maxK):
+def geom_dist(p,maxK):
     return [p*(1-p)**k for k in range(0,maxK)]
 
 def poisson_dist(lam,maxK):

@@ -1,9 +1,9 @@
 ./build
-./results
 *.jar
 results/*/*.txt
 results/*.txt
 *.class
-*result*
 *.pyc
 *cpython*
+results/__pycache__
+*checkpoints*
