@@ -1,4 +1,4 @@
-Trx = 13
+Trx = 8
 Tn = 10
 Ttx = 1
 

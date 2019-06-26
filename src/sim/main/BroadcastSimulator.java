@@ -46,7 +46,7 @@ public class BroadcastSimulator{
 	
   public static void main(String[] args){
 	
-	int n_nodes = 4;
+	int n_nodes = 2;
 			
 	for(int i=1;i<20;i++){
 		var res = readConfigFile("config"+String.valueOf(i)+".txt");
