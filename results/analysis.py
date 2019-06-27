@@ -73,8 +73,8 @@ def countSuccess(V1,V2,Trx,Ttx):
             for i in range(k,Trx+k):
                 if V1[i] == 'B':
                     Cb[k] += 1
-            Cb[k] = floor(Cb[k]/Ttx)
-            #Cb[k] = Cb[k]/Ttx
+            #Cb[k] = floor(Cb[k]/Ttx)
+            Cb[k] = Cb[k]/Ttx
             
         except:
             break
@@ -89,21 +89,6 @@ def buildHistogram(Cb,Trx,Ttx):
             hist[round(Cb[k])] += n
         except:
             print(round(Cb[k]))
-    return hist
-
-def buildHistogramV(V, l = 0):
-    hist = None
-    if l:
-        hist = [0 for x in range(len(V))]
-    else:
-        hist = [0 for x in range(len(V))]
-
-    for k in V:
-        try:
-            hist[k] += 1
-        except:
-            break
-        
     return hist
 
 def geom_dist(p,maxK):
@@ -124,17 +109,13 @@ def rmse(v1,v2):
 
 if __name__ == '__main__':
 
-    f1 = open("r1-d0-result.txt")
+    f1 = open("r5-d0-result.txt")
     raw1 = f1.read()
     f1.close()
 
-    f2 = open("r1-d1-result.txt")
+    f2 = open("r5-d1-result.txt")
     raw2 = f2.read()
     f2.close()
-
-    # f3 = open("r1-d1-result.txt")
-    # raw3 = f3.read()
-    # f3.close()
 
     Eb = 0
     Es = 0
@@ -158,23 +139,16 @@ if __name__ == '__main__':
     print("r(B)(Events/s) = %.6f"%(l1))
     print("rt = %.6f"%(l1*t))
     
-    #Cb1 = countSuccess(raw2,raw1, Trx,Ttx)
     Cb1 = countBroadcast(raw2,raw1,Trx,Ttx)
     
-    #Cb2 = countBroadcast(raw3,raw1, Trx,Ttx) 
-    
-    v = countSuccessT1(raw1,raw2)
-    dk = []
-    for i in range(1,len(v)):
-        dk.append(v[i]-v[i-1])
-
+    v = countSuccessT1(raw2,raw1)
+ 
     hist1 = buildHistogram(Cb1,Trx,Ttx)
     expdata = poisson(rt,len(dk))
     geodata = geometric(hist1[0],len(dk))
-    print(ks_2samp(dk,expdata))
-    print(ks_2samp(dk,geodata))
+   
     pois_d = poisson_dist(rt,len(hist1))
-    geom_d = geom(hist1[0],len(hist1))
+    geom_d = geom_dist(hist1[0],len(hist1))
     print(pois_d)
     print(geom_d)
     print("Success probability= %.6f"%sum(hist1[1:]))
