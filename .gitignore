@@ -7,3 +7,8 @@ results/*.txt
 *cpython*
 results/__pycache__
 *checkpoints*
+*.class
+*bin*
+./bin
+bin/*
+build/*
