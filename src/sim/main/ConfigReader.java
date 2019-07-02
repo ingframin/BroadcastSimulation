@@ -57,6 +57,9 @@ public final class ConfigReader{
                 res.add(new WiFiConfig(trx,tn,ttx,Ps,Pn,Pb));
             }
             else{
+                System.out.println(Ps==null);
+                System.out.println(Pn==null);
+                System.out.println(Pb==null);
                 throw new Exception("Incomplete configuration file");
             }
             
