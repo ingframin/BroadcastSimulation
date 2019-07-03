@@ -1,6 +1,6 @@
 package sim.engine;
 
-public class Message{
+public class Message implements Comparable{
     public final long ID;
     public final String data;
     
@@ -13,6 +13,7 @@ public class Message{
 
     }
 
+    @Override
     public boolean equals(Object o){
         if(o instanceof Message){
             var m = (Message) o;
@@ -23,12 +24,13 @@ public class Message{
         return false;
     }
 
+    @Override
     public String toString(){
 
         return ID+"\t"+data+"\n";
 
     }
-
+    @Override
     public int compareTo(Object o){
         if(o instanceof Message){
             var m = (Message) o;
