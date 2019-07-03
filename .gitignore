@@ -12,3 +12,5 @@ results/__pycache__
 ./bin
 bin/*
 build/*
+*brdsim*
+*.exe
