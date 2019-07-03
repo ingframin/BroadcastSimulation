@@ -1,4 +1,4 @@
-package sim.main;
+package sim.utils;
 
 
 public class WiFiConfig{

@@ -1,4 +1,4 @@
-package sim.main;
+package sim.utils;
 import java.io.File;
 import java.util.Scanner;
 

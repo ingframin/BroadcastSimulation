@@ -1,13 +1,12 @@
 package sim.main;
 
 import sim.engine.*;
-import static sim.main.ConfigReader.*;
-
+import static sim.utils.ConfigReader.*;
+import sim.utils.*;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 

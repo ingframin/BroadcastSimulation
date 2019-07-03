@@ -1,4 +1,4 @@
-package sim.main;
+package sim.utils;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
