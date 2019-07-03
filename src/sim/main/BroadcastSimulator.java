@@ -24,13 +24,13 @@ public class BroadcastSimulator{
 
 	}
 
-	public static void run(String runID, Node[] nodes){
+	public static void run(String runID, Node[] nodes, int points){
 		for(int i=0;i<nodes.length;i++){
 			var n = nodes[i];
 			var l = new Logger("./results/r"+runID+"-d"+i+"-result.txt");
 			var log_m = new Logger("./results/m"+runID+"-d"+i+"-result.txt");
 			boolean flag = false;
-			for(int k=0;k <10_000_000;k++){
+			for(int k=0 ; k < points ; k++){
 				n.run();
 				char s= n.getCurrentState();
 				l.log(s);
@@ -55,6 +55,15 @@ public class BroadcastSimulator{
 	public static void main(String[] args){
 	
 		int n_nodes = 2;
+		final int points;
+				
+		if(args.length > 0){
+			points = Integer.parseInt(args[0]);
+		}
+		else{
+			points = 10_000_000;
+		}
+		System.out.println("Points: "+points);
 		try (Stream<Path> walk = Files.walk(Paths.get("."))) {
 
 			var result = walk.filter(Files::isRegularFile).map(x -> x.toString()).filter((fn)->fn.matches("(.*)config[0-9]+(.*)")).collect(Collectors.toList());
@@ -65,7 +74,7 @@ public class BroadcastSimulator{
 				try{
 					var config = readConfigFile("config"+n+".txt");
 					var nodes = generateNodes(n_nodes, config.Trx, config.Tn, config.Ttx, config.Vs,config.Vn,config.Vb);
-					run(n,nodes);
+					run(n,nodes,points);
 				}
 				catch(Exception e){
 					System.out.println(e.getMessage());

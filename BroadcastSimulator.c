@@ -13,10 +13,15 @@ int main(int argc, char* argv[]){
    }
     char base[6+PATH_MAX] = "PATH=";
     char* runtime = "\\brdsim\\bin";
+    char program[80] = "java -jar build/jar/BroadcastSimulation.jar ";
     strcat(base,cwd);
     strcat(base,runtime);
+    if(argc>1){
+        strcat(program,argv[1]);
+    }
+   
     printf("%s\n",base);
     putenv(base);
-    system("java -jar build/jar/BroadcastSimulation.jar");
+    system(program);
     return 0;
 }
