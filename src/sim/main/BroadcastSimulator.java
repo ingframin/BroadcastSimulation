@@ -39,8 +39,8 @@ public class BroadcastSimulator{
 					flag = false;
 				}
 				if(s == 'B' && !flag){
-					String string = new Message(String.valueOf(k)).toString();
-					log_m.log(string);
+					var msg = new Message(String.valueOf(k));
+					log_m.log(msg);
 					flag = true;
 				}
 				
@@ -58,20 +58,24 @@ public class BroadcastSimulator{
 		int n_nodes = 2;
 		try (Stream<Path> walk = Files.walk(Paths.get("."))) {
 
-			List<String> result = walk.filter(Files::isRegularFile).map(x -> x.toString()).filter((fn)->{return fn.matches("(.*)config[0-9]+(.*)");}).collect(Collectors.toList());
+			var result = walk.filter(Files::isRegularFile).map(x -> x.toString()).filter((fn)->fn.matches("(.*)config[0-9]+(.*)")).collect(Collectors.toList());
 
 			result.forEach((fn)->{
 				var n = fn.replaceAll("\\D+","");
-
 				System.out.println("config"+n+".txt");
-				var res = readConfigFile("config"+n+".txt");
-				var config = res.get(0);
-				var nodes = generateNodes(n_nodes, config.Trx, config.Tn, config.Ttx, config.Vs,config.Vn,config.Vb);
-				run(n,nodes);
+				try{
+					var config = readConfigFile("config"+n+".txt");
+					var nodes = generateNodes(n_nodes, config.Trx, config.Tn, config.Ttx, config.Vs,config.Vn,config.Vb);
+					run(n,nodes);
+				}
+				catch(Exception e){
+					System.out.println(e.getMessage());
+				}
+	
 			});
 
 		} catch (IOException e) {
-			e.printStackTrace();
+			System.out.println(e.getMessage());
 		}
 		
 	}

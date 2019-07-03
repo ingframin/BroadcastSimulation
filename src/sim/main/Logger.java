@@ -20,6 +20,10 @@ public class Logger{
         logContent.add(String.valueOf(txt));
     }
 
+    public void log(Object o){
+        logContent.add(String.valueOf(o));
+    }
+
     public void dump(boolean append){
         try(FileWriter fw = new FileWriter(path,append)){
             for(var s: logContent){
