@@ -6,4 +6,4 @@ results/*.txt
 *.pyc
 *cpython*
 results/__pycache__
-*checkpoints*
+*java-runtime*
