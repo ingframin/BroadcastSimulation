@@ -1,17 +1,16 @@
-package sim.main;
+package sim.utils;
 import java.io.File;
 import java.util.Scanner;
-import java.util.ArrayList;
 
 public final class ConfigReader{
 
     private ConfigReader(){}
     
-    public static ArrayList<WiFiConfig> readConfigFile(String filename){
+    public static WiFiConfig readConfigFile(String filename){
         //Improve parsing:
         //- Add read of multiple configurations
 
-        ArrayList<WiFiConfig> res = new ArrayList<>();
+        WiFiConfig res = null;
         File file = new File(filename);
         try(Scanner s = new Scanner(file)){
             char n;
@@ -54,15 +53,15 @@ public final class ConfigReader{
                 }
             }
             if(Ps != null && Pn != null && Pb != null){
-                res.add(new WiFiConfig(trx,tn,ttx,Ps,Pn,Pb));
+                res = new WiFiConfig(trx,tn,ttx,Ps,Pn,Pb);
             }
             else{
-                throw new Exception("Incomplete configuration file");
+                throw new Exception(" -> Incomplete configuration file <- ");
             }
             
         }
         catch(Exception e){
-            e.printStackTrace();
+            System.err.println(e.getMessage());
         }
       
         return res;

@@ -1,6 +1,14 @@
 package sim.main;
+
 import sim.engine.*;
-import static sim.main.ConfigReader.*;
+import static sim.utils.ConfigReader.*;
+import sim.utils.*;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class BroadcastSimulator{
 	private BroadcastSimulator(){}
@@ -16,13 +24,13 @@ public class BroadcastSimulator{
 
 	}
 
-	public static void run(String runID, Node[] nodes){
+	public static void run(String runID, Node[] nodes, int points){
 		for(int i=0;i<nodes.length;i++){
 			var n = nodes[i];
 			var l = new Logger("./results/r"+runID+"-d"+i+"-result.txt");
 			var log_m = new Logger("./results/m"+runID+"-d"+i+"-result.txt");
 			boolean flag = false;
-			for(int k=0;k <10_000_000;k++){
+			for(int k=0 ; k < points ; k++){
 				n.run();
 				char s= n.getCurrentState();
 				l.log(s);
@@ -30,8 +38,8 @@ public class BroadcastSimulator{
 					flag = false;
 				}
 				if(s == 'B' && !flag){
-					String string = new Message(String.valueOf(k)).toString();
-					log_m.log(string);
+					var msg = new Message(String.valueOf(k));
+					log_m.log(msg);
 					flag = true;
 				}
 				
@@ -44,17 +52,40 @@ public class BroadcastSimulator{
 
 	
 	
-  public static void main(String[] args){
+	public static void main(String[] args){
 	
-	int n_nodes = 2;
-			
-	for(int i=1;i<47;i++){
-		var res = readConfigFile("config"+String.valueOf(i)+".txt");
-		var config = res.get(0);
-		var nodes = generateNodes(n_nodes, config.Trx, config.Tn, config.Ttx, config.Vs,config.Vn,config.Vb);
-		run(String.valueOf(i),nodes);
-	}
+		int n_nodes = 2;
+		final int points;
+				
+		if(args.length > 0){
+			points = Integer.parseInt(args[0]);
+		}
+		else{
+			points = 10_000_000;
+		}
+		System.out.println("Points: "+points);
+		try (Stream<Path> walk = Files.walk(Paths.get("."))) {
 
+			var result = walk.filter(Files::isRegularFile).map(x -> x.toString()).filter((fn)->fn.matches("(.*)config[0-9]+(.*)")).collect(Collectors.toList());
+
+			result.forEach((fn)->{
+				var n = fn.replaceAll("\\D+","");
+				System.out.println("config"+n+".txt");
+				try{
+					var config = readConfigFile("config"+n+".txt");
+					var nodes = generateNodes(n_nodes, config.Trx, config.Tn, config.Ttx, config.Vs,config.Vn,config.Vb);
+					run(n,nodes,points);
+				}
+				catch(Exception e){
+					System.out.println(e.getMessage());
+				}
+	
+			});
+
+		} catch (IOException e) {
+			System.out.println(e.getMessage());
+		}
+		
 	}
 	
 }

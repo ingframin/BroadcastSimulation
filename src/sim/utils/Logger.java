@@ -1,4 +1,4 @@
-package sim.main;
+package sim.utils;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
@@ -18,6 +18,10 @@ public class Logger{
     }
     public void log(char txt){
         logContent.add(String.valueOf(txt));
+    }
+
+    public void log(Object o){
+        logContent.add(String.valueOf(o));
     }
 
     public void dump(boolean append){
