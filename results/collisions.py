@@ -1,5 +1,5 @@
-from analysis import *
 import os
+from threading import Thread
 
 def filter_results(r):
     
@@ -30,5 +30,9 @@ def filter_results(r):
     fres.close()
     
 
-for i in range(20,21):
+
+for i in range(21):
     filter_results(i)
+    
+
+
