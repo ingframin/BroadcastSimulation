@@ -1,6 +1,6 @@
 from math import e, factorial,log, gamma, sqrt, floor
 from matplotlib import pyplot as pt
-f1 = open("r1-d1-result.txt")
+f1 = open("r7-d1-result.txt")
 raw1 = f1.read()
 f1.close()
 

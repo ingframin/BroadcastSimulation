@@ -5,6 +5,7 @@ from scipy.stats import ks_2samp
 from scipy.stats import norm#,poisson
 from numpy import linspace
 import re
+
 def computeEvents(V, ttx, trx, tn):
     Eb = 0
     Es = 0
@@ -56,9 +57,14 @@ def findScanInterval(Vtx,Vrx,Ttx,Trx):
     return scan_intervals
 
 def generateHistogram(sc_int,Trx):
+    # This needs to be changed:
+    # instead of checking receptions per scan intervals, 
+    # it should be successes per time window.
+    # 
     hist = [0 for x in range(Trx+1)]
     for si in sc_int:
         hist[si['n']]+=1
     for i in range(Trx+1):
         hist[i] /= len(sc_int)
     return hist
+
