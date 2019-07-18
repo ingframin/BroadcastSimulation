@@ -37,11 +37,11 @@ public class BroadcastSimulator{
 				if(s != 'B'){
 					flag = false;
 				}
-				if(s == 'B' && !flag){
+				/*if(s == 'B' && !flag){
 					var msg = new Message(String.valueOf(k));
 					log_m.log(msg);
 					flag = true;
-				}
+				}*/
 				
 			}
 			Message.resetCounter();

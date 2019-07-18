@@ -68,3 +68,4 @@ def generateHistogram(sc_int,Trx):
         hist[i] /= len(sc_int)
     return hist
 
+
