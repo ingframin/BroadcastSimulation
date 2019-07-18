@@ -28,25 +28,25 @@ public class BroadcastSimulator{
 		for(int i=0;i<nodes.length;i++){
 			var n = nodes[i];
 			var l = new Logger("./results/r"+runID+"-d"+i+"-result.txt");
-			var log_m = new Logger("./results/m"+runID+"-d"+i+"-result.txt");
-			boolean flag = false;
+			//var log_m = new Logger("./results/m"+runID+"-d"+i+"-result.txt");
+			//boolean flag = false;
 			for(int k=0 ; k < points ; k++){
 				n.run();
 				char s= n.getCurrentState();
 				l.log(s);
-				if(s != 'B'){
+				/*if(s != 'B'){
 					flag = false;
 				}
-				/*if(s == 'B' && !flag){
+				if(s == 'B' && !flag){
 					var msg = new Message(String.valueOf(k));
 					log_m.log(msg);
 					flag = true;
 				}*/
 				
 			}
-			Message.resetCounter();
+			//Message.resetCounter();
 			l.dump(false);
-			log_m.dump(false);
+			//log_m.dump(false);
 		}		
 	}
 
