@@ -32,8 +32,9 @@ public class BroadcastSimulator{
 			//boolean flag = false;
 			for(int k=0 ; k < points ; k++){
 				n.run();
-				char s= n.getCurrentState();
+				char s[] = n.getCurrentState();
 				l.log(s);
+				//Temporary removed
 				/*if(s != 'B'){
 					flag = false;
 				}
@@ -45,7 +46,7 @@ public class BroadcastSimulator{
 				
 			}
 			//Message.resetCounter();
-			l.dump(false);
+			new Thread(()->l.dump(false)).start();
 			//log_m.dump(false);
 		}		
 	}
@@ -54,14 +55,14 @@ public class BroadcastSimulator{
 	
 	public static void main(String[] args){
 	
-		int n_nodes = 20;
+		int n_nodes = 10;
 		final int points;
 				
 		if(args.length > 0){
 			points = Integer.parseInt(args[0]);
 		}
 		else{
-			points = 10_000_000;
+			points = 1_000_000;
 		}
 		System.out.println("Points: "+points);
 		try (Stream<Path> walk = Files.walk(Paths.get("."))) {

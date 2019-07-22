@@ -20,6 +20,10 @@ public class Logger{
         logContent.add(String.valueOf(txt));
     }
 
+    public void log(char[] txt){
+        logContent.add(new String(txt));
+    }
+
     public void log(Object o){
         logContent.add(String.valueOf(o));
     }

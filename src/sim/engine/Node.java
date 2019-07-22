@@ -3,13 +3,12 @@ package sim.engine;
 import java.util.Random;
 
 public class Node {
-	static final char[] states={'S','N','B'};
+	
 	private char current;
 	private double Ps,Pn,Pb;
 	private Random r;
 	private static long id_counter = 0;
 	private long ID;
-	private int timer;
 	private int Trx,Ttx,Tn;
 	private double[] Vs;
 	private double[] Vb;
@@ -17,10 +16,19 @@ public class Node {
 
 	public Node(int Trx, int Tn, int Ttx){
 		r = new Random();
-		current = states[r.nextInt(2)];
+		switch(r.nextInt(3)){
+			case 0:
+				current = 'S';
+				break;
+			case 1:
+				current = 'N';
+				break;
+			case 2:
+				current = 'B';
+		}
 		ID = id_counter;
 		id_counter++;
-		timer = 0;
+		
 		this.Trx = Trx;
 		this.Ttx = Ttx;
 		this.Tn = Tn;
@@ -34,10 +42,18 @@ public class Node {
 
 	public Node(int Trx, int Tn, int Ttx, double[]vs, double[]vn, double[]vb){
 		r = new Random();
-		current = states[r.nextInt(2)];
+		switch(r.nextInt(3)){
+			case 0:
+				current = 'S';
+				break;
+			case 1:
+				current = 'N';
+				break;
+			case 2:
+				current = 'B';
+		}
 		ID = id_counter;
 		id_counter++;
-		timer = 0;
 		this.Trx = Trx;
 		this.Ttx = Ttx;
 		this.Tn = Tn;
@@ -73,27 +89,7 @@ public class Node {
 	}
 
 	public void run(){
-		switch(current){
-			case 'S':
-				if(timer < Trx-1){
-					timer++;
-					return;
-				}
-				break;
-			case 'B':
-				if(timer < Ttx-1){
-					timer++;
-					return;
-				}
-				break;
-			case 'N':
-				if(timer < Tn-1){
-					timer++;
-					return;
-				}
-				break;
-		}
-		timer = 0;
+		
 		double thr1 = Ps;
 		double thr2 = Pb+thr1;
 		double v = r.nextDouble();
@@ -112,8 +108,28 @@ public class Node {
 		
 	}
 
-	public char getCurrentState(){
-		return current;
+	public char[] getCurrentState(){
+		char[] result = {};
+		switch(current){
+			case 'S':
+				result = new char[Trx];
+				for(int i=0;i<Trx;i++) result[i] = 'S';
+				break;
+			case 'N':
+				result = new char[Tn];
+				for(int i=0;i<Tn;i++) result[i] = 'N';
+				break;
+			case 'B':
+				result = new char[Ttx];
+				for(int i=0;i<Ttx;i++) result[i] = 'X';
+				//can be changed to accomodate more transmissions per slot
+				int t = r.nextInt(Ttx);
+				result[t] = 'B';
+				break;
+
+		}
+
+		return result;
 	}
 
 	public double[][] getPm(){
@@ -140,6 +156,7 @@ public class Node {
 		Vn[1] = Pnn;
 		Vn[2] = Pnb;
 	}
+
 	
 }
 

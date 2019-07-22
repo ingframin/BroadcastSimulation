@@ -19,7 +19,7 @@ def computeEvents(V, ttx, trx, tn):
         else:
             En += 1
     
-    return (Eb/ttx,Es/trx,En/tn)
+    return (Eb,Es/trx,En/tn)
 
 def geom_dist(p,maxK, k0=0):
     return [p*(1-p)**(k-k0) for k in range(0,maxK)]
