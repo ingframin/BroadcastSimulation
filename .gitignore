@@ -7,3 +7,4 @@ results/*.txt
 *cpython*
 results/__pycache__
 *java-runtime*
+results/pypy*
