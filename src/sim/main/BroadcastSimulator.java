@@ -28,26 +28,25 @@ public class BroadcastSimulator{
 		for(int i=0;i<nodes.length;i++){
 			var n = nodes[i];
 			var l = new Logger("./results/r"+runID+"-d"+i+"-result.txt");
-			//var log_m = new Logger("./results/m"+runID+"-d"+i+"-result.txt");
-			//boolean flag = false;
+			
 			for(int k=0 ; k < points ; k++){
 				n.run();
 				char s[] = n.getCurrentState();
 				l.log(s);
-				//Temporary removed
-				/*if(s != 'B'){
-					flag = false;
-				}
-				if(s == 'B' && !flag){
-					var msg = new Message(String.valueOf(k));
-					log_m.log(msg);
-					flag = true;
-				}*/
+				
 				
 			}
-			//Message.resetCounter();
+			
 			new Thread(()->l.dump(false)).start();
-			//log_m.dump(false);
+			/*if(i%4==0){
+				try {
+					Thread.sleep(10000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}*/
+			
 		}		
 	}
 
@@ -55,7 +54,7 @@ public class BroadcastSimulator{
 	
 	public static void main(String[] args){
 	
-		int n_nodes = 10;
+		int n_nodes = 20;
 		final int points;
 				
 		if(args.length > 0){

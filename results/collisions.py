@@ -5,7 +5,7 @@ def filter_results(r):
     
     files = filter(lambda name: 'result' in name and 'r%d-'%r in name, os.listdir('.'))
 
-    transmissions = [[] for i in range(10000000)]
+    transmissions = {}
 
     for fn in files:
         print(fn)
@@ -15,17 +15,20 @@ def filter_results(r):
         dn = fn.replace('r%d-d'%r,'').replace('-result.txt','')
         for i in range(len(raw)):
             if raw[i] =='B':
-                transmissions[i].append(dn)
+                try:
+                    transmissions[i].append(dn)
+                except:
+                    transmissions[i] = [dn]
 
     fclean = open("r%d-clean.txt"%r,"w")
-    for i in range(len(transmissions)):
+    for i in transmissions:
         if len(transmissions[i])==1:
             fclean.write("%d;%s\n"%(i,transmissions[i][0]))
     fclean.close()
 
     fres = open('r%d-collisions.txt'%r,'w')
     for t in transmissions:
-        fres.write('\t'.join(transmissions[i])+'\n')
+        fres.write('\t'.join(transmissions[t])+'\n')
     fres.close()
     
 
