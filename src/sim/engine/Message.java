@@ -1,6 +1,6 @@
 package sim.engine;
 
-public class Message implements Comparable{
+public class Message implements Comparable<Message>{
     public final long ID;
     public final String data;
     
@@ -31,16 +31,14 @@ public class Message implements Comparable{
 
     }
     @Override
-    public int compareTo(Object o){
-        if(o instanceof Message){
-            var m = (Message) o;
-            if(m.ID < ID){
-                return -1;
-            }
-            if(m.ID > ID){
-                return 1;
-            }
+    public int compareTo(Message m){
+        if(m.ID < ID){
+            return -1;
         }
+        if(m.ID > ID){
+            return 1;
+        }
+        
         return 0;
     }
 
