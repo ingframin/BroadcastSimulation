@@ -5,7 +5,7 @@ import java.util.Random;
 public class Node {
 	
 	private char current;
-	private double Ps,Pn,Pb;
+	private double Ps,Pb;//,Pn;
 	private Random r;
 	private static long id_counter = 0;
 	private long ID;
@@ -69,19 +69,19 @@ public class Node {
 		switch(state){
 			case 'S':
 				Ps = Vs[0];
-				Pn = Vs[1];
+				//Pn = Vs[1];
 				Pb = Vs[2];
 				current = 'S';
 				break;
 			case 'N':
 				Ps = Vn[0];
-				Pn = Vn[1];
+				//Pn = Vn[1];
 				Pb = Vn[2];
 				current = 'N';
 				break;
 			case 'B':
 				Ps = Vb[0];
-				Pn = Vb[1];
+				//Pn = Vb[1];
 				Pb = Vb[2];
 				current = 'B';
 				break;
