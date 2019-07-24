@@ -12,7 +12,7 @@ def computeEvents(V, ttx, trx, tn):
     En = 0
 
     for c in V:
-        if c == 'B':
+        if c == 'B':#broadcast event is a B sorrounded by 14 X
             Eb += 1
         elif c == 'S':
             Es += 1
@@ -69,3 +69,20 @@ def generateHistogram(sc_int,Trx):
     return hist
 
 
+def genWindowHistogram(r1,r2,wnd,Eb):
+    windows = []
+    for i in range(0,len(r1),wnd):
+        count = 0
+        for j in range(i,i+wnd):
+            try:
+                if r1[j]=='S' and r2[j]=='B':
+                    count += 1
+            except:
+                pass
+        windows.append(count)
+     
+    result = [0 for i in range(wnd)]
+    for n in range(len(result)):
+        result[n] = windows.count(n)/len(windows)
+    print(sum(result))
+    return result
