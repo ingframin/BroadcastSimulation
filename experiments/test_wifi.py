@@ -32,7 +32,7 @@ ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 THE POSSIBILITY OF SUCH DAMAGE.
 '''
 
-from time import sleep
+from time import sleep, perf_counter
 from serial import Serial
 from threading import Thread
 
@@ -41,18 +41,22 @@ drones = []
 
 def read_ssid(wi,n):
     c = 0
+    start = perf_counter()
     with open('res-%d.txt'%n,'w') as log:
         global running
+        lg = []
         while running:
             s = wi.readline()        
             
             if b'>' in s:
-                ssid = ("%d-"%n +str(c)).encode()
+                ssid = ("%d-"%n +str(c)+'*').encode()
                 wi.write(ssid)
-                print(c,file = log)
+                lg.append('count=%d'%c)
                 c+=1
-            print(s,file = log)
-            print(s)
+            lg.append(str(perf_counter()-start)+'\t'+s.decode("utf-8")[:-1])
+        for l in lg:
+            print(l,file=log)
+            
         
 
 
@@ -70,9 +74,11 @@ if __name__=='__main__':
     tr2.daemon = True
     tr1.start()
     tr2.start()
+    start = perf_counter()
     while running:
        try:
-           pass
+           print(perf_counter()-start)
+           sleep(1)
        except:
            print('out')
            

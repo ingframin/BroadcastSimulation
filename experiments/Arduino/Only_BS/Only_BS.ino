@@ -54,8 +54,8 @@ void random_mac(){
     packet[14] = packet[20] = random(256);
     packet[15] = packet[21] = random(256);
 }
-void scan(uint8_t ch){
-  int numSsid = WiFi.scanNetworks(false, true, true, 120, ch);
+void scan(uint8_t ch, uint8_t Ts){
+  int numSsid = WiFi.scanNetworks(false, true, true, Ts, ch);
   
   for (int j = 0; j < numSsid; j++) {
     String ssid = WiFi.SSID(j);
@@ -106,23 +106,24 @@ void setup() {
 void loop() {
     r = random(0,99);
     
-    if(r<30){
+    if(r<10){
       for(int i=1;i<28;i++){
         buffer[i] = '*';
       }
       Serial.println('>'); //Used to synchronize UART communication
-      int b = Serial.readBytesUntil('\n',buffer, 28);
+      int b = Serial.readBytesUntil('*',buffer, 28);
       Serial.println('B');
       if(b>0){
-        for(int chr=0;chr < strlen(buffer);chr++){
+        memcpy(&packet[39],buffer,28);
+        /*for(int chr=0;chr < strlen(buffer);chr++){
           packet[39+chr] = buffer[chr];  
-        }
+        }*/
       }
       broadcastSSID();//B   
     }
    else{
     Serial.println('S');
-     scan(channel);//S
+     scan(channel,60);//S
      //delay(10);
    }
   
