@@ -33,7 +33,7 @@ def filter_results(r):
     
 
 
-for i in range(21):
+for i in range(1,21):
     filter_results(i)
     
 
