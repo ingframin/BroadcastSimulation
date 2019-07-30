@@ -13,7 +13,7 @@ int main(int argc, char* argv[]){
    }
     char base[6+PATH_MAX] = "PATH=";
     char* runtime = "\\brdsim\\bin";
-    char program[80] = "java -jar build/jar/BroadcastSimulation.jar ";
+    char program[80] = "java -Xmx8G -jar build/jar/BroadcastSimulation.jar ";
     strcat(base,cwd);
     strcat(base,runtime);
     if(argc>1){
