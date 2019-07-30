@@ -14,7 +14,7 @@ import java.util.concurrent.Executors;
 
 public class BroadcastSimulator{
 	private BroadcastSimulator(){}
-	static ExecutorService pool = Executors.newFixedThreadPool(10);
+	static ExecutorService pool = Executors.newFixedThreadPool(32);
 
 	public static Node[] generateNodes(int Nd, int Ts,int Tn, int Tb,double[] vs,double[] vn, double[] vb){
 		
