@@ -34,7 +34,7 @@ public class Logger{
         logContent.add(String.valueOf(o).toCharArray());
     }
 
-    public void dump(boolean append){
+    public synchronized void dump(boolean append){
         try(FileWriter fw = new FileWriter(path,append)){
             BufferedWriter bf = new BufferedWriter(fw);
             for(var s: logContent){

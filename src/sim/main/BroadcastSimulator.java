@@ -9,9 +9,12 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import java.util.concurrent.ExecutorService; 
+import java.util.concurrent.Executors;
 
 public class BroadcastSimulator{
 	private BroadcastSimulator(){}
+	static ExecutorService pool = Executors.newFixedThreadPool(10);
 
 	public static Node[] generateNodes(int Nd, int Ts,int Tn, int Tb,double[] vs,double[] vn, double[] vb){
 		
@@ -37,7 +40,7 @@ public class BroadcastSimulator{
 				
 			}
 			
-			new Thread(()->l.dump(false)).start();
+			pool.execute(()->l.dump(false));
 			
 		}		
 	}
