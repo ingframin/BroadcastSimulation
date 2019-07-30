@@ -1,5 +1,6 @@
 package sim.engine;
 
+import java.util.Arrays;
 import java.util.Random;
 
 public class Node {
@@ -122,12 +123,14 @@ public class Node {
 	}
 
 	public char[] getCurrentState(){
+
 		switch(current){
 			case 'S':
 				return scan;
 			case 'N':
 				return net;
 			case 'B':
+				Arrays.fill(broadcast, 'X');
 				int t = r.nextInt(Ttx);
 				broadcast[t] = 'B';
 		}

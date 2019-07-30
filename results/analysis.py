@@ -16,7 +16,7 @@ def computeEvents(V, ttx, trx, tn):
             Eb += 1
         elif c == 'S':
             Es += 1
-        else:
+        elif c== 'N':
             En += 1
     
     return (Eb,Es/trx,En/tn)
