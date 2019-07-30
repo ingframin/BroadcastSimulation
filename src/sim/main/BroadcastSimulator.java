@@ -27,7 +27,7 @@ public class BroadcastSimulator{
 	public static void run(String runID, Node[] nodes, int points){
 		for(int i=0;i<nodes.length;i++){
 			var n = nodes[i];
-			var l = new Logger("./results/r"+runID+"-d"+i+"-result.txt");
+			var l = new Logger("./results/r"+runID+"-d"+i+"-result.txt",points);
 			
 			for(int k=0 ; k < points ; k++){
 				n.run();
@@ -38,14 +38,6 @@ public class BroadcastSimulator{
 			}
 			
 			new Thread(()->l.dump(false)).start();
-			/*if(i%4==0){
-				try {
-					Thread.sleep(10000);
-				} catch (InterruptedException e) {
-					
-					e.printStackTrace();
-				}
-			}*/
 			
 		}		
 	}

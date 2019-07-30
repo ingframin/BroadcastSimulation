@@ -5,14 +5,17 @@ import java.util.Random;
 public class Node {
 	
 	private char current;
-	private double Ps,Pb;//,Pn;
+	private double Ps,Pb;
 	private Random r;
 	private static long id_counter = 0;
 	private long ID;
-	private int Trx,Ttx,Tn;
+	private int Ttx;
 	private double[] Vs;
 	private double[] Vb;
 	private double[] Vn;
+	final private char[] scan;
+	final private char[] net;
+	final private char[] broadcast;
 
 	public Node(int Trx, int Tn, int Ttx){
 		r = new Random();
@@ -29,10 +32,16 @@ public class Node {
 		ID = id_counter;
 		id_counter++;
 		
-		this.Trx = Trx;
+
 		this.Ttx = Ttx;
-		this.Tn = Tn;
-		
+
+		scan = new char[Trx];
+		for(int i=0;i<Trx;i++) scan[i] = 'S';
+		net = new char[Tn];
+		for(int i=0;i<Tn;i++) net[i] = 'N';
+		broadcast = new char[Ttx];
+		for(int i=0;i<Ttx;i++) broadcast[i] = 'X';
+
 		Vs = new double[]{0.3,0.4,0.3};
 		Vn = new double[]{0.3,0.4,0.3};
 		Vb = new double[]{0.3,0.4,0.3};
@@ -54,13 +63,20 @@ public class Node {
 		}
 		ID = id_counter;
 		id_counter++;
-		this.Trx = Trx;
+
 		this.Ttx = Ttx;
-		this.Tn = Tn;
+
 		
 		Vs = vs.clone();
 		Vn = vn.clone();
 		Vb = vb.clone();
+		scan = new char[Trx];
+		for(int i=0;i<Trx;i++) scan[i] = 'S';
+		net = new char[Tn];
+		for(int i=0;i<Tn;i++) net[i] = 'N';
+		broadcast = new char[Ttx];
+		for(int i=0;i<Ttx;i++) broadcast[i] = 'X';
+
 		changeState(current);
 		
 	}
@@ -69,19 +85,16 @@ public class Node {
 		switch(state){
 			case 'S':
 				Ps = Vs[0];
-				//Pn = Vs[1];
 				Pb = Vs[2];
 				current = 'S';
 				break;
 			case 'N':
 				Ps = Vn[0];
-				//Pn = Vn[1];
 				Pb = Vn[2];
 				current = 'N';
 				break;
 			case 'B':
 				Ps = Vb[0];
-				//Pn = Vb[1];
 				Pb = Vb[2];
 				current = 'B';
 				break;
@@ -109,27 +122,17 @@ public class Node {
 	}
 
 	public char[] getCurrentState(){
-		char[] result = {};
 		switch(current){
 			case 'S':
-				result = new char[Trx];
-				for(int i=0;i<Trx;i++) result[i] = 'S';
-				break;
+				return scan;
 			case 'N':
-				result = new char[Tn];
-				for(int i=0;i<Tn;i++) result[i] = 'N';
-				break;
+				return net;
 			case 'B':
-				result = new char[Ttx];
-				for(int i=0;i<Ttx;i++) result[i] = 'X';
-				//can be changed to accomodate more transmissions per slot
 				int t = r.nextInt(Ttx);
-				result[t] = 'B';
-				break;
-
+				broadcast[t] = 'B';
 		}
 
-		return result;
+		return broadcast;
 	}
 
 	public double[][] getPm(){

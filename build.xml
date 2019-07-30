@@ -5,7 +5,7 @@
     <property name="jar.dir"     value="${build.dir}/jar"/>
      <property name="main-class"  value="sim.main.BroadcastSimulator"/>
     <property environment="env" />
-    <property name="env.ANT_OPTS" value="-Xmx4G"/>
+    <property name="env.ANT_OPTS" value="-Xmx16G"/>
     
     <target name="clean">
         <delete dir="${build.dir}"/>
@@ -14,7 +14,7 @@
 
     <target name="compile">
         <mkdir dir="${classes.dir}"/>
-        <javac fork="true" memoryMaximumSize="4096m" srcdir="${src.dir}" destdir="${classes.dir}"/>
+        <javac fork="true" memoryMaximumSize="8164m" srcdir="${src.dir}" destdir="${classes.dir}"/>
     </target>
 
     <target name="jar" depends="compile">
