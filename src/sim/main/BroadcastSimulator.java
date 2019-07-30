@@ -24,7 +24,7 @@ public class BroadcastSimulator{
 
 	}
 
-	public static void run(String runID, Node[] nodes, int points){
+	public static void run(String runID, Node[] nodes, int points, int tn){
 		for(int i=0;i<nodes.length;i++){
 			var n = nodes[i];
 			var l = new Logger("./results/r"+runID+"-d"+i+"-result.txt",points);
@@ -41,8 +41,6 @@ public class BroadcastSimulator{
 			
 		}		
 	}
-
-	
 	
 	public static void main(String[] args){
 	
@@ -66,7 +64,8 @@ public class BroadcastSimulator{
 				try{
 					var config = readConfigFile("config"+n+".txt");
 					var nodes = generateNodes(n_nodes, config.Trx, config.Tn, config.Ttx, config.Vs,config.Vn,config.Vb);
-					run(n,nodes,points);
+					int tn = config.Tn;
+					run(n,nodes,points,tn);
 				}
 				catch(Exception e){
 					System.out.println(e.getMessage());
