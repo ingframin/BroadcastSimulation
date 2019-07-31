@@ -131,7 +131,7 @@ public class Node {
 				return net;
 			case 'B':
 				Arrays.fill(broadcast, 'X');
-				int t = r.nextInt(Ttx);
+				int t = (int) Math.round(Math.random() * broadcast.length);
 				broadcast[t] = 'B';
 		}
 
