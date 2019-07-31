@@ -131,14 +131,12 @@ public class Node {
 			case 'N':
 				return net;
 			case 'B':
-				for(int i=0;i<Ttx;i++){
-					int t1 = r.nextInt(Ttx);
-					int t2 = r.nextInt(Ttx);
-					char tmp = broadcast[t1];
-					broadcast[t1] = broadcast[t2];
-					broadcast[t2] = tmp;
-				}
-				
+				char[] output = new char[Ttx];
+				int t = r.nextInt(Ttx);
+				Arrays.fill(output, 'X');
+				output[t] = 'B';
+				System.arraycopy(output, 0, broadcast, 0, Ttx);
+				return output;
 		}
 
 		return broadcast;
