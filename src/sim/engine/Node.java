@@ -14,8 +14,8 @@ public class Node {
 	private double[] Vs;
 	private double[] Vb;
 	private double[] Vn;
-	final private char[] scan;
-	final private char[] net;
+	private char[] scan;
+	private char[] net;
 	private char[] broadcast;
 
 	public Node(int Trx, int Tn, int Ttx){
@@ -42,6 +42,7 @@ public class Node {
 		for(int i=0;i<Tn;i++) net[i] = 'N';
 		broadcast = new char[Ttx];
 		for(int i=0;i<Ttx;i++) broadcast[i] = 'X';
+		broadcast[0] = 'B';
 
 		Vs = new double[]{0.3,0.4,0.3};
 		Vn = new double[]{0.3,0.4,0.3};
@@ -130,9 +131,14 @@ public class Node {
 			case 'N':
 				return net;
 			case 'B':
-				Arrays.fill(broadcast, 'X');
-				int t = (int) Math.round(Math.random() * (broadcast.length-1));
-				broadcast[t] = 'B';
+				for(int i=0;i<Ttx;i++){
+					int t1 = r.nextInt(Ttx);
+					int t2 = r.nextInt(Ttx);
+					char tmp = broadcast[t1];
+					broadcast[t1] = broadcast[t2];
+					broadcast[t2] = tmp;
+				}
+				
 		}
 
 		return broadcast;
