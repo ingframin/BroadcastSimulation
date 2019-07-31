@@ -16,7 +16,7 @@ public class Node {
 	private double[] Vn;
 	final private char[] scan;
 	final private char[] net;
-	final private char[] broadcast;
+	private char[] broadcast;
 
 	public Node(int Trx, int Tn, int Ttx){
 		r = new Random();
