@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.concurrent.ExecutorService; 
 import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 public class BroadcastSimulator{
 	private BroadcastSimulator(){}
@@ -79,7 +80,13 @@ public class BroadcastSimulator{
 		} catch (IOException e) {
 			System.out.println(e.getMessage());
 		}
-		
+		pool.shutdown();
+		try{
+			pool.awaitTermination(10, TimeUnit.SECONDS);
+		}
+		catch(Exception e){
+			e.printStackTrace();
+		}
 	}
 	
 }
