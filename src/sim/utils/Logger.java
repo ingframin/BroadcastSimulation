@@ -3,6 +3,9 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class Logger{
     String path;
@@ -51,6 +54,7 @@ public class Logger{
             System.out.println("Log "+path+"succesfully written");
         }
     }
+
     public void dump(String separator){
         try(FileWriter fw = new FileWriter(path,true)){
             BufferedWriter bf = new BufferedWriter(fw);
@@ -69,5 +73,43 @@ public class Logger{
             
             System.out.println("Log "+path+"succesfully written");
         }
+    }
+
+    public void byteDump(byte ts, byte tn, byte tb){
+        try{
+            byte[] out = encode(ts, tn, tb);
+            Path pth = Paths.get(path);
+            Files.write(pth, out); //creates, overwrites
+            logContent.clear();
+           
+        }
+        catch(Exception ioe){
+            ioe.printStackTrace();
+        }
+        finally{
+            System.out.println("Log "+path+"succesfully written");
+        }
+    }
+
+    private byte[] encode(byte ts, byte tn, byte tb){
+        byte[] output = new byte[logContent.size()];
+        for(int i=0;i<output.length;i++){
+            var ca = logContent.get(i);
+            if(ca[0]=='S'){
+                output[i] = (byte) -ts;
+            }
+            else if(ca[0]=='N'){
+                output[i] = (byte) -tn;
+            }
+            else{
+                for(byte j=0;j<tb;j++){
+                    if(ca[j] == 'B'){
+                        output[i] = j;
+                        break;
+                    }
+                }
+            }
+        }
+        return output;
     }
 }
