@@ -48,7 +48,7 @@ public class BroadcastSimulator{
 	
 	public static void main(String[] args){
 	
-		int n_nodes = 20;
+		int n_nodes = 100;
 		final int points;
 				
 		if(args.length > 0){
