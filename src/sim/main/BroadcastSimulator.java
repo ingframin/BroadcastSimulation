@@ -44,8 +44,8 @@ public class BroadcastSimulator{
 				
 				
 			}
-			//pool.execute(()->l.dump(false));
-			pool.execute(()->l.byteDump((byte)60,(byte)100,(byte)15));
+			pool.execute(()->l.dump(false));
+			//pool.execute(()->l.byteDump((byte)60,(byte)100,(byte)15));
 			
 		}		
 	}
@@ -59,7 +59,7 @@ public class BroadcastSimulator{
 			points = Integer.parseInt(args[0]);
 		}
 		else{
-			points = 10_000_000;
+			points = 1_000_000;
 		}
 		System.out.println("Points: "+points);
 		try (Stream<Path> walk = Files.walk(Paths.get("."))) {
