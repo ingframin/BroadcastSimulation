@@ -85,7 +85,7 @@ void broadcastSSID(){
 }
 
 void setup() {
-  Serial.begin(115200);
+  Serial.begin(230400);
   Serial.setTimeout(500);
   WiFi.mode(WIFI_AP_STA);
  
@@ -98,8 +98,8 @@ void setup() {
   
   //Select external antenna
   pinMode(21,OUTPUT);
-  //digitalWrite(21, HIGH);//External antenna on
-  digitalWrite(21, LOW);//ceramic/printed antenna on (default)
+  digitalWrite(21, HIGH);//External antenna on
+  //digitalWrite(21, LOW);//ceramic/printed antenna on (default)
 
 }
 
