@@ -77,10 +77,10 @@ void broadcastSSID(){
     packet[80] = c;
     esp_wifi_set_channel(c,WIFI_SECOND_CHAN_NONE);      
     esp_wifi_80211_tx(WIFI_IF_AP, packet, 81, false);
-    delay(1);
+    
     
   }//14 channels
-  
+  delay(1);
 
 }
 
@@ -106,7 +106,7 @@ void setup() {
 void loop() {
     r = random(0,99);
     
-    if(r<10){
+    if(r<50){
       for(int i=1;i<28;i++){
         buffer[i] = '*';
       }
