@@ -53,7 +53,10 @@ def read_ssid(wi,n):
                 wi.write(ssid)
                 lg.append('count=%d'%c)
                 c+=1
-            lg.append(str(perf_counter()-start)+'\t'+s.decode("utf-8")[:-1])
+            try:
+                lg.append(str(perf_counter()-start)+'\t'+s.decode("utf-8")[:-1])
+            except:
+                pass
         for l in lg:
             print(l,file=log)
             
@@ -66,7 +69,7 @@ if __name__=='__main__':
     global running
     running = True
     wifi1 = Serial("COM36",230400)
-    wifi2 = Serial("COM39",230400)
+    wifi2 = Serial("COM37",230400)
     
     tr1 = Thread(target=read_ssid,args=(wifi1,1))
     tr2 = Thread(target=read_ssid,args=(wifi2,2))

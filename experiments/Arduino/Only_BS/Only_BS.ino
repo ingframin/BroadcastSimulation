@@ -1,10 +1,13 @@
 #include <WiFi.h>
 #include "esp_wifi.h"
+
+
 esp_err_t esp_wifi_80211_tx(wifi_interface_t ifx, const void *buffer, int len, bool en_sys_seq);
 
 uint8_t channel = 0;
 
 int r;
+
 char buffer[28] = {'*','*','*','*',
                    '*','*','*','*',
                    '*','*','*','*',
@@ -78,10 +81,9 @@ void broadcastSSID(){
     esp_wifi_set_channel(c,WIFI_SECOND_CHAN_NONE);      
     esp_wifi_80211_tx(WIFI_IF_AP, packet, 81, false);
     
-    
+    delay(1);  
   }//14 channels
-  delay(1);
-
+  
 }
 
 void setup() {
@@ -104,9 +106,10 @@ void setup() {
 }
 
 void loop() {
-    r = random(0,99);
     
-    if(r<50){
+    r = random(0,9999);
+    Serial.println(ESP.getFreeHeap());
+    if(r < 9730){
       for(int i=1;i<28;i++){
         buffer[i] = '*';
       }
@@ -127,6 +130,6 @@ void loop() {
      //delay(10);
    }
   
-  
+  delay(10);
   
 }
