@@ -71,11 +71,9 @@ def computePrx(windows):
 f = open('res-1.txt')
 lines = f.readlines()
 f.close()
-lines = list(filter(lambda l: 'count' not in l, lines))
 f2 = open('res-2.txt')
 lines2 = f2.readlines()
 f2.close()
-lines2 = list(filter(lambda l: 'count' not in l, lines2))
 
 
 # In[15]:

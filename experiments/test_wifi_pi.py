@@ -53,6 +53,8 @@ def read_ssid(wi,n):
             wi.write(ssid)
             lg.append('count=%d'%c)
             c+=1
+        else:
+            print(s)
         try:
             lg.append(str(perf_counter()-start)+'\t'+s.decode("utf-8")[:-1])
         except:
@@ -77,21 +79,21 @@ if __name__=='__main__':
     running = True
     wifi1 = Serial("/dev/ttyUSB0",230400)
     wifi2 = Serial("/dev/ttyUSB1",230400)
-    wifi3 = Serial("/dev/ttyUSB2",230400)
-    wifi4 = Serial("/dev/ttyUSB3",230400)
+    #wifi3 = Serial("/dev/ttyUSB2",230400)
+    #wifi4 = Serial("/dev/ttyUSB3",230400)
 
     tr1 = Thread(target=read_ssid,args=(wifi1,1))
     tr2 = Thread(target=read_ssid,args=(wifi2,2))
-    tr3 = Thread(target=read_ssid,args=(wifi3,3))
-    tr4 = Thread(target=read_ssid,args=(wifi4,4))
+    #tr3 = Thread(target=read_ssid,args=(wifi3,3))
+    #tr4 = Thread(target=read_ssid,args=(wifi4,4))
     tr1.daemon = True
     tr2.daemon = True
     tr1.start()
     tr2.start()
-    tr3.daemon = True
-    tr4.daemon = True
-    tr3.start()
-    tr4.start()
+##    tr3.daemon = True
+##    tr4.daemon = True
+##    tr3.start()
+##    tr4.start()
     start = perf_counter()
     while running:
        try:
@@ -106,7 +108,7 @@ if __name__=='__main__':
 
     tr1.join()
     tr2.join()
-    tr3.join()
-    tr4.join()
+##    tr3.join()
+##    tr4.join()
 
 
