@@ -42,12 +42,12 @@ drones = []
 def read_ssid(wi,n):
     c = 0
     start = perf_counter()
-    
+
     global running
     lg = []
     while running:
-        s = wi.readline()        
-        print(s)
+        s = wi.readline()
+        #print(s)
         if b'>' in s:
             ssid = ("%d-"%n +str(c)+'*').encode()
             wi.write(ssid)
@@ -57,6 +57,7 @@ def read_ssid(wi,n):
             lg.append(str(perf_counter()-start)+'\t'+s.decode("utf-8")[:-1])
         except:
             pass
+
         if len(lg)> 1000:
             with open('res-%d.txt'%n,'a') as log:
                 for l in lg:
@@ -66,8 +67,7 @@ def read_ssid(wi,n):
     with open('res-%d.txt'%n,'a') as log:
         for l in lg:
             print(l,file=log)
-            
-        
+
 
 
 '''test script'''
@@ -79,7 +79,7 @@ if __name__=='__main__':
     wifi2 = Serial("/dev/ttyUSB1",230400)
     wifi3 = Serial("/dev/ttyUSB2",230400)
     wifi4 = Serial("/dev/ttyUSB3",230400)
-    
+
     tr1 = Thread(target=read_ssid,args=(wifi1,1))
     tr2 = Thread(target=read_ssid,args=(wifi2,2))
     tr3 = Thread(target=read_ssid,args=(wifi3,3))
@@ -97,14 +97,13 @@ if __name__=='__main__':
        try:
            print(perf_counter()-start)
            sleep(1)
-           if perf_counter - start > 7200:
+           if perf_counter() - start > 7200:
                running = False
-               
+
        except:
            print('out')
-           
            running = False
-    
+
     tr1.join()
     tr2.join()
     tr3.join()
