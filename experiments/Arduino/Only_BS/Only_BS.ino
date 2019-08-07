@@ -109,7 +109,7 @@ void loop() {
     
     r = random(0,9999);
     Serial.println(ESP.getFreeHeap());
-    if(r < 3077){
+    if(r < 8000){
       for(int i=1;i<28;i++){
         buffer[i] = '*';
       }

@@ -1,9 +1,17 @@
+#!/usr/bin/env python
+# coding: utf-8
+
+# In[9]:
+
+
 import re
+from matplotlib import pyplot as pt
+
 MSG = re.compile(r'D[0-9]+-[0-9]+.*')
 
 def find_last(lines):
     for l in lines[-1::]:
-        if len(l)>1:
+        if len(l.split())>1:
             return l
 
 def duration(l0,l1):
@@ -17,6 +25,8 @@ def get_windows(lines):
         if l =='' or 'count' in l:
             continue
         ls = l.split()
+        if len(ls)<2:
+            continue
         e = (float(ls[0]),ls[1])
         events.append(e)
     w0 = None
@@ -55,21 +65,53 @@ def computePrx(windows):
     return hist
 
 
+# In[14]:
+
 
 f = open('res-1.txt')
-raw = f.read()
+lines = f.readlines()
 f.close()
+f2 = open('res-2.txt')
+lines2 = f2.readlines()
+f2.close()
 
-Ns = raw.count('S')
-Nb = raw.count('B')
-print(Ns/(Ns+Nb))
-print(Nb/(Ns+Nb))
-lines = raw.split('\n')
-l0 = lines[0]
-l1 = find_last(lines)
-d = duration(l0,l1)
-print('duration: %.6f'%d)
-Ttx=(Nb*28e-3/d)
-Trx=(Ns*60e-3/d)
+
+# In[15]:
+
 
 e,w = get_windows(lines)
+d = duration(lines[0],find_last(lines))
+e2,w2 = get_windows(lines2)
+print(find_last(lines2))
+d2 = duration(lines2[0],find_last(lines2))
+
+
+# In[16]:
+
+
+h = computePrx(w)
+x = []
+y = []
+
+for c in sorted(h):
+    x.append(c)
+    y.append(h[c]/d)
+    
+h2 = computePrx(w2)
+x2 = []
+y2 = []
+
+for c in sorted(h2):
+    x2.append(c)
+    y2.append(h2[c]/d2)
+
+pt.plot(x,y)
+pt.plot(x2,y2)
+pt.show()
+
+
+# In[ ]:
+
+
+
+
