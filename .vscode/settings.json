@@ -6,5 +6,5 @@
         "iosfwd": "cpp",
         "xstring": "cpp"
     },
-    "python.pythonPath": "/usr/local/bin/python3"
+    "python.pythonPath": "C:\\Python37\\python.exe"
 }
