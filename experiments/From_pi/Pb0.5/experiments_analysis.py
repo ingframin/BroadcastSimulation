@@ -92,7 +92,7 @@ d2 = duration(lines2[0],find_last(lines2))
 h = computePrx(w)
 x = []
 y = []
-
+print(h[0]/d)
 for c in sorted(h):
     x.append(c)
     y.append(h[c]/d)
