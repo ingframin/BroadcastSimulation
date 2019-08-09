@@ -80,7 +80,16 @@ e2,w2 = get_windows(lines2)
 print(find_last(lines2))
 d2 = duration(lines2[0],find_last(lines2))
 
+s = 0
+b = 0
+for l in lines:
+    if 'S' in l:
+        s += 1
+    if 'B' in l:
+        b += 1
 
+print('S= %.6f'%(s*60/(s*60+b*30)))
+print('B= %.6f'%(b*30/(s*60+b*30)))
 h = computePrx(w)
 x = []
 y = []

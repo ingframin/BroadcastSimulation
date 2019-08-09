@@ -58,6 +58,7 @@ void random_mac(){
     packet[15] = packet[21] = random(256);
 }
 void scan(uint8_t ch, uint8_t Ts){
+  //digitalWrite(21, HIGH);
   int numSsid = WiFi.scanNetworks(false, true, true, Ts, ch);
   
   for (int j = 0; j < numSsid; j++) {
@@ -68,10 +69,11 @@ void scan(uint8_t ch, uint8_t Ts){
     }
   
   }//for
- 
+ //digitalWrite(21, LOW);
 }//scan()
 
 void broadcastSSID(){
+  digitalWrite(21, HIGH);
   random_mac();
   
   
@@ -83,7 +85,7 @@ void broadcastSSID(){
     
     delay(1);  
   }//14 channels
-  
+  digitalWrite(21, LOW);
 }
 
 void setup() {
@@ -100,7 +102,7 @@ void setup() {
   
   //Select external antenna
   pinMode(21,OUTPUT);
-  digitalWrite(21, HIGH);//External antenna on
+  //digitalWrite(21, HIGH);//External antenna on
   //digitalWrite(21, LOW);//ceramic/printed antenna on (default)
 
 }
@@ -109,7 +111,7 @@ void loop() {
     
     r = random(0,9999);
     Serial.println(ESP.getFreeHeap());
-    if(r < 8000){
+    if(r < 5000){
       for(int i=1;i<28;i++){
         buffer[i] = '*';
       }
