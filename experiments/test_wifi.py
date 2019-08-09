@@ -47,7 +47,7 @@ def read_ssid(wi,n):
         lg = []
         while running:
             s = wi.readline()        
-            
+            print(s)
             if b'>' in s:
                 ssid = ("%d-"%n +str(c)+'*').encode()
                 wi.write(ssid)

@@ -85,12 +85,13 @@ void broadcastSSID(){
     
     delay(1);  
   }//14 channels
+  delay(5);
   digitalWrite(21, LOW);
 }
 
 void setup() {
   Serial.begin(230400);
-  Serial.setTimeout(500);
+  Serial.setTimeout(100);
   WiFi.mode(WIFI_AP_STA);
  
   //Set channel
@@ -111,12 +112,13 @@ void loop() {
     
     r = random(0,9999);
     Serial.println(ESP.getFreeHeap());
-    if(r < 5000){
+    if(r < 9000){
       for(int i=1;i<28;i++){
         buffer[i] = '*';
       }
       Serial.println('>'); //Used to synchronize UART communication
       int b = Serial.readBytesUntil('*',buffer, 28);
+      //int b = 0;
       Serial.println('B');
       if(b>0){
         memcpy(&packet[39],buffer,28);
@@ -132,6 +134,6 @@ void loop() {
      //delay(10);
    }
   
-  delay(10);
+  
   
 }
