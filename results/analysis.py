@@ -41,19 +41,12 @@ def rmse(v1,v2):
     return sqrt(rmse/len(v1))
 
 def checkSuccess(Vtx,Vrx):
-    Cb = []
-    B = []
-    i = 0
+    Cb = 0
+    
     for b,s in zip(Vtx,Vrx):
         if b =='B' and s =='S':
-            Cb.append(i)
-            B.append(i)
-        elif b=='B' and s!='S':
-            B.append(i)
-
-        i+=1
-    
-    return len(Cb)/len(B)
+            Cb+=1
+    return Cb#number of successfull events
 
 def findScanInterval(Vtx,Vrx,Ttx,Trx):
     scan_intervals = [{'s':m.start(),'e':m.end(),'n':0} for m in re.finditer(Trx*'S', Vrx)]
