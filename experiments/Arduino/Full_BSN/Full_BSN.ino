@@ -1,6 +1,13 @@
 #include <WiFi.h>
 #include "esp_wifi.h"
 
+const char* ssid = "PercEvite_P";
+const char* password =  "hi64nyvy";
+//IP address to send UDP data to:
+// either use the ip address of the server or 
+// a network broadcast address
+const char * host = "192.168.1.9";
+const int port = 60000;
 
 esp_err_t esp_wifi_80211_tx(wifi_interface_t ifx, const void *buffer, int len, bool en_sys_seq);
 
@@ -89,11 +96,40 @@ void broadcastSSID(){
   //digitalWrite(21, LOW);
 }
 
+void netCom(){
+  if (client.connect(host, port)) {
+        client.printf("Free heap: %u", ESP.getFreeHeap());
+         unsigned long timeout = millis();
+        while (client.available() == 0) {
+          if (millis() - timeout > 500) {
+              Serial.println(">>> Client Timeout !");
+              client.stop();
+              return;
+          }
+        }       
+        // Read all the lines of the reply from server and print them to Serial
+        while(client.available()) {
+          String line = client.readStringUntil('\r');
+          Serial.print(line);
+        }
+        client.stop();
+  }
+  
+    
+}
+
 void setup() {
   Serial.begin(256000);
   Serial.setTimeout(100);
   WiFi.mode(WIFI_AP_STA);
- 
+  tcpip_adapter_dhcps_stop(TCPIP_ADAPTER_IF_AP);
+  WiFi.begin(ssid, password);
+  Serial.println("Connecting to WiFi..");
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(100);
+    Serial.print(".");
+  }
+  Serial.println(WiFi.localIP());
   //Set channel
   channel = random(1,14); 
   esp_wifi_set_promiscuous(true);
@@ -112,7 +148,7 @@ void loop() {
     
     r = random(0,9999);
     //Serial.println(ESP.getFreeHeap());
-    if(r < 7595){
+    if(r < 6852){
       for(int i=1;i<28;i++){
         buffer[i] = '*';
       }
@@ -126,10 +162,13 @@ void loop() {
       }
       broadcastSSID();//B   
     }
-   else{
+   else if(r > 6853 && r< 9836){
     Serial.println('S');
      scan(channel,60);//S
      
+   }
+   else{
+    netCom();
    }
   
   
