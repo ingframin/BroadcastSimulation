@@ -19,7 +19,7 @@ public class BroadcastSimulator{
 	 */
 
 	private BroadcastSimulator(){}
-	static ExecutorService pool = Executors.newFixedThreadPool(32);
+	static ExecutorService pool = Executors.newFixedThreadPool(8);
 
 	public static Node[] generateNodes(int Nd, int Ts,int Tn, int Tb,double[] vs,double[] vn, double[] vb){
 		
@@ -45,6 +45,7 @@ public class BroadcastSimulator{
 				
 			}
 			pool.execute(()->l.dump(false));
+			
 			//pool.execute(()->l.byteDump((byte)60,(byte)100,(byte)15));
 			
 		}		
