@@ -42,7 +42,8 @@ public class Node {
 		for(int i=0;i<Tn;i++) net[i] = 'N';
 		broadcast = new char[Ttx];
 		for(int i=0;i<Ttx;i++) broadcast[i] = 'X';
-		broadcast[0] = 'B';
+		int t = r.nextInt(Ttx);
+		broadcast[t] = 'B';
 
 		Vs = new double[]{0.3,0.4,0.3};
 		Vn = new double[]{0.3,0.4,0.3};
@@ -78,7 +79,8 @@ public class Node {
 		for(int i=0;i<Tn;i++) net[i] = 'N';
 		broadcast = new char[Ttx];
 		for(int i=0;i<Ttx;i++) broadcast[i] = 'X';
-
+		int t = r.nextInt(Ttx);
+		broadcast[t] = 'B';
 		changeState(current);
 		
 	}
@@ -131,12 +133,7 @@ public class Node {
 			case 'N':
 				return net;
 			case 'B':
-				char[] output = new char[Ttx];
-				int t = r.nextInt(Ttx);
-				Arrays.fill(output, 'X');
-				output[t] = 'B';
-				System.arraycopy(output, 0, broadcast, 0, Ttx);
-				return output;
+				return broadcast;
 		}
 
 		return broadcast;
