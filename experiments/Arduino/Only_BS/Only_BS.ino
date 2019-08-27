@@ -90,7 +90,7 @@ void broadcastSSID(){
 }
 
 void setup() {
-  Serial.begin(256000);
+  Serial.begin(230400);
   Serial.setTimeout(100);
   WiFi.mode(WIFI_AP_STA);
  

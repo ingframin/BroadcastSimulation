@@ -68,7 +68,7 @@ if __name__=='__main__':
 
     global running
     running = True
-    wifi1 = Serial("COM38",230400)
+    wifi1 = Serial("COM39",230400)
     wifi2 = Serial("COM36",230400)
     
     tr1 = Thread(target=read_ssid,args=(wifi1,1))

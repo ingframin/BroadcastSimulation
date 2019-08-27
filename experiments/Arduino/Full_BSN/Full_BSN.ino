@@ -72,6 +72,7 @@ void scan(uint8_t ch, uint8_t Ts){
     }
   
   }//for
+  WiFi.scanDelete();
  //digitalWrite(21, LOW);
 }//scan()
 void broadcastSSID(){
@@ -109,7 +110,7 @@ void netCom(){
         incomingPacket[len] = 0;
       }
       Serial.printf("UDP packet contents: %s\n", incomingPacket);
-      
+      udp.flush();
     }
  }
  
@@ -139,9 +140,16 @@ void setup() {
 void loop() {
   r = random(0,9999);
    if(r <= 500){
+    WiFi.reconnect();
+     while (WiFi.status() != WL_CONNECTED) {
+    delay(10);
+    Serial.print(".");
+  }
       Serial.println('N');
       netCom();
-      delay(100);
+      delay(118);
+      WiFi.disconnect();
+      
     }
     else if(r>500 && r<1500){
        
@@ -149,12 +157,15 @@ void loop() {
       int b = Serial.readBytesUntil('*',&packet[39], 28);
       Serial.println('B');
       broadcastSSID();//B   
-      delay(100);
+      delay(50);
     }
    else{
     Serial.println('S');
-    scan(channel,100);//S
+    scan(channel,120);//S
     
+   }
+   if(ESP.getFreeHeap() < 273500){
+    delay(200);
    }
       
 }
