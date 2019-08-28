@@ -89,7 +89,7 @@ void broadcastSSID(){
       ESP.restart();
     }
     
-    delay(5);  
+    delay(1);  
   }//14 channels
   //digitalWrite(21, LOW);
 }
@@ -121,11 +121,13 @@ void setup() {
   Serial.begin(230400);
   Serial.setTimeout(100);
   WiFi.mode(WIFI_STA);
-  
+  pinMode(21, OUTPUT);
+  pinMode(19, OUTPUT);
+  pinMode(18, OUTPUT);
   WiFi.begin(ssid, password);
   Serial.println("Connecting to WiFi..");
   while (WiFi.status() != WL_CONNECTED) {
-    delay(100);
+    delay(10);
     Serial.print(".");
   }
   Serial.println(WiFi.localIP());
@@ -140,29 +142,32 @@ void setup() {
 void loop() {
   r = random(0,9999);
    if(r <= 500){
+    digitalWrite(21, HIGH);
     WiFi.reconnect();
      while (WiFi.status() != WL_CONNECTED) {
-    delay(10);
+    delay(5);
     Serial.print(".");
   }
       Serial.println('N');
       netCom();
-      delay(118);
+      delay(20);
       WiFi.disconnect();
-      
+      digitalWrite(21, LOW);
     }
     else if(r>500 && r<1500){
-       
+       digitalWrite(19, HIGH);
       Serial.println('>'); //Used to synchronize UART communication
       int b = Serial.readBytesUntil('*',&packet[39], 28);
       Serial.println('B');
       broadcastSSID();//B   
-      delay(50);
+      delay(10);
+      digitalWrite(19, LOW);
     }
    else{
+    digitalWrite(18, HIGH);
     Serial.println('S');
-    scan(channel,120);//S
-    
+    scan(channel,60);//S
+    digitalWrite(18, LOW);
    }
    if(ESP.getFreeHeap() < 273500){
     delay(200);
