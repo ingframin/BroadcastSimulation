@@ -7,7 +7,7 @@ const char* password =  "hi64nyvy";
 //IP address to send UDP data to:
 // either use the ip address of the server or 
 // a network broadcast address
-const char * host = "192.168.1.1";
+const char * host = "192.168.1.137";
 const int port = 8000;
 //The udp library class
 WiFiUDP udp;
@@ -140,14 +140,16 @@ void setup() {
 }
 
 void loop() {
-  r = random(0,9999);
+  r = random(0,2500);
    if(r <= 500){
     digitalWrite(21, HIGH);
     WiFi.reconnect();
      while (WiFi.status() != WL_CONNECTED) {
-    delay(5);
+    delay(2);
     Serial.print(".");
   }
+    Serial.println(WiFi.localIP());
+    udp.begin(WiFi.localIP(),port);
       Serial.println('N');
       netCom();
       delay(20);
