@@ -6,14 +6,14 @@ const char* password =  "hi64nyvy";
 // either use the ip address of the server or 
 // a network broadcast address
 /* Put IP Address details */
-IPAddress local_ip(192,168,1,137);
-IPAddress gateway(192,168,1,137);
+IPAddress local_ip(192,168,1,100);
+IPAddress gateway(192,168,1,100);
 IPAddress subnet(255,255,255,0);
 char incomingPacket[80];  // buffer for incoming packets
 
 WiFiUDP udp;
 
- 
+int rescounter = 2E6;
 void setup() {
    Serial.begin(115200);
   Serial.setTimeout(100);
@@ -46,7 +46,12 @@ void loop() {
       
       udp.flush();
       
-    
+
+     
+    }
+    rescounter--;
+    if(rescounter <= 0){
+     ESP.restart();
     }
 
 }

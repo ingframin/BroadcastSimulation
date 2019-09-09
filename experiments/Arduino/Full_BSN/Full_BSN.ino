@@ -2,12 +2,14 @@
 #include "esp_wifi.h"
 #include <WiFiUdp.h>
 
+
+unsigned int net_counter = 0;
 const char* ssid = "PercEvite_P";
 const char* password =  "hi64nyvy";
 //IP address to send UDP data to:
 // either use the ip address of the server or 
 // a network broadcast address
-const char * host = "192.168.1.137";
+const char * host = "192.168.1.100";
 const int port = 8000;
 //The udp library class
 WiFiUDP udp;
@@ -97,8 +99,9 @@ void netCom(){
   if(WiFi.status() == WL_CONNECTED){
    //Send a packet
     udp.beginPacket(host,port);
-    udp.printf("Free heap: %u\r\n", ESP.getFreeHeap());
+    udp.printf("message: %u\r\n", net_counter);
     udp.endPacket();
+    net_counter++;
     int packetSize = udp.parsePacket();
     if (packetSize)
     {
@@ -111,6 +114,9 @@ void netCom(){
       }
       Serial.printf("UDP packet contents: %s\n", incomingPacket);
       udp.flush();
+    }
+    else{
+      Serial.println("No Wi-Fi connection");
     }
  }
  
@@ -140,23 +146,31 @@ void setup() {
 }
 
 void loop() {
-  r = random(0,2500);
-   if(r <= 500){
+  r = random(1,10000);
+   if(r <= 217){
     digitalWrite(21, HIGH);
     WiFi.reconnect();
-     while (WiFi.status() != WL_CONNECTED) {
-    delay(2);
-    Serial.print(".");
-  }
+    int count = 0;
+    
+    while (WiFi.status() != WL_CONNECTED) {
+      delay(10);
+      if(count == 100){
+        WiFi.begin(ssid, password);
+        delay(100);
+        break;
+      }
+      count+=1;
+      Serial.print(".");
+    }
     Serial.println(WiFi.localIP());
     udp.begin(WiFi.localIP(),port);
-      Serial.println('N');
-      netCom();
-      delay(20);
-      WiFi.disconnect();
-      digitalWrite(21, LOW);
+    Serial.println('N');
+    netCom();
+    delay(20);
+    WiFi.disconnect();
+    digitalWrite(21, LOW);
     }
-    else if(r>500 && r<1500){
+    else if(r>217 && r<6739){
        digitalWrite(19, HIGH);
       Serial.println('>'); //Used to synchronize UART communication
       int b = Serial.readBytesUntil('*',&packet[39], 28);
