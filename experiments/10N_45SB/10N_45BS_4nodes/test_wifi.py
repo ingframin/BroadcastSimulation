@@ -56,7 +56,9 @@ def read_ssid(wi,n,logger):
             if b'>' in s:
                 ssid = ("%d-"%n +str(c)+'*').encode()
                 wi.write(ssid)
-                lg.append('count=%d'%c)
+                t = (perf_counter()-start,'count=%d'%c,n)
+                print(t)
+                logger.log_one(t,'scans')
                 c+=1
             else:
                 t = (perf_counter()-start,s.decode("utf-8")[:-1],n)
@@ -100,8 +102,10 @@ if __name__=='__main__':
 
     global running
     running = True
-    wifi1 = Serial("COM36",230400)
-    wifi2 = Serial("COM39",230400)
+    wifi1 = Serial("/dev/ttyUSB0",230400)
+    wifi2 = Serial("/dev/ttyUSB1",230400)
+    wifi3 = Serial("/dev/ttyUSB2",230400)
+    wifi4 = Serial("/dev/ttyUSB3",230400)
     logger = Logger('scan_broadcast_log.db','sb_schema.sql')
     sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     sock.bind(('', 8000))
@@ -110,11 +114,15 @@ if __name__=='__main__':
     
     tr1 = Thread(target=read_ssid,args=(wifi1,1,logger))
     tr2 = Thread(target=read_ssid,args=(wifi2,2,logger))
-    #tr3 = Thread(target=receive_udp,args=(sock,))
+    tr3 = Thread(target=read_ssid,args=(wifi1,1,logger))
+    tr4 = Thread(target=read_ssid,args=(wifi2,2,logger))
+    tr_udp = Thread(target=receive_udp,args=(sock,))
     
     tr1.start()
     tr2.start()
-    #tr3.start()
+    tr3.start()
+    tr4.start()
+    tr_udp.start()
     start = perf_counter()
     while running:
        try:
@@ -127,5 +135,6 @@ if __name__=='__main__':
     
     tr1.join()
     tr2.join()
-    #tr3.join()
+    tr3.join()
+    tr4.join()
 

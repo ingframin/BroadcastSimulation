@@ -35,86 +35,102 @@ THE POSSIBILITY OF SUCH DAMAGE.
 from time import sleep, perf_counter
 from serial import Serial
 from threading import Thread
-import socket
-from logger import Logger
-
 
 drones = []
 
 
-def read_ssid(wi,n,logger):
+def read_ssid(wi,n):
     c = 0
     start = perf_counter()
     
     global running
-    
-    id = 0
+    lg = []
     while running:
+        s = wi.readline()        
+        print(s)
+        if b'>' in s:
+            ssid = ("%d-"%n +str(c)+'*').encode()
+            wi.write(ssid)
+            lg.append('count=%d'%c)
+            c+=1
         try:
-            s = wi.readline()        
-            #print(s)
-            if b'>' in s:
-                ssid = ("%d-"%n +str(c)+'*').encode()
-                wi.write(ssid)
-                lg.append('count=%d'%c)
-                c+=1
-            else:
-                t = (perf_counter()-start,s.decode("utf-8")[:-1],n)
-                print(t)
-                logger.log_one(t,'scans')
+            lg.append(str(perf_counter()-start)+'\t'+s.decode("utf-8")[:-1])
         except:
             pass
         
+        if len(lg)>200:
+            with open('res-%d.txt'%n,'a') as log:
+                for l in lg:
+                    print(l,file=log)
+            lg = []
             
+    with open('res-%d.txt'%n,'a') as log:
+        for l in lg:
+            print(l,file=log)
             
- 
-def receive_udp(sock):
-    t = current_thread()
-    lg = []
+        
+
+def read_udp(wi):
+    c = 0
     start = perf_counter()
+    
     global running
+    lg = []
     while running:
-            
+        s = wi.readline()        
+        print(s)
+        
         try:
-            data, addr = sock.recvfrom(256)
-            print((addr,data))
-            lg.append((str(perf_counter()-start),addr,data))
-            sock.sendto("Message received".encode(), (addr, 8000))
+            lg.append(str(perf_counter()-start)+'\t'+s.decode("utf-8")[:-1])
         except:
-            sleep(0.1)
-            
+            pass
+        
         if len(lg)>20:
             with open('res-udp.txt','a') as log:
                 for l in lg:
                     print(l,file=log)
-            log = []
+            lg = []
+            
     with open('res-udp.txt','a') as log:
         for l in lg:
             print(l,file=log)
-       
-
-
 
 '''test script'''
 if __name__=='__main__':
 
     global running
     running = True
-    wifi1 = Serial("COM36",230400)
-    wifi2 = Serial("COM39",230400)
-    logger = Logger('scan_broadcast_log.db','sb_schema.sql')
-    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    sock.bind(('', 8000))
-    sock.setblocking(False)
-    sock.settimeout(2.0)
+    wifi1 = Serial("/dev/ttyUSB1",230400)
+    wifi2 = Serial("/dev/ttyUSB2",230400)
+    wifi3 = Serial("/dev/ttyUSB3",230400)
+    wifi4 = Serial("/dev/ttyUSB4",230400)
+    wifi5 = Serial("/dev/ttyUSB5",230400)
+    wifi6 = Serial("/dev/ttyUSB6",230400)
+    udp_rec = Serial("/dev/ttyUSB0",115200)
     
-    tr1 = Thread(target=read_ssid,args=(wifi1,1,logger))
-    tr2 = Thread(target=read_ssid,args=(wifi2,2,logger))
-    #tr3 = Thread(target=receive_udp,args=(sock,))
+    tr0 = Thread(target=read_udp,args=(udp_rec,))
+    tr1 = Thread(target=read_ssid,args=(wifi1,1))
+    tr2 = Thread(target=read_ssid,args=(wifi2,2))
+    tr3 = Thread(target=read_ssid,args=(wifi3,3))
+    tr4 = Thread(target=read_ssid,args=(wifi4,4))
+    tr5 = Thread(target=read_ssid,args=(wifi5,5))
+    tr6 = Thread(target=read_ssid,args=(wifi6,6))
     
+    tr1.daemon = True
+    tr2.daemon = True
+    tr3.daemon = True
+    tr4.daemon = True
+    tr5.daemon = True
+    tr6.daemon = True
+    
+    tr0.start()
     tr1.start()
     tr2.start()
-    #tr3.start()
+    tr3.start()
+    tr4.start()
+    tr5.start()
+    tr6.start()
+    
     start = perf_counter()
     while running:
        try:
@@ -125,7 +141,11 @@ if __name__=='__main__':
            
            running = False
     
+    tr0.join()
     tr1.join()
     tr2.join()
-    #tr3.join()
+    tr3.join()
+    tr4.join()
+    tr5.join()
+    tr6.join()
 
