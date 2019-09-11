@@ -9,7 +9,7 @@ const char* password =  "hi64nyvy";
 //IP address to send UDP data to:
 // either use the ip address of the server or 
 // a network broadcast address
-const char * host = "192.168.1.100";
+const char * host = "192.168.4.1";
 const int port = 8000;
 //The udp library class
 WiFiUDP udp;
@@ -102,6 +102,7 @@ void netCom(){
     udp.printf("message: %u\r\n", net_counter);
     udp.endPacket();
     net_counter++;
+    delay(50);
     int packetSize = udp.parsePacket();
     if (packetSize)
     {
@@ -115,10 +116,11 @@ void netCom(){
       Serial.printf("UDP packet contents: %s\n", incomingPacket);
       udp.flush();
     }
-    else{
+    
+ }
+ else{
       Serial.println("No Wi-Fi connection");
     }
- }
  
     
 }
@@ -128,6 +130,7 @@ void setup() {
   Serial.setTimeout(100);
   WiFi.mode(WIFI_STA);
   pinMode(21, OUTPUT);
+  digitalWrite(21, HIGH); // external antenna on WiPy 3.0
   pinMode(19, OUTPUT);
   pinMode(18, OUTPUT);
   WiFi.begin(ssid, password);
@@ -137,7 +140,7 @@ void setup() {
     Serial.print(".");
   }
   Serial.println(WiFi.localIP());
-  udp.begin(WiFi.localIP(),port);
+  
   channel = random(1,14);
   esp_wifi_set_promiscuous(true);
   esp_wifi_set_max_tx_power(78);
@@ -148,15 +151,17 @@ void setup() {
 void loop() {
   r = random(1,10000);
    if(r <= 217){
-    digitalWrite(21, HIGH);
+    //digitalWrite(21, HIGH);
     WiFi.reconnect();
     int count = 0;
     
     while (WiFi.status() != WL_CONNECTED) {
       delay(10);
       if(count == 100){
-        WiFi.begin(ssid, password);
-        delay(100);
+//        WiFi.begin(ssid, password);
+//        esp_wifi_set_promiscuous(true);
+//        delay(100);
+        ESP.restart();
         break;
       }
       count+=1;
@@ -167,23 +172,24 @@ void loop() {
     Serial.println('N');
     netCom();
     delay(20);
+    udp.stop();
     WiFi.disconnect();
-    digitalWrite(21, LOW);
+    //digitalWrite(21, LOW);
     }
     else if(r>217 && r<6739){
-       digitalWrite(19, HIGH);
+       //digitalWrite(19, HIGH);
       Serial.println('>'); //Used to synchronize UART communication
       int b = Serial.readBytesUntil('*',&packet[39], 28);
       Serial.println('B');
       broadcastSSID();//B   
       delay(10);
-      digitalWrite(19, LOW);
+      //digitalWrite(19, LOW);
     }
    else{
-    digitalWrite(18, HIGH);
+    //digitalWrite(18, HIGH);
     Serial.println('S');
     scan(channel,60);//S
-    digitalWrite(18, LOW);
+    //digitalWrite(18, LOW);
    }
    if(ESP.getFreeHeap() < 273500){
     delay(200);
