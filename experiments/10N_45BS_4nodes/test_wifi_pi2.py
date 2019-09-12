@@ -44,7 +44,6 @@ def read_ssid(wi,n):
     c = 0
     start = perf_counter()
     log = []
-    fc = 0
     global running
     while running:
         try:
@@ -61,12 +60,12 @@ def read_ssid(wi,n):
                 t = (perf_counter()-start,s.decode("utf-8")[:-1],n)
                 log.append(t)
                 print(t)
-            if len(log)>1000:
+            if len(log)>10000:
                 with open('log-%d.txt'%n,'w') as f:
                     for l in log:
                         print(l,file=f)
+               
                 log = []
-                fc +=1
                         
         except Exception as e:
             print("Error on node%d"%n+str(e))
@@ -74,20 +73,21 @@ def read_ssid(wi,n):
             with open('log-%d.txt'%n,'w') as f:
                 for l in log:
                     print(l,file=f)
+               
             log = []
-            fc +=1
             
         
         with open('log-%d.txt'%n,'w') as f:
             for l in log:
                 print(l,file=f)
+
                 
         
             
             
  
 def receive_udp(sock):
-    lg = []
+    log = []
     start = perf_counter()
     global running
     while running:
@@ -101,13 +101,13 @@ def receive_udp(sock):
             sleep(0.1)
             
         if len(lg)>20:
-            with open('res-udp.txt','a') as log:
-                for l in lg:
-                    print(l,file=log)
-            lg = []
-    with open('res-udp.txt','a') as log:
-        for l in lg:
-            print(l,file=log)
+            with open('res-udp.txt','a') as logf:
+                for l in log:
+                    print(l,file=logf)
+            log = []
+    with open('res-udp.txt','a') as logf:
+        for l in log:
+            print(l,file=logf)
        
 
 
