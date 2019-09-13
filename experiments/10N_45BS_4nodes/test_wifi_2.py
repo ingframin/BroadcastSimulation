@@ -35,7 +35,7 @@ THE POSSIBILITY OF SUCH DAMAGE.
 from time import sleep, perf_counter
 from serial import Serial
 from threading import Thread
-import socket
+
 
 drones = []
 
@@ -44,70 +44,43 @@ def read_ssid(wi,n):
     c = 0
     start = perf_counter()
     log = []
+
     global running
     while running:
         try:
             s = wi.readline()        
-            #print(s)
+
             if b'>' in s:
                 ssid = ("%d-"%n +str(c)+'*').encode()
                 wi.write(ssid)
                 t = (perf_counter()-start,'count=%d'%c,n)
-                #print(t)
                 log.append(t)
                 c+=1
             else:
                 t = (perf_counter()-start,s.decode("utf-8")[:-1],n)
                 log.append(t)
                 print(t)
-            if len(log)>10000:
-                with open('log-%d.txt'%n,'w') as f:
+            if len(log)>1000:
+                with open('log-%d.txt'%n,'a') as f:
                     for l in log:
                         print(l,file=f)
-               
                 log = []
+
                         
         except Exception as e:
             print("Error on node%d"%n+str(e))
             log.append(e)
-            with open('log-%d.txt'%n,'w') as f:
+            with open('log-%d.txt'%n,'a') as f:
                 for l in log:
                     print(l,file=f)
-               
             log = []
+          
             
         
-        with open('log-%d.txt'%n,'w') as f:
+        with open('log-%d.txt'%n,'a') as f:
             for l in log:
                 print(l,file=f)
 
-                
-        
-            
-            
- 
-def receive_udp(sock):
-    log = []
-    start = perf_counter()
-    global running
-    while running:
-            
-        try:
-            data, addr = sock.recvfrom(256)
-            print((addr,data))
-            lg.append((str(perf_counter()-start),addr,data))
-            sock.sendto("Message received".encode(), (addr, 8000))
-        except:
-            sleep(0.1)
-            
-        if len(lg)>20:
-            with open('res-udp.txt','a') as logf:
-                for l in log:
-                    print(l,file=logf)
-            log = []
-    with open('res-udp.txt','a') as logf:
-        for l in log:
-            print(l,file=logf)
        
 
 
@@ -117,24 +90,18 @@ if __name__=='__main__':
 
     global running
     running = True
-    wifi1 = Serial("COM36",230400, timeout = 10)
-    wifi2 = Serial("COM38",230400, timeout = 10)
+    wifi1 = Serial("COM39",230400, timeout = 10)
+    wifi2 = Serial("COM10",230400, timeout = 10)
    
+
     
-    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    sock.bind(('', 8000))
-    sock.setblocking(False)
-    sock.settimeout(2.0)
-    
-    tr1 = Thread(target=read_ssid,args=(wifi1,1))
-    tr2 = Thread(target=read_ssid,args=(wifi2,2))
-    
-    tr_udp = Thread(target=receive_udp,args=(sock,))
+    tr1 = Thread(target=read_ssid,args=(wifi1,3))
+    tr2 = Thread(target=read_ssid,args=(wifi2,4))
+
     
     tr1.start()
     tr2.start()
-   
-    tr_udp.start()
+
     start = perf_counter()
     while running:
        try:
@@ -147,6 +114,5 @@ if __name__=='__main__':
     
     tr1.join()
     tr2.join()
-    
-    tr_udp.join()
+
 
