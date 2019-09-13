@@ -1,4 +1,6 @@
 import socket
+from time import sleep, perf_counter
+
 
 def receive_udp(sock):
     lg = []
@@ -11,9 +13,12 @@ def receive_udp(sock):
             print((addr,data))
             lg.append((str(perf_counter()-start),addr,data))
             sock.sendto("Message received".encode(), (addr, 8000))
+        
+        except KeyboardInterrupt:
+            break
         except:
             sleep(0.1)
-            break
+            
             
         if len(lg)>20:
             with open('res-udp.txt','a') as log:
