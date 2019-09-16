@@ -85,7 +85,7 @@ void broadcastSSID(){
     
     delay(1);  
   }//14 channels
-  delay(5);
+  delay(10);
   //digitalWrite(21, LOW);
 }
 
@@ -112,18 +112,19 @@ void loop() {
     
     r = random(0,9999);
     //Serial.println(ESP.getFreeHeap());
-    if(r < 7595){
+    if(r < 6666){
       for(int i=1;i<28;i++){
         buffer[i] = '*';
       }
       Serial.println('>'); //Used to synchronize UART communication
-      int b = Serial.readBytesUntil('*',buffer, 28);
+      //int b = Serial.readBytesUntil('*',buffer, 28);
+      int b = Serial.readBytesUntil('*',&packet[39], 28);
       //int b = 0;
       Serial.println('B');
-      if(b>0){
+      /*if(b>0){
         memcpy(&packet[39],buffer,28);
         
-      }
+      }*/
       broadcastSSID();//B   
     }
    else{
