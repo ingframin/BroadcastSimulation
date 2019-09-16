@@ -35,12 +35,12 @@ THE POSSIBILITY OF SUCH DAMAGE.
 from time import sleep, perf_counter
 from serial import Serial
 from threading import Thread
-from datetime import datetime
+
 drones = []
 
 
 def read_ssid(wi,n):
-
+    c = 0
     start = perf_counter()
     
     global running
@@ -48,15 +48,13 @@ def read_ssid(wi,n):
     while running:
         s = wi.readline()        
         print(s)
-        timestamp = str(datetime.now()).split()[1]
         if b'>' in s:
-
-            ssid = ("%d-"%n+timestamp+'sync')
-            wi.write(ssid.encode())
-            lg.append('sent:'+ssid)
-
+            ssid = ("%d-"%n +str(c)+'*').encode()
+            wi.write(ssid)
+            lg.append('count=%d'%c)
+            c+=1
         try:
-            lg.append(timestamp+'\t'+s.decode("utf-8")[:-1])
+            lg.append(str(perf_counter()-start)+'\t'+s.decode("utf-8")[:-1])
         except:
             pass
         
@@ -80,14 +78,16 @@ if __name__=='__main__':
     global running
     running = True
     wifi1 = Serial("COM36",230400)
+    wifi2 = Serial("COM37",230400)
 
-       
+    
     tr1 = Thread(target=read_ssid,args=(wifi1,1))
-  
+    tr2 = Thread(target=read_ssid,args=(wifi2,2))
+
     tr1.daemon = True
-   
+    tr2.daemon = True
     tr1.start()
-   
+    tr2.start()
 
     start = perf_counter()
     while running:
@@ -100,5 +100,6 @@ if __name__=='__main__':
            running = False
     
     tr1.join()
+    tr2.join()
 
-    
+

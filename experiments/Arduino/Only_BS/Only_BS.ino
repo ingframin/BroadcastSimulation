@@ -64,7 +64,9 @@ void scan(uint8_t ch, uint8_t Ts){
   for (int j = 0; j < numSsid; j++) {
     String ssid = WiFi.SSID(j);
     if(ssid.startsWith("D")){
-      Serial.println(ssid);
+      Serial.print(ssid+"\t");
+      Serial.print("rssi:");
+      Serial.println(WiFi.RSSI(j));
     
     }
   
