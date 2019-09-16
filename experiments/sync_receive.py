@@ -7,7 +7,7 @@ import subprocess
 def read_ssid(wi,n):
 
     start = perf_counter()
-    
+    c = 0
     global running
     lg = []
     while running:
@@ -16,13 +16,14 @@ def read_ssid(wi,n):
         timestamp = str(datetime.now()).split()[1]
         if b'>' in s:
 
-            ssid = ("%d-"%n+timestamp+'*')
+            ssid = ("%d-"%n+timestamp+'-%c*'%c)
             wi.write(ssid.encode())
             lg.append('sent:'+ssid)
+            c+=1
         if b'sync' in s:
             date = s.decode('utf-8').replace('*','').split('-')[1]
-            o = subprocess.check_output('date +%T -s "%s"'%date,stderr=subprocess.STDOUT,shell=True)
-            print(o)
+            #o = subprocess.check_output('date +%%T -s "%s"'%date,stderr=subprocess.STDOUT,shell=True)
+            #print(o)
         try:
             lg.append(timestamp+'\t'+s.decode("utf-8")[:-1])
         except:
@@ -43,7 +44,7 @@ if __name__=='__main__':
 
     global running
     running = True
-    wifi1 = Serial("/dev/ttyUSB0",230400)
+    wifi1 = Serial("/dev/tty.SLAB_USBtoUART",230400)
 
        
     tr1 = Thread(target=read_ssid,args=(wifi1,2))
