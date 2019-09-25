@@ -50,7 +50,7 @@ if __name__=='__main__':
         for r in rec:
             print(r,file=rf)
             
-    sent = get_sent('res-2.txt')
+    sent = get_sent('res-1.txt')
     with open('sent.txt','w') as sf:
         for s in sent:
             print(s,file=sf)
@@ -63,3 +63,4 @@ if __name__=='__main__':
             received+=1
     print(len(sent))
     print(len(rec))
+    print(len(rec)/len(sent))
