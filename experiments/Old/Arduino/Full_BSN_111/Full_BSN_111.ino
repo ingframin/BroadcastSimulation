@@ -72,13 +72,16 @@ void scan(uint8_t ch, uint8_t Ts){
       Serial.println(ssid);
     
     }
-    
+  
   }//for
   WiFi.scanDelete();
 
 }//scan()
 
 void broadcastSSID(){
+   Serial.write(17);//XON
+   Serial.println('>'); //Used to synchronize UART communication
+   int b = Serial.readBytesUntil('*',&packet[39], 28);
   //digitalWrite(21, HIGH);
   random_mac();
   
@@ -92,14 +95,15 @@ void broadcastSSID(){
       ESP.restart();
     }
     
-    delay(1);  
+    delay(2);  
   }//14 channels
- 
+  Serial.write(19);//XON
 
 }
 void netCom(){
   if(WiFi.status() == WL_CONNECTED){
    //Send a packet
+    udp.begin(WiFi.localIP(),port);
     udp.beginPacket(host,port);
     udp.printf("message: %u\r\n", net_counter);
     udp.endPacket();
@@ -110,14 +114,16 @@ void netCom(){
     {
       // receive incoming UDP packets
       Serial.printf("Received %d bytes from %s, port %d\n", packetSize, udp.remoteIP().toString().c_str(), udp.remotePort());
-      int len = udp.read(incomingPacket, 255);
+      int len = udp.read(incomingPacket, 80);
       if (len > 0)
       {
         incomingPacket[len] = 0;
       }
       Serial.printf("UDP packet contents: %s\n", incomingPacket);
       udp.flush();
+      
     }
+    udp.stop();
     
  }
  else{
@@ -132,8 +138,7 @@ void setup() {
   Serial.setTimeout(100);
   WiFi.mode(WIFI_STA);
  
-  //digitalWrite(21, HIGH); // external antenna on WiPy 3.0
-  digitalWrite(21, LOW); // chip antenna on WiPy 3.0
+  digitalWrite(21, HIGH); // external antenna on WiPy 3.0
   
   WiFi.begin(ssid, password);
   Serial.println("Connecting to WiFi..");
@@ -144,55 +149,21 @@ void setup() {
   Serial.println(WiFi.localIP());
   
   channel = random(1,14);
-  esp_wifi_set_promiscuous(true);
+  esp_wifi_set_promiscuous(false);
   esp_wifi_set_max_tx_power(78);
   packet[38] = 'D';
   packet[39] = 'N';
 }
 
 void loop() {
-  r = random(1,10000);
-   if(r <= 5000){
-
     
-    int count = 0;
-    if(WiFi.status() != WL_CONNECTED) {
-      WiFi.reconnect();
-    }
-    while (WiFi.status() != WL_CONNECTED) {
-      delay(10);
-      if(count == 100){
-        Serial.print(WiFi.status());
-        ESP.restart();
-      }
-      count+=1;
-      Serial.print(".");
-    }
-    Serial.println(WiFi.localIP());
-    udp.begin(WiFi.localIP(),port);
-
     netCom();
-    delay(20);
-    udp.stop();
-    
-    //WiFi.disconnect();
-
-    }
-    else if(r>5000 && r<8000){
-
-       Serial.write(17);//XON
-      Serial.println('>'); //Used to synchronize UART communication
-      int b = Serial.readBytesUntil('*',&packet[39], 28);
-      broadcastSSID();//B   
-      Serial.write(19);//XON
+    scan(channel,60);//S
+    broadcastSSID();//B  
    
-    }
-   else{
-     scan(channel,60);//S
-   }
-   end:if(ESP.getFreeHeap() < 273500){
+   if(ESP.getFreeHeap() < 273500){
     Serial.println("Heap is full!");
     delay(200);
    }
-  
+      
 }

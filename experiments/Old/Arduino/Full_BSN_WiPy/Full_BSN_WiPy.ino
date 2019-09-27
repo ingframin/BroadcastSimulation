@@ -72,7 +72,7 @@ void scan(uint8_t ch, uint8_t Ts){
       Serial.println(ssid);
     
     }
-    
+  
   }//for
   WiFi.scanDelete();
 
@@ -94,7 +94,6 @@ void broadcastSSID(){
     
     delay(1);  
   }//14 channels
- 
 
 }
 void netCom(){
@@ -132,8 +131,7 @@ void setup() {
   Serial.setTimeout(100);
   WiFi.mode(WIFI_STA);
  
-  //digitalWrite(21, HIGH); // external antenna on WiPy 3.0
-  digitalWrite(21, LOW); // chip antenna on WiPy 3.0
+  digitalWrite(21, HIGH); // external antenna on WiPy 3.0
   
   WiFi.begin(ssid, password);
   Serial.println("Connecting to WiFi..");
@@ -152,18 +150,17 @@ void setup() {
 
 void loop() {
   r = random(1,10000);
-   if(r <= 5000){
+   if(r <= 217){
 
-    
+    WiFi.reconnect();
     int count = 0;
-    if(WiFi.status() != WL_CONNECTED) {
-      WiFi.reconnect();
-    }
+    
     while (WiFi.status() != WL_CONNECTED) {
       delay(10);
       if(count == 100){
-        Serial.print(WiFi.status());
+
         ESP.restart();
+        break;
       }
       count+=1;
       Serial.print(".");
@@ -174,11 +171,10 @@ void loop() {
     netCom();
     delay(20);
     udp.stop();
-    
-    //WiFi.disconnect();
+    WiFi.disconnect();
 
     }
-    else if(r>5000 && r<8000){
+    else if(r>217 && r<6739){
 
        Serial.write(17);//XON
       Serial.println('>'); //Used to synchronize UART communication
@@ -190,9 +186,9 @@ void loop() {
    else{
      scan(channel,60);//S
    }
-   end:if(ESP.getFreeHeap() < 273500){
+   if(ESP.getFreeHeap() < 273500){
     Serial.println("Heap is full!");
     delay(200);
    }
-  
+      
 }
