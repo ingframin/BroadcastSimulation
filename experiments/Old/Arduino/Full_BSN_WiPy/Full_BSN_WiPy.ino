@@ -13,8 +13,11 @@ const char * host = "192.168.4.1";
 const int port = 8000;
 //The udp library class
 WiFiUDP udp;
-char incomingPacket[80];  // buffer for incoming packets
-
+char incomingPacket[90];  // buffer for incoming packets
+//IPAddress local_IP(192, 168, 4, 6);
+IPAddress local_IP(192, 168, 4, 8);
+IPAddress gateway(192, 168, 4, 1);
+IPAddress subnet(255, 255, 255, 0);
 //Broadcast parameters
 uint8_t channel = 0;
 int r;
@@ -100,16 +103,16 @@ void netCom(){
   if(WiFi.status() == WL_CONNECTED){
    //Send a packet
     udp.beginPacket(host,port);
-    udp.printf("message: %u\r\n", net_counter);
+    udp.printf("message: %u; heap: %u\r\n", net_counter,ESP.getFreeHeap());
     udp.endPacket();
     net_counter++;
-    delay(50);
+    delay(20);
     int packetSize = udp.parsePacket();
     if (packetSize)
     {
       // receive incoming UDP packets
       Serial.printf("Received %d bytes from %s, port %d\n", packetSize, udp.remoteIP().toString().c_str(), udp.remotePort());
-      int len = udp.read(incomingPacket, 255);
+      int len = udp.read(incomingPacket, 90);
       if (len > 0)
       {
         incomingPacket[len] = 0;
@@ -117,7 +120,7 @@ void netCom(){
       Serial.printf("UDP packet contents: %s\n", incomingPacket);
       udp.flush();
     }
-    
+   
  }
  else{
       Serial.println("No Wi-Fi connection");
@@ -130,9 +133,10 @@ void setup() {
   Serial.begin(230400);
   Serial.setTimeout(100);
   WiFi.mode(WIFI_STA);
- 
+  pinMode(21,OUTPUT);
   digitalWrite(21, HIGH); // external antenna on WiPy 3.0
-  
+  pinMode(19,OUTPUT);
+  WiFi.config(local_IP,gateway,subnet);
   WiFi.begin(ssid, password);
   Serial.println("Connecting to WiFi..");
   while (WiFi.status() != WL_CONNECTED) {
@@ -142,7 +146,7 @@ void setup() {
   Serial.println(WiFi.localIP());
   
   channel = random(1,14);
-  esp_wifi_set_promiscuous(true);
+  esp_wifi_set_promiscuous(false);
   esp_wifi_set_max_tx_power(78);
   packet[38] = 'D';
   packet[39] = 'N';
@@ -152,27 +156,27 @@ void loop() {
   r = random(1,10000);
    if(r <= 217){
 
-    WiFi.reconnect();
-    int count = 0;
+    digitalWrite(19,HIGH);
     
-    while (WiFi.status() != WL_CONNECTED) {
-      delay(10);
-      if(count == 100){
-
-        ESP.restart();
-        break;
+    if(WiFi.status() != WL_CONNECTED){
+      //WiFi.begin(ssid, password);
+      WiFi.reconnect();
+      while (WiFi.status() != WL_CONNECTED) {
+        delay(1);
+        
+        Serial.print(".");
       }
-      count+=1;
-      Serial.print(".");
     }
-    Serial.println(WiFi.localIP());
+    
+    
     udp.begin(WiFi.localIP(),port);
 
     netCom();
     delay(20);
     udp.stop();
     WiFi.disconnect();
-
+   digitalWrite(19,LOW);
+   
     }
     else if(r>217 && r<6739){
 
@@ -187,8 +191,7 @@ void loop() {
      scan(channel,60);//S
    }
    if(ESP.getFreeHeap() < 273500){
-    Serial.println("Heap is full!");
-    delay(200);
+    Serial.printf("Low heap: %u\r\n",ESP.getFreeHeap());
    }
       
 }

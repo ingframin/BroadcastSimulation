@@ -101,6 +101,15 @@ void broadcastSSID(){
 
 }
 void netCom(){
+  
+  if(WiFi.status()!= WL_CONNECTED){
+    WiFi.begin(ssid, password);
+    while(WiFi.status()!= WL_CONNECTED){
+      Serial.print('.');
+      delay(5);
+    }
+  }
+    
   if(WiFi.status() == WL_CONNECTED){
    //Send a packet
     udp.begin(WiFi.localIP(),port);
@@ -124,7 +133,7 @@ void netCom(){
       
     }
     udp.stop();
-    
+    //WiFi.disconnect();
  }
  else{
       Serial.println("No Wi-Fi connection");
@@ -137,9 +146,9 @@ void setup() {
   Serial.begin(230400);
   Serial.setTimeout(100);
   WiFi.mode(WIFI_STA);
- 
+  pinMode(21,OUTPUT);
   digitalWrite(21, HIGH); // external antenna on WiPy 3.0
-  
+  pinMode(19,OUTPUT);
   WiFi.begin(ssid, password);
   Serial.println("Connecting to WiFi..");
   while (WiFi.status() != WL_CONNECTED) {
@@ -156,14 +165,15 @@ void setup() {
 }
 
 void loop() {
-    
+    digitalWrite(19,HIGH);
     netCom();
+    digitalWrite(19,LOW);
     scan(channel,60);//S
     broadcastSSID();//B  
    
    if(ESP.getFreeHeap() < 273500){
     Serial.println("Heap is full!");
-    delay(200);
+    WiFi.disconnect();
    }
       
 }
