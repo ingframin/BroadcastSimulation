@@ -39,28 +39,20 @@ def get_sent(filename):
                 clean = cleanup(line)
                 ls = clean.split(',')
                 s = ls[2].replace('*','').replace('sent:','').strip()
-                sent.append(s)
+                sent.append((ls[0],s))
         return sent
             
 
 if __name__=='__main__':
     
-    rec =read_data('res-2.txt')
-    with open('received.txt','w') as rf:
-        for r in rec:
-            print(r,file=rf)
-            
-    sent = get_sent('res-1.txt')
+    sent = get_sent('res-2.txt')
     with open('sent.txt','w') as sf:
         for s in sent:
             print(s,file=sf)
-    
-    received = 0
-    
-    for r in rec:
-        
-        if r[1] in sent:
-            received+=1
-    print(len(sent))
-    print(len(rec))
-    print(len(rec)/len(sent))
+    diff = []
+    for i in range(1,len(sent)):
+        s1 = sent[i][0]
+        s0 = sent[i-1][0]
+        tns = TimeStamp(s1)-TimeStamp(s0)
+        diff.append(tns.toSeconds())
+    print(sum(diff)/len(diff))

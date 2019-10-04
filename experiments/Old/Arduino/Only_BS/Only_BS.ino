@@ -75,6 +75,7 @@ void scan(uint8_t ch, uint8_t Ts){
 }//scan()
 
 void broadcastSSID(){
+  
   //digitalWrite(21, HIGH);
   random_mac();
   
@@ -87,12 +88,12 @@ void broadcastSSID(){
     
     delay(1);  
   }//14 channels
-  delay(5);
+  
   //digitalWrite(21, LOW);
 }
 
 void setup() {
-  Serial.begin(230400);
+  Serial.begin(115200);
   Serial.setTimeout(100);
   WiFi.mode(WIFI_AP_STA);
  
@@ -104,29 +105,39 @@ void setup() {
   packet[39] = 'N';
   
   //Select external antenna
-  pinMode(15,OUTPUT);
-  //digitalWrite(21, HIGH);//External antenna on
-  digitalWrite(15, LOW);//ceramic/printed antenna on (default)
+  //pinMode(15,OUTPUT);
+  pinMode(21,OUTPUT);
+  digitalWrite(21, LOW);//ceramic/printed antenna on (default)
+  //digitalWrite(15, LOW);//ceramic/printed antenna on (default)
 
 }
 
 void loop() {
-    
-    r = random(0,1000);
-    
-    if(r < 251){
-      digitalWrite(15, HIGH);
+    /*Serial.println('>'); //Used to synchronize UART communication
       Serial.write(17);//XON
-      Serial.println('>'); //Used to synchronize UART communication
-      
-      int b = Serial.readBytesUntil('*',&packet[39], 20);
-            
-      broadcastSSID();//B   
-      digitalWrite(15, LOW);
-      Serial.write(19);//XOFF
-    }
-   else{
+      int b = Serial.readBytesUntil('*',&packet[39], 26);
+      Serial.write(19);//XOFF    
+      broadcastSSID();//B   */
+   r = random(0,9999);
+
     
+    //if(r < 4286){//20Tx, 80Rx
+    //if(r < 7317){ //50Tx,50Rx
+    if(r <= 5000){ //50Tx,50Rx
+    //if(r < 9231){ //80Tx,20Rx
+      unsigned long start = micros();
+      //digitalWrite(15, HIGH);
+      Serial.println('>'); //Used to synchronize UART communication
+      Serial.write(17);//XON
+      int b = Serial.readBytesUntil('*',&packet[39], 26);
+      Serial.write(19);//XOFF    
+      broadcastSSID();//B   
+      //digitalWrite(15, LOW);
+      unsigned long stop = micros();
+      Serial.printf("dur: %u\r\n",stop-start);
+        }
+   else{
+    Serial.println('S');
     scan(channel,60);//S
      
    }

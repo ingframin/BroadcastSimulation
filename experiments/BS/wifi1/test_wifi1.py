@@ -53,8 +53,8 @@ def read_ssid(wi,n):
             wi.write(ssid.encode())
         
             lg.append((str(datetime.now()).split()[1],s,'sent:'+ssid))
-        else:
-            lg.append((str(datetime.now()).split()[1],s,''))
+##        else:
+##            lg.append((str(datetime.now()).split()[1],s,''))
         
         if len(lg)> 100:
             with open('res-%d.txt'%n,'a') as log:
@@ -74,7 +74,7 @@ if __name__=='__main__':
     global running
     running = True
    
-    wifi2 = Serial("COM36",230400,xonxoff = True)
+    wifi2 = Serial("COM38",115200,xonxoff = True)
 
 
     tr2 = Thread(target=read_ssid,args=(wifi2,2))
