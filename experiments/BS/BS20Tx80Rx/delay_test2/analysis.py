@@ -89,7 +89,8 @@ def scan_frequency(raw):
     t0 = TimeStamp(scans[0]).toSeconds()
     t1 = TimeStamp(scans[-1]).toSeconds()
     return len(scans)/(t1-t0)
-    
+
+
 def analysis(res1,res2,n1,n2):
     rec = read_data(res2)
     
@@ -103,19 +104,44 @@ def analysis(res1,res2,n1,n2):
     sent_set = set([s[1] for s in sent])
     rec_set = set([r[1].replace('*','') for r in rec])
     received = len(rec_set.intersection(sent_set))
-
+    t0 = rec[0][0].toSeconds()
+    t1 = rec[-1][0].toSeconds()
     
-    print('succ: ', received/len(sent))
+    print('Reception rate: ',len(rec)/(t1-t0))
+    
+    print('Success: %.6f%%'%(100*received/len(sent)))
 
-    print('sent [msg/s]:', sent_frequency(sent))
+    print('Transmission rate [msg/s]:', sent_frequency(sent))
+    wnd = {}
+    wnd[0] = []
+    tref = rec[0][0].toSeconds()
+    i = 0
+    for r in rec:
+        if r[0].toSeconds() - tref < 1:
+            wnd[i].append(r)
+        else:
+            tref = r[0].toSeconds()
+            i += 1
+            wnd[i] = []
+    hist = []
+    for w in wnd:
+        hist.append(len(wnd[w]))
     tr.join()
     tr2.join()
+    return hist
 
+    
+        
 if __name__=='__main__':
+
     res1 = read_file('res-1.txt')
     res2 = read_file('res-2.txt')
-    analysis(res1,res2,'res-1','res-2')
-    analysis(res2,res1,'res2','res-1')
+
+    h1 = analysis(res1,res2,'res-1','res-2')
+    h2 = analysis(res2,res1,'res2','res-1')
+    plt.hist(h1,density=True,histtype='step')
+    plt.hist(h2,density=True,histtype='step')
+    plt.show()
     diff1 = compute_ttx(res1)
     diff2 = compute_ttx(res2)
     print('scan freq(res-1): ',scan_frequency(res1))
