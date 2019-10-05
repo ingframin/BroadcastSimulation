@@ -60,7 +60,7 @@ public class BroadcastSimulator{
 			points = Integer.parseInt(args[0]);
 		}
 		else{
-			points = 1_000_000;
+			points = 10_000_000;
 		}
 		System.out.println("Points: "+points);
 		try (Stream<Path> walk = Files.walk(Paths.get("."))) {
