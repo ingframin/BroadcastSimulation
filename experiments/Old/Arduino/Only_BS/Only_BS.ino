@@ -121,9 +121,9 @@ void loop() {
    r = random(0,9999);
 
     
-    //if(r < 4286){//20Tx, 80Rx
+    if(r < 4286){//20Tx, 80Rx
     //if(r < 7317){ //50Tx,50Rx
-    if(r <= 5000){ //50Tx,50Rx
+    //if(r <= 5000){ //50Tx,50Rx
     //if(r < 9231){ //80Tx,20Rx
       unsigned long start = micros();
       //digitalWrite(15, HIGH);
