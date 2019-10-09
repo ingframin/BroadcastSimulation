@@ -139,9 +139,9 @@ if __name__=='__main__':
 
     h1 = analysis(res1,res2,'res-1','res-2')
     h2 = analysis(res2,res1,'res2','res-1')
-    #plt.hist(h1,density=True,histtype='step')
-    #plt.hist(h2,density=True,histtype='step')
-    #plt.show()
+    plt.hist(h1,density=True,histtype='step')
+    plt.hist(h2,density=True,histtype='step')
+    plt.show()
     diff1 = compute_ttx(res1)
     diff2 = compute_ttx(res2)
     print('scan freq(res-1): ',scan_frequency(res1))
