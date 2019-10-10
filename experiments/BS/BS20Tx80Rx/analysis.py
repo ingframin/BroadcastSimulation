@@ -127,6 +127,8 @@ def analysis(res1,res2,n1,n2):
     print('Success: %.6f%%'%(100*received/len(sent)))
 
     print('Transmission rate [msg/s]:', sent_frequency(sent))
+
+            
     wnd = {}
     wnd[0] = []
     tref = rec[0][0].toSeconds()
@@ -171,6 +173,29 @@ if __name__=='__main__':
     print('Standard deviation: Trx')
     print(np.std(diff_r1)/1000)
     print(np.std(diff_r2)/1000)
+    B = 0
+    S = 0
+    for line in res1:
+        if '>' in line:
+            B+=1
+        if 'S' in line:
+            S+=1
+    Btime = B*np.average(diff1)/1000
+    Stime = S*np.average(diff_r1)/1000
+    print('B1(%): ',100*Btime/(Btime+Stime))
+    print('S1(%): ',100*Stime/(Btime+Stime))
+
+    B = 0
+    S = 0
+    for line in res2:
+        if '>' in line:
+            B+=1
+        if 'S' in line:
+            S+=1
+    Btime = B*np.average(diff2)/1000
+    Stime = S*np.average(diff_r2)/1000
+    print('B2(%): ',100*Btime/(Btime+Stime))
+    print('S2(%): ',100*Stime/(Btime+Stime))
     
     plt.hist(h1,density=True,histtype='step')
     plt.hist(h2,density=True,histtype='step')

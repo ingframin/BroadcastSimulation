@@ -68,7 +68,22 @@ def compute_ttx(raw):
   
     for line in raw:
         
-        if 'dur' in line:
+        if 'dur' in line and 's-' not in line:
+            clean = cleanup(line)
+            ls = clean.split(',')
+            s = ls[1].split(':')[1]
+            d = float(s)
+            diff.append(d)
+            
+    return diff
+
+def compute_trx(raw):
+
+    diff = []
+  
+    for line in raw:
+        
+        if 's-dur' in line:
             clean = cleanup(line)
             ls = clean.split(',')
             s = ls[1].split(':')[1]
@@ -94,7 +109,7 @@ def scan_frequency(raw):
 def analysis(res1,res2,n1,n2):
     rec = read_data(res2)
     
-    tr = Thread(target=save,args=('received-%s.txt',rec))
+    tr = Thread(target=save,args=('received-%s.txt'%n2,rec))
     tr.start()
     sent = get_sent(res1)
     
@@ -112,6 +127,8 @@ def analysis(res1,res2,n1,n2):
     print('Success: %.6f%%'%(100*received/len(sent)))
 
     print('Transmission rate [msg/s]:', sent_frequency(sent))
+
+            
     wnd = {}
     wnd[0] = []
     tref = rec[0][0].toSeconds()
@@ -139,22 +156,63 @@ if __name__=='__main__':
 
     h1 = analysis(res1,res2,'res-1','res-2')
     h2 = analysis(res2,res1,'res2','res-1')
-    plt.hist(h1,density=True,histtype='step')
-    plt.hist(h2,density=True,histtype='step')
-    plt.show()
+    
     diff1 = compute_ttx(res1)
     diff2 = compute_ttx(res2)
+    diff_r1 = compute_trx(res1)
+    diff_r2 = compute_trx(res2)
     print('scan freq(res-1): ',scan_frequency(res1))
     print('scan freq(res-2): ',scan_frequency(res2))
     print('Average Ttx (res-1): ',np.average(diff1)/1000)
     print('Average Ttx (res-2): ',np.average(diff2)/1000)
+    print('Average Trx (res-1): ',np.average(diff_r1)/1000)
+    print('Average Trx (res-2): ',np.average(diff_r2)/1000)
+    print('Standard deviation: Ttx')
     print(np.std(diff1)/1000)
     print(np.std(diff2)/1000)
-        
-    plt.hist(diff1,color='blue',density=True)
-    #plt.hist(diff2,histtype='step',color='green',density=False)
-    plt.xticks(ticks=range(15000,35000,1000), labels=range(15,35))
-    plt.yticks(ticks=[0,0.5e-4,1e-4,1.5e-4,2e-4,2.5e-4,3e-4], labels=['0.0','0.5e-4','1e-4','1.5e-4','2e-4','2.5e-4','3e-4'])
-    plt.axis([15000,35000,0,0.0003])
+    print('Standard deviation: Trx')
+    print(np.std(diff_r1)/1000)
+    print(np.std(diff_r2)/1000)
+    B = 0
+    S = 0
+    for line in res1:
+        if '>' in line:
+            B+=1
+        if 'S' in line:
+            S+=1
+    Btime = B*np.average(diff1)/1000
+    Stime = S*np.average(diff_r1)/1000
+    print('B1(%): ',100*Btime/(Btime+Stime))
+    print('S1(%): ',100*Stime/(Btime+Stime))
+
+    B = 0
+    S = 0
+    for line in res2:
+        if '>' in line:
+            B+=1
+        if 'S' in line:
+            S+=1
+    Btime = B*np.average(diff2)/1000
+    Stime = S*np.average(diff_r2)/1000
+    print('B2(%): ',100*Btime/(Btime+Stime))
+    print('S2(%): ',100*Stime/(Btime+Stime))
+    
+    plt.hist(h1,density=True,histtype='step')
+    plt.hist(h2,density=True,histtype='step')
+    plt.show()
+    
+    plt.hist(diff1,histtype='step',color='blue',density=True)
+    plt.hist(diff2,histtype='step',color='green',density=True)
+    plt.xticks(ticks=range(24000,40000,1000), labels=range(24,40))
+    plt.yticks(ticks=[0,0.5e-4,1e-4,1.5e-4,2e-4,2.5e-4,3e-4,4e-4], labels=['0.0','0.5e-4','1e-4','1.5e-4','2e-4','2.5e-4','3e-4','4e-4'])
+    plt.axis([24000,40000,0,0.0004])
+    plt.grid(True)
+    plt.show()
+
+    plt.hist(diff_r1,histtype='step',color='blue',density=True)
+    plt.hist(diff_r2,histtype='step',color='green',density=True)
+    plt.xticks(ticks=range(60000,63000,1000), labels=range(60,63))
+    #plt.yticks(ticks=[0,0.5e-4,1e-4,1.5e-4,2e-4,2.5e-4,3e-4,4e-4], labels=['0.0','0.5e-4','1e-4','1.5e-4','2e-4','2.5e-4','3e-4','4e-4'])
+    plt.axis([60000,63000,0,0.005])
     plt.grid(True)
     plt.show()
