@@ -93,7 +93,25 @@ def genWindowHistogram(r1, r2, wnd):
     print(sum(result))
     return result
 
-
+def expand(raw, Ttx, Trx, Tn):
+    buffer = []
+    rs = raw.split(',')
+    for c in rs:
+        if c == '':
+            continue
+        elif 'S' in c:
+            buffer.extend(Trx*'S')
+        elif 'N' in c:
+            buffer.extend(Tn*'N')
+        else:
+            n = int(c.replace('B',''))
+            for i in range(Ttx):
+                if i == n:
+                    buffer.append('B')
+                else:
+                    buffer.append('X')
+    return buffer
+    
 def compute_histogram(r1, r2, Trx, Ttx, Tn):
 
     Eb1, Es1, En1 = computeEvents(r1, Ttx, Trx, Tn)
