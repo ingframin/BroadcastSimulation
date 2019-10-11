@@ -34,35 +34,27 @@ public class BroadcastSimulator {
 
 	}
 
-	public static void run(String runID, Node[] nodes, int points, int tn) {
+	public static void run(String runID, Node[] nodes, int points, int tn, int ts, int tb) {
 		int mb = 1024 * 1024;
 		Runtime runtime = Runtime.getRuntime();
+		long used_mem;
+
 		for (int i = 0; i < nodes.length; i++) {
 			var n = nodes[i];
 			var l = new Logger("./results/r" + runID + "-d" + i + "-result.txt", points);
-			long used_mem = (runtime.totalMemory() - runtime.freeMemory()) / mb;
 
 			for (int k = 0; k < points; k++) {
 				n.run();
-				while (used_mem > 5500) {
-					System.out.println("Used Memory[MB]:" + used_mem);
-					System.gc();
-					try {
-						Thread.sleep(10000);
-					} catch (Exception e) {
-					}
-					;
-					used_mem = (runtime.totalMemory() - runtime.freeMemory()) / mb;
-					System.out.println("Used Memory[MB]:" + used_mem);
-				}
+
 				l.log(n.getCurrentState());
 
 			}
-
-			pool.execute(() -> l.dump(false));
-			// l.dump(false);
-
+			used_mem = (runtime.totalMemory() - runtime.freeMemory()) / mb;
+			System.out.println("Used Memory[MB]:" + used_mem);
+			l.compactDump();
+			System.gc();
 		}
+
 	}
 
 	public static void main(String[] args) {
@@ -82,14 +74,16 @@ public class BroadcastSimulator {
 					.filter((fn) -> fn.matches("(.*)config[0-9]+(.*)")).collect(Collectors.toList());
 			System.out.println(result);
 			result.forEach((fn) -> {
+
 				var n = fn.replaceAll("\\D+", "");
 				System.out.println("config" + n + ".txt");
+
 				try {
 					var config = readConfigFile("config" + n + ".txt");
 					var nodes = generateNodes(n_nodes, config.Trx, config.Tn, config.Ttx, config.Vs, config.Vn,
 							config.Vb);
-					int tn = config.Tn;
-					run(n, nodes, points, tn);
+					pool.execute(() -> run(n, nodes, points, config.Tn, config.Trx, config.Ttx));
+
 				} catch (Exception e) {
 					System.out.println(e.getMessage());
 				}
