@@ -20,3 +20,14 @@ C:/Users/ingframin/tutorial/obj/Release/netcoreapp3.0/tutorial.pdb
 /Users/ingframin/BroadcastSimulation/tutorial/obj/Release/netcoreapp3.0/tutorial.AssemblyInfo.cs
 /Users/ingframin/BroadcastSimulation/tutorial/obj/Release/netcoreapp3.0/tutorial.dll
 /Users/ingframin/BroadcastSimulation/tutorial/obj/Release/netcoreapp3.0/tutorial.pdb
+D:\BroadcastSimulation\tutorial\bin\Release\netcoreapp3.0\tutorial.exe
+D:\BroadcastSimulation\tutorial\bin\Release\netcoreapp3.0\tutorial.deps.json
+D:\BroadcastSimulation\tutorial\bin\Release\netcoreapp3.0\tutorial.runtimeconfig.json
+D:\BroadcastSimulation\tutorial\bin\Release\netcoreapp3.0\tutorial.runtimeconfig.dev.json
+D:\BroadcastSimulation\tutorial\bin\Release\netcoreapp3.0\tutorial.dll
+D:\BroadcastSimulation\tutorial\bin\Release\netcoreapp3.0\tutorial.pdb
+D:\BroadcastSimulation\tutorial\obj\Release\netcoreapp3.0\tutorial.csprojAssemblyReference.cache
+D:\BroadcastSimulation\tutorial\obj\Release\netcoreapp3.0\tutorial.AssemblyInfoInputs.cache
+D:\BroadcastSimulation\tutorial\obj\Release\netcoreapp3.0\tutorial.AssemblyInfo.cs
+D:\BroadcastSimulation\tutorial\obj\Release\netcoreapp3.0\tutorial.dll
+D:\BroadcastSimulation\tutorial\obj\Release\netcoreapp3.0\tutorial.pdb

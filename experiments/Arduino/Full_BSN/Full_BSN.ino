@@ -9,7 +9,7 @@ const char* password =  "hi64nyvy";
 //IP address to send UDP data to:
 // either use the ip address of the server or 
 // a network broadcast address
-const char * host = "192.168.4.1";
+const char * host = "192.168.1.137";
 const int port = 8000;
 //The udp library class
 WiFiUDP udp;
@@ -94,7 +94,7 @@ void broadcastSSID(){
     
     delay(1);  
   }//14 channels
- 
+  delay(8);
 
 }
 void netCom(){
@@ -128,7 +128,7 @@ void netCom(){
 }
 
 void setup() {
-  Serial.begin(230400);
+  Serial.begin(115200);
   Serial.setTimeout(100);
   WiFi.mode(WIFI_STA);
  
@@ -144,7 +144,7 @@ void setup() {
   Serial.println(WiFi.localIP());
   
   channel = random(1,14);
-  esp_wifi_set_promiscuous(true);
+  esp_wifi_set_promiscuous(false);
   esp_wifi_set_max_tx_power(78);
   packet[38] = 'D';
   packet[39] = 'N';
@@ -152,19 +152,17 @@ void setup() {
 
 void loop() {
   r = random(1,10000);
-   if(r <= 5000){
+   if(r <= 1667){
 
-    
+    unsigned long start = micros();
     int count = 0;
-    if(WiFi.status() != WL_CONNECTED) {
-      WiFi.reconnect();
+    if(WiFi.status() != WL_CONNECTED){
+      WiFi.begin(ssid, password);
     }
+    
+    
     while (WiFi.status() != WL_CONNECTED) {
       delay(10);
-      if(count == 100){
-        Serial.print(WiFi.status());
-        ESP.restart();
-      }
       count+=1;
       Serial.print(".");
     }
@@ -176,9 +174,11 @@ void loop() {
     udp.stop();
     
     //WiFi.disconnect();
+    unsigned long stop = micros();
+    Serial.printf("dur: %u\r\n",stop-start);
 
     }
-    else if(r>5000 && r<8000){
+    else if(r>1667 && r<7223){
 
        Serial.write(17);//XON
       Serial.println('>'); //Used to synchronize UART communication
