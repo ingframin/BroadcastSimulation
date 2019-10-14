@@ -38,7 +38,20 @@ namespace tutorial
         static void Main(string[] args)
         {
             var pool = new List<Thread>();
-            for (int i = 1; i < Int32.Parse(args[0]); i++)
+            for (int i = 1; i <= Int32.Parse(args[0])/2; i++)
+            {
+                var t = new Thread(Run);
+                t.Start(i);
+                pool.Add(t);
+
+
+            }
+            foreach (var p in pool)
+            {
+                p.Join();
+            }
+            System.GC.Collect();
+            for (int i = Int32.Parse(args[0])/2 +1; i < Int32.Parse(args[0]); i++)
             {
                 var t = new Thread(Run);
                 t.Start(i);
