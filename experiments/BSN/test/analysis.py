@@ -38,8 +38,8 @@ def read_data(raw):
                 ls = clean.split(',')
                 ts = TimeStamp(ls[0])
                 ssid_str = ssid[0][1:18]
-                rssi = int(ls[2][5:])
-                rec.append((ts,ssid_str,rssi))
+                
+                rec.append((ts,ssid_str))
             except:
                 print(clean)
                 
@@ -50,7 +50,7 @@ def get_sent(lines):
     
     sent = []
     for line in lines:
-        if 'sent' in line:
+        if '>' in line:
             clean = cleanup(line)
             ls = clean.split(',')
             s = ls[2].replace('*','').replace('sent:','').strip()
@@ -68,7 +68,7 @@ def compute_ttx(raw):
   
     for line in raw:
         
-        if 'dur' in line and 's-' not in line:
+        if 'B-dur' in line:
             clean = cleanup(line)
             ls = clean.split(',')
             s = ls[1].split(':')[1]
@@ -83,7 +83,7 @@ def compute_trx(raw):
   
     for line in raw:
         
-        if 's-dur' in line:
+        if 'S-dur' in line:
             clean = cleanup(line)
             ls = clean.split(',')
             s = ls[1].split(':')[1]
@@ -118,6 +118,7 @@ def analysis(res1,res2,n1,n2):
       
     sent_set = set([s[1] for s in sent])
     rec_set = set([r[1].replace('*','') for r in rec])
+    
     received = len(rec_set.intersection(sent_set))
     t0 = rec[0][0].toSeconds()
     t1 = rec[-1][0].toSeconds()
@@ -197,20 +198,20 @@ if __name__=='__main__':
     print('B2(%): ',100*Btime/(Btime+Stime))
     print('S2(%): ',100*Stime/(Btime+Stime))
     
-    plt.hist(h1,density=True,histtype='step')
-    plt.hist(h2,density=True,histtype='step')
+    plt.hist(h1,bins=50,density=True,histtype='step')
+    plt.hist(h2,bins=50,density=True,histtype='step')
     plt.show()
     
-    plt.hist(diff1,histtype='step',color='blue',density=True)
-    plt.hist(diff2,histtype='step',color='green',density=True)
+    plt.hist(diff1,bins=50,histtype='step',color='blue',density=True)
+    plt.hist(diff2,bins=50,histtype='step',color='green',density=True)
     plt.xticks(ticks=range(24000,40000,1000), labels=range(24,40))
     plt.yticks(ticks=[0,0.5e-4,1e-4,1.5e-4,2e-4,2.5e-4,3e-4,4e-4], labels=['0.0','0.5e-4','1e-4','1.5e-4','2e-4','2.5e-4','3e-4','4e-4'])
     plt.axis([24000,40000,0,0.0004])
     plt.grid(True)
     plt.show()
 
-    plt.hist(diff_r1,histtype='step',color='blue',density=True)
-    plt.hist(diff_r2,histtype='step',color='green',density=True)
+    plt.hist(diff_r1,bins=50,histtype='step',color='blue',density=True)
+    plt.hist(diff_r2,bins=50,histtype='step',color='green',density=True)
     #plt.xticks(ticks=range(24000,40000,1000), labels=range(24,40))
     #plt.yticks(ticks=[0,0.5e-4,1e-4,1.5e-4,2e-4,2.5e-4,3e-4,4e-4], labels=['0.0','0.5e-4','1e-4','1.5e-4','2e-4','2.5e-4','3e-4','4e-4'])
     #plt.axis([24000,40000,0,0.0004])

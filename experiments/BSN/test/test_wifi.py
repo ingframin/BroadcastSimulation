@@ -45,29 +45,19 @@ def read_ssid(wi,n):
     global running
     lg = []
     seq = 0
-    df = open('la_divin.txt','rb')
-    data = df.readlines()
-    df.close()
-    i = 0
-    j = 20
     while running:
         timestamp = str(datetime.now()).split()[1]
         s = wi.readline()
-        #print(data[i])
-        print(s)
+        
+        ssid = ("%d-%d"%(n,seq)+'*')
         if b'>' in s:
-            wi.write(data[i]+b'*')
-            lg.append((str(datetime.now()).split()[1],s,data[i:j],i,j))
-            i += j
-            
-            if i >= len(data):
-                wi.write(b'-'*70)
-                running = False
-            
+            wi.write(ssid.encode())
+            seq += 1
+            lg.append((str(datetime.now()).split()[1],s,'sent:'+ssid))
         else:
             lg.append((str(datetime.now()).split()[1],s,''))
         
-        if len(lg)> 100:
+        if len(lg)> 1000:
             with open('res-%d.txt'%n,'a') as log:
                 for l in lg:
                     print(l,file=log)
@@ -84,7 +74,7 @@ if __name__=='__main__':
 
     global running
     running = True
-    wifi1 = Serial("COM39",115200,xonxoff = True)
+    wifi1 = Serial("COM38",115200,xonxoff = True)
     wifi2 = Serial("COM36",115200,xonxoff = True)
 
 
