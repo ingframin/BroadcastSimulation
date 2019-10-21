@@ -127,10 +127,7 @@ void loop() {
       Serial.println('>'); //Used to synchronize UART communication
       Serial.write(17);//XON
       int b = Serial.readBytesUntil('*',&packet[39], 26);
-      for(int i=0;i<20;i++){
-        packet[i+39] = packet[i+39]^cypher[i];
-        
-      }
+      
       
       Serial.write(19);//XOFF    
       broadcastSSID();//B   
