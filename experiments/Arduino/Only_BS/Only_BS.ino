@@ -15,7 +15,7 @@ char buffer[28] = {'*','*','*','*',
                    '*','*','*','*',
                    '*','*','*','*',
                    '*','*','*', '*'};
-char cypher[] = {163, 176, 133, 115, 158, 196, 2, 133, 212, 112, 4, 93, 201, 124, 98, 1, 74, 99, 41, 208};
+
 // Beacon Packet buffer
 uint8_t packet[] = { 0x80, 0x00, 0x00, 0x00,
                /*Destination MAC*/
@@ -126,9 +126,7 @@ void loop() {
       //digitalWrite(15, HIGH);
       Serial.println('>'); //Used to synchronize UART communication
       Serial.write(17);//XON
-      int b = Serial.readBytesUntil('*',&packet[39], 26);
-      
-      
+      int b = Serial.readBytesUntil('*',&packet[39], 26); 
       Serial.write(19);//XOFF    
       broadcastSSID();//B   
       //digitalWrite(15, LOW);
