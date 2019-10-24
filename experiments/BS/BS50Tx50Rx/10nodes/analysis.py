@@ -7,7 +7,7 @@ import scipy.stats
 import matplotlib
 from threading import Thread
 
-MSG = re.compile(r'D[0-9]+-.*\*')
+MSG = re.compile(r'D[0-9]+-.*')
 SENT = re.compile(r'[0-9]+:[0-9]+:[0-9]+\.[0-9]+')
 
 def save(filename,data):
@@ -28,6 +28,7 @@ def read_data(raw):
     rec = []
     
     for line in raw:
+        
         clean = cleanup(line)
         
         ssid = MSG.findall(clean)
@@ -38,6 +39,7 @@ def read_data(raw):
                 ls = clean.split(',')
                 ts = TimeStamp(ls[0])
                 ssid_str = ssid[0][1:18]
+                
                 rssi = int(ls[2][5:])
                 rec.append((ts,ssid_str,rssi))
             except:
@@ -117,8 +119,7 @@ def analysis(res1,res2,n1,n2):
     tr2.start()
       
     sent_set = set([s[1] for s in sent])
-    rec_filtered = filter(lambda x: x[1].split('-')[0]==str(n2),rec)
-    rec_set = set([r[1].replace('*','') for r in rec_filtered])
+    rec_set = set([r[1].replace('*','') for r in rec])
     received = len(rec_set.intersection(sent_set))
     t0 = rec[0][0].toSeconds()
     t1 = rec[-1][0].toSeconds()
@@ -146,74 +147,82 @@ def analysis(res1,res2,n1,n2):
         hist.append(len(wnd[w]))
     tr.join()
     tr2.join()
-    return hist
+    return hist, 100*received/len(sent)
 
     
         
 if __name__=='__main__':
+    res = {}
+    suc = []
+    for f in range(1,11):
+        res[f] = read_file('res-%d.txt'%f)
+        
+    for i in range(1,11):
+        for j in range(i+1,11):
+            
 
-    res1 = read_file('res-1.txt')
-    res2 = read_file('res-3.txt')
-
-    h1 = analysis(res1,res2,1,3)
-    h2 = analysis(res2,res1,3,1)
+            h1,succ1 = analysis(res[i],res[j],i,j)
+            h2,succ2 = analysis(res[j],res[i],j,i)
+            suc.append(succ1)
+            suc.append(succ2)
+    print(sum(suc)/len(suc))
     
-    diff1 = compute_ttx(res1)
-    diff2 = compute_ttx(res2)
-    diff_r1 = compute_trx(res1)
-    diff_r2 = compute_trx(res2)
-    print('scan freq(res-1): ',scan_frequency(res1))
-    print('scan freq(res-2): ',scan_frequency(res2))
-    print('Average Ttx (res-1): ',np.average(diff1)/1000)
-    print('Average Ttx (res-2): ',np.average(diff2)/1000)
-    print('Average Trx (res-1): ',np.average(diff_r1)/1000)
-    print('Average Trx (res-2): ',np.average(diff_r2)/1000)
-    print('Standard deviation: Ttx')
-    print(np.std(diff1)/1000)
-    print(np.std(diff2)/1000)
-    print('Standard deviation: Trx')
-    print(np.std(diff_r1)/1000)
-    print(np.std(diff_r2)/1000)
-    B = 0
-    S = 0
-    for line in res1:
-        if '>' in line:
-            B+=1
-        if 'S' in line:
-            S+=1
-    Btime = B*np.average(diff1)/1000
-    Stime = S*np.average(diff_r1)/1000
-    print('B1(%): ',100*Btime/(Btime+Stime))
-    print('S1(%): ',100*Stime/(Btime+Stime))
-
-    B = 0
-    S = 0
-    for line in res2:
-        if '>' in line:
-            B+=1
-        if 'S' in line:
-            S+=1
-    Btime = B*np.average(diff2)/1000
-    Stime = S*np.average(diff_r2)/1000
-    print('B2(%): ',100*Btime/(Btime+Stime))
-    print('S2(%): ',100*Stime/(Btime+Stime))
-    
-    plt.hist(h1,bins=100,density=True,histtype='step')
-    plt.hist(h2,bins=100,density=True,histtype='step')
-    plt.show()
-    
-    plt.hist(diff1,bins=100,histtype='step',color='blue',density=True)
-    plt.hist(diff2,bins=100,histtype='step',color='green',density=True)
-    plt.xticks(ticks=range(24000,40000,1000), labels=range(24,40))
-    plt.yticks(ticks=[0,0.5e-4,1e-4,1.5e-4,2e-4,2.5e-4,3e-4,4e-4], labels=['0.0','0.5e-4','1e-4','1.5e-4','2e-4','2.5e-4','3e-4','4e-4'])
-    plt.axis([24000,40000,0,0.0004])
-    plt.grid(True)
-    plt.show()
-
-    plt.hist(diff_r1,bins=100,histtype='step',color='blue',density=True)
-    plt.hist(diff_r2,bins=100,histtype='step',color='green',density=True)
-    #plt.xticks(ticks=range(24000,40000,1000), labels=range(24,40))
-    #plt.yticks(ticks=[0,0.5e-4,1e-4,1.5e-4,2e-4,2.5e-4,3e-4,4e-4], labels=['0.0','0.5e-4','1e-4','1.5e-4','2e-4','2.5e-4','3e-4','4e-4'])
-    #plt.axis([24000,40000,0,0.0004])
-    plt.grid(True)
-    plt.show()
+##    diff1 = compute_ttx(res1)
+##    diff2 = compute_ttx(res2)
+##    diff_r1 = compute_trx(res1)
+##    diff_r2 = compute_trx(res2)
+##    print('scan freq(res-1): ',scan_frequency(res1))
+##    print('scan freq(res-2): ',scan_frequency(res2))
+##    print('Average Ttx (res-1): ',np.average(diff1)/1000)
+##    print('Average Ttx (res-2): ',np.average(diff2)/1000)
+##    print('Average Trx (res-1): ',np.average(diff_r1)/1000)
+##    print('Average Trx (res-2): ',np.average(diff_r2)/1000)
+##    print('Standard deviation: Ttx')
+##    print(np.std(diff1)/1000)
+##    print(np.std(diff2)/1000)
+##    print('Standard deviation: Trx')
+##    print(np.std(diff_r1)/1000)
+##    print(np.std(diff_r2)/1000)
+##    B = 0
+##    S = 0
+##    for line in res1:
+##        if '>' in line:
+##            B+=1
+##        if 'S' in line:
+##            S+=1
+##    Btime = B*np.average(diff1)/1000
+##    Stime = S*np.average(diff_r1)/1000
+##    print('B1(%): ',100*Btime/(Btime+Stime))
+##    print('S1(%): ',100*Stime/(Btime+Stime))
+##
+##    B = 0
+##    S = 0
+##    for line in res2:
+##        if '>' in line:
+##            B+=1
+##        if 'S' in line:
+##            S+=1
+##    Btime = B*np.average(diff2)/1000
+##    Stime = S*np.average(diff_r2)/1000
+##    print('B2(%): ',100*Btime/(Btime+Stime))
+##    print('S2(%): ',100*Stime/(Btime+Stime))
+##    
+##    plt.hist(h1,bins=100,density=True,histtype='step')
+##    plt.hist(h2,bins=100,density=True,histtype='step')
+##    plt.show()
+##    
+##    plt.hist(diff1,bins=100,histtype='step',color='blue',density=True)
+##    plt.hist(diff2,bins=100,histtype='step',color='green',density=True)
+##    plt.xticks(ticks=range(24000,40000,1000), labels=range(24,40))
+##    plt.yticks(ticks=[0,0.5e-4,1e-4,1.5e-4,2e-4,2.5e-4,3e-4,4e-4], labels=['0.0','0.5e-4','1e-4','1.5e-4','2e-4','2.5e-4','3e-4','4e-4'])
+##    plt.axis([24000,40000,0,0.0004])
+##    plt.grid(True)
+##    plt.show()
+##
+##    plt.hist(diff_r1,bins=100,histtype='step',color='blue',density=True)
+##    plt.hist(diff_r2,bins=100,histtype='step',color='green',density=True)
+##    #plt.xticks(ticks=range(24000,40000,1000), labels=range(24,40))
+##    #plt.yticks(ticks=[0,0.5e-4,1e-4,1.5e-4,2e-4,2.5e-4,3e-4,4e-4], labels=['0.0','0.5e-4','1e-4','1.5e-4','2e-4','2.5e-4','3e-4','4e-4'])
+##    #plt.axis([24000,40000,0,0.0004])
+##    plt.grid(True)
+##    plt.show()

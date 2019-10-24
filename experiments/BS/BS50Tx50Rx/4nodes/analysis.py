@@ -7,7 +7,7 @@ import scipy.stats
 import matplotlib
 from threading import Thread
 
-MSG = re.compile(r'D[0-9]+-.*\*')
+MSG = re.compile(r'D[0-9]+-.*')
 SENT = re.compile(r'[0-9]+:[0-9]+:[0-9]+\.[0-9]+')
 
 def save(filename,data):
@@ -28,6 +28,8 @@ def read_data(raw):
     rec = []
     
     for line in raw:
+        if 'D3-' in line:
+            continue
         clean = cleanup(line)
         
         ssid = MSG.findall(clean)
@@ -38,6 +40,7 @@ def read_data(raw):
                 ls = clean.split(',')
                 ts = TimeStamp(ls[0])
                 ssid_str = ssid[0][1:18]
+                
                 rssi = int(ls[2][5:])
                 rec.append((ts,ssid_str,rssi))
             except:
@@ -151,11 +154,11 @@ def analysis(res1,res2,n1,n2):
         
 if __name__=='__main__':
 
-    res1 = read_file('res-4.txt')
-    res2 = read_file('res-1.txt')
+    res1 = read_file('res-1.txt')
+    res2 = read_file('res-2.txt')
 
-    h1 = analysis(res1,res2,4,1)
-    h2 = analysis(res2,res1,1,4)
+    h1 = analysis(res1,res2,1,2)
+    h2 = analysis(res2,res1,2,1)
     
     diff1 = compute_ttx(res1)
     diff2 = compute_ttx(res2)
