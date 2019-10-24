@@ -126,7 +126,7 @@ void loop() {
       //digitalWrite(15, HIGH);
       Serial.println('>'); //Used to synchronize UART communication
       Serial.write(17);//XON
-      int b = Serial.readBytesUntil('*',&packet[39], 26); 
+      int b = Serial.readBytesUntil('*',&packet[39], 26);  
       Serial.write(19);//XOFF    
       broadcastSSID();//B   
       //digitalWrite(15, LOW);
