@@ -145,74 +145,77 @@ def analysis(res1,res2,n1,n2):
         hist.append(len(wnd[w]))
     tr.join()
     tr2.join()
-    return hist
+    return hist, 100*received/len(sent)
 
+def duty_cycle(res,dtx,drx):
+    B = 0
+    S = 0
+    for line in res:
+        if '>' in line:
+            B+=1
+        if 'S' in line:
+            S+=1
+    Btime = B*np.average(dtx)/1000
+    Stime = S*np.average(drx)/1000
+    print('B(%): ',100*Btime/(Btime+Stime))
+    print('S(%): ',100*Stime/(Btime+Stime))
     
-        
 if __name__=='__main__':
 
-    res1 = read_file('res-1.txt')
-    res2 = read_file('res-2.txt')
+    res = []
+    n = 2
 
-    h1 = analysis(res1,res2,'res-1','res-2')
-    h2 = analysis(res2,res1,'res2','res-1')
+    for i in range(1,n+1):
+          
+        res.append(read_file('res-%d.txt'%i))
     
-    diff1 = compute_ttx(res1)
-    diff2 = compute_ttx(res2)
-    diff_r1 = compute_trx(res1)
-    diff_r2 = compute_trx(res2)
-    print('scan freq(res-1): ',scan_frequency(res1))
-    print('scan freq(res-2): ',scan_frequency(res2))
-    print('Average Ttx (res-1): ',np.average(diff1)/1000)
-    print('Average Ttx (res-2): ',np.average(diff2)/1000)
-    print('Average Trx (res-1): ',np.average(diff_r1)/1000)
-    print('Average Trx (res-2): ',np.average(diff_r2)/1000)
-    print('Standard deviation: Ttx')
-    print(np.std(diff1)/1000)
-    print(np.std(diff2)/1000)
-    print('Standard deviation: Trx')
-    print(np.std(diff_r1)/1000)
-    print(np.std(diff_r2)/1000)
-    B = 0
-    S = 0
-    for line in res1:
-        if '>' in line:
-            B+=1
-        if 'S' in line:
-            S+=1
-    Btime = B*np.average(diff1)/1000
-    Stime = S*np.average(diff_r1)/1000
-    print('B1(%): ',100*Btime/(Btime+Stime))
-    print('S1(%): ',100*Stime/(Btime+Stime))
 
-    B = 0
-    S = 0
-    for line in res2:
-        if '>' in line:
-            B+=1
-        if 'S' in line:
-            S+=1
-    Btime = B*np.average(diff2)/1000
-    Stime = S*np.average(diff_r2)/1000
-    print('B2(%): ',100*Btime/(Btime+Stime))
-    print('S2(%): ',100*Stime/(Btime+Stime))
+    h_xy = []
+    s_xy = []
     
-    plt.hist(h1,density=True,histtype='step')
-    plt.hist(h2,density=True,histtype='step')
-    plt.show()
     
-    plt.hist(diff1,histtype='step',color='blue',density=True)
-    plt.hist(diff2,histtype='step',color='green',density=True)
-    plt.xticks(ticks=range(24000,40000,1000), labels=range(24,40))
-    plt.yticks(ticks=[0,0.5e-4,1e-4,1.5e-4,2e-4,2.5e-4,3e-4,4e-4], labels=['0.0','0.5e-4','1e-4','1.5e-4','2e-4','2.5e-4','3e-4','4e-4'])
-    plt.axis([24000,40000,0,0.0004])
+    for x in range(n):
+        for y in range(n):
+            if x != y:
+                h,s = analysis(res[x],res[y],'res-%d'%x,'res-%d'%y)
+                h_xy.append(h)
+                s_xy.append(s)
+
+    print('----------------------------------------')
+    print('Average success rate: ',np.average(s_xy),'%')
+    print('----------------------------------------')
+    
+    diff_tx = []
+    diff_rx = []
+    for i in range(n):
+        diff_tx.append(compute_ttx(res[i]))
+        diff_rx.append(compute_trx(res[i]))
+        print('scan freq(res-%d): '%i,scan_frequency(res[i]))
+        
+       
+        print('Average Ttx (res-%i): '%i,np.average(diff_tx[i])/1000)
+        print('Average Trx (res-%i): '%i,np.average(diff_rx[i])/1000)
+        duty_cycle(res[i],diff_tx[i],diff_rx[i])
+        
+        print('----------------------------------------')
+    
+    
+    
+    for h in h_xy:
+        plt.hist(h,bins=30,density=True,histtype='step')
+    
     plt.grid(True)
     plt.show()
 
-    plt.hist(diff_r1,histtype='step',color='blue',density=True)
-    plt.hist(diff_r2,histtype='step',color='green',density=True)
-    #plt.xticks(ticks=range(24000,40000,1000), labels=range(24,40))
-    #plt.yticks(ticks=[0,0.5e-4,1e-4,1.5e-4,2e-4,2.5e-4,3e-4,4e-4], labels=['0.0','0.5e-4','1e-4','1.5e-4','2e-4','2.5e-4','3e-4','4e-4'])
-    #plt.axis([24000,40000,0,0.0004])
+    for dtx in diff_tx:
+        plt.hist(dtx,bins=100,histtype='step',density=True)
+   
+    plt.grid(True)
+    plt.show()
+
+    
+    for drx in diff_rx:
+        plt.hist(drx,bins=100,histtype='step',density=True)
+    
     plt.grid(True)
     plt.show()
