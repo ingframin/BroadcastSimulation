@@ -8,26 +8,28 @@
     ".NETCoreApp,Version=v3.0": []
   },
   "packageFolders": {
-    "C:\\Users\\fminucci\\.nuget\\packages\\": {}
+    "/Users/ingframin/.nuget/packages/": {},
+    "/usr/local/share/dotnet/sdk/NuGetFallbackFolder": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\BroadcastSimulation\\tutorial\\tutorial.csproj",
+      "projectUniqueName": "/Users/ingframin/BroadcastSimulation/tutorial/tutorial.csproj",
       "projectName": "tutorial",
-      "projectPath": "D:\\BroadcastSimulation\\tutorial\\tutorial.csproj",
-      "packagesPath": "C:\\Users\\fminucci\\.nuget\\packages\\",
-      "outputPath": "D:\\BroadcastSimulation\\tutorial\\obj\\",
+      "projectPath": "/Users/ingframin/BroadcastSimulation/tutorial/tutorial.csproj",
+      "packagesPath": "/Users/ingframin/.nuget/packages/",
+      "outputPath": "/Users/ingframin/BroadcastSimulation/tutorial/obj/",
       "projectStyle": "PackageReference",
+      "fallbackFolders": [
+        "/usr/local/share/dotnet/sdk/NuGetFallbackFolder"
+      ],
       "configFilePaths": [
-        "C:\\Users\\fminucci\\AppData\\Roaming\\NuGet\\NuGet.Config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        "/Users/ingframin/.nuget/NuGet/NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "netcoreapp3.0"
       ],
       "sources": {
-        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
@@ -58,7 +60,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.0.100\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/3.0.100/RuntimeIdentifierGraph.json"
       }
     }
   }
