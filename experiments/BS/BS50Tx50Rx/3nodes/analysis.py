@@ -106,7 +106,7 @@ def scan_frequency(raw):
     return len(scans)/(t1-t0)
 
 
-def analysis(res1,res2,n1,n2):
+def analysis(res1,res2,n1,n2,f=None):
     rec = read_data(res2)
     
     tr = Thread(target=save,args=('received-%s.txt'%n2,rec))
@@ -127,7 +127,14 @@ def analysis(res1,res2,n1,n2):
     print('Success: %.6f%%'%(100*received/len(sent)))
 
     print('Transmission rate [msg/s]:', sent_frequency(sent))
+    if f is not None:
+        print('----------------------------------------',file=f)
+        print('Results for: %s,%s'%(n1,n2),file=f)
+        print('Reception rate: ',len(rec)/(t1-t0),file=f)
+    
+        print('Success: %.6f%%'%(100*received/len(sent)),file=f)
 
+        print('Transmission rate [msg/s]:', sent_frequency(sent),file=f)
             
     wnd = {}
     wnd[0] = []
@@ -147,7 +154,7 @@ def analysis(res1,res2,n1,n2):
     tr2.join()
     return hist, 100*received/len(sent)
 
-def duty_cycle(res,dtx,drx):
+def duty_cycle(res,dtx,drx,f=None):
     B = 0
     S = 0
     for line in res:
@@ -159,6 +166,9 @@ def duty_cycle(res,dtx,drx):
     Stime = S*np.average(drx)/1000
     print('B(%): ',100*Btime/(Btime+Stime))
     print('S(%): ',100*Stime/(Btime+Stime))
+    if f is not None:
+        print('B(%): ',100*Btime/(Btime+Stime),file=f)
+        print('S(%): ',100*Stime/(Btime+Stime),file=f)
     
 if __name__=='__main__':
 
@@ -173,31 +183,38 @@ if __name__=='__main__':
     h_xy = []
     s_xy = []
     
-    
-    for x in range(n):
-        for y in range(n):
-            if x != y:
-                h,s = analysis(res[x],res[y],'res-%d'%x,'res-%d'%y)
-                h_xy.append(h)
-                s_xy.append(s)
+    with open('summary.txt','w') as f:
+        
+        for x in range(n):
+            for y in range(n):
+                if x != y:
+                    h,s = analysis(res[x],res[y],'res-%d'%x,'res-%d'%y,f)
+                    h_xy.append(h)
+                    s_xy.append(s)
 
-    print('----------------------------------------')
-    print('Average success rate: ',np.average(s_xy),'%')
-    print('----------------------------------------')
-    
-    diff_tx = []
-    diff_rx = []
-    for i in range(n):
-        diff_tx.append(compute_ttx(res[i]))
-        diff_rx.append(compute_trx(res[i]))
-        print('scan freq(res-%d): '%i,scan_frequency(res[i]))
-        
-       
-        print('Average Ttx (res-%i): '%i,np.average(diff_tx[i])/1000)
-        print('Average Trx (res-%i): '%i,np.average(diff_rx[i])/1000)
-        duty_cycle(res[i],diff_tx[i],diff_rx[i])
-        
         print('----------------------------------------')
+        print('Average success rate: ',np.average(s_xy),'%')
+        print('----------------------------------------')
+        print('----------------------------------------',file=f)
+        print('Average success rate: ',np.average(s_xy),'%',file=f)
+        print('----------------------------------------',file=f)
+        
+        diff_tx = []
+        diff_rx = []
+        for i in range(n):
+            diff_tx.append(compute_ttx(res[i]))
+            diff_rx.append(compute_trx(res[i]))
+            print("Results for: %d"%i,file = f)
+            print('scan freq(res-%d): '%i,scan_frequency(res[i]))
+            print('Average Ttx (res-%i): '%i,np.average(diff_tx[i])/1000)
+            print('Average Trx (res-%i): '%i,np.average(diff_rx[i])/1000)
+            print('scan freq(res-%d): '%i,scan_frequency(res[i]),file=f)
+            print('Average Ttx (res-%i): '%i,np.average(diff_tx[i])/1000,file=f)
+            print('Average Trx (res-%i): '%i,np.average(diff_rx[i])/1000,file=f)
+            duty_cycle(res[i],diff_tx[i],diff_rx[i],f)
+            
+            print('----------------------------------------')
+            print('----------------------------------------',file=f)
     
     
     
