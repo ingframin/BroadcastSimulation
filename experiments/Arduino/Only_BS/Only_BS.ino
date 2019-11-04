@@ -99,8 +99,8 @@ void setup() {
   //Select external antenna
   //pinMode(15,OUTPUT);
   pinMode(21,OUTPUT);
-  digitalWrite(21, LOW);//ceramic/printed antenna on (default)
-  //digitalWrite(15, LOW);//ceramic/printed antenna on (default)
+  //digitalWrite(21, LOW);//ceramic/printed antenna on (default)
+  digitalWrite(21, HIGH);//external antenna on
 
 }
 

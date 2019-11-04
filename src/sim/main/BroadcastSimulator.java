@@ -51,7 +51,7 @@ public class BroadcastSimulator {
 			}
 			used_mem = (runtime.totalMemory() - runtime.freeMemory()) / mb;
 			System.out.println("Used Memory[MB]:" + used_mem);
-			l.compactDump();
+			l.dump(false);
 			System.gc();
 		}
 
@@ -59,13 +59,13 @@ public class BroadcastSimulator {
 
 	public static void main(String[] args) {
 
-		int n_nodes = 5;
+		int n_nodes = 10;
 		final int points;
 
 		if (args.length > 0) {
 			points = Integer.parseInt(args[0]);
 		} else {
-			points = 10_000_000;
+			points = 1_000_000;
 		}
 		System.out.println("Points: " + points);
 		try (Stream<Path> walk = Files.walk(Paths.get("."))) {
