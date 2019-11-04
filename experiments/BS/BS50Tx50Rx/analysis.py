@@ -211,6 +211,7 @@ if __name__=='__main__':
         plt.hist(dtx,bins=100,histtype='step',density=True)
    
     plt.grid(True)
+    plt.savefig('dist_Tx.pdf',dpi=300,)
     plt.show()
 
     
