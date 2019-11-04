@@ -47,7 +47,7 @@ def read_ssid(wi,n):
     while running:
         timestamp = str(datetime.now()).split()[1]
         s = wi.readline()
-        
+        print(s)
         ssid = ("%d-%d"%(n,seq)+'*').encode()
         if b'>' in s:
             wi.write(ssid)
@@ -75,8 +75,8 @@ if __name__=='__main__':
 
     global running
     running = True
-    wifi1 = Serial("COM3",115200,xonxoff = True)
-    wifi2 = Serial("COM4",115200,xonxoff = True)
+    wifi1 = Serial("COM37",115200,xonxoff = True)
+    wifi2 = Serial("COM39",115200,xonxoff = True)
 
 
     tr1 = Thread(target=read_ssid,args=(wifi1,1))

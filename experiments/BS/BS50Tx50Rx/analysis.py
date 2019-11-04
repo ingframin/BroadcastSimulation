@@ -207,9 +207,12 @@ if __name__=='__main__':
     plt.grid(True)
     plt.show()
 
-    for dtx in diff_tx:
-        plt.hist(dtx,bins=100,histtype='step',density=True)
-   
+    #for dtx in diff_tx:
+    plt.hist(diff_tx[0],bins=32,histtype='bar',density=True)
+    plt.axis([24000,40000,0,0.0006])
+    plt.xticks(range(24000,40000,500),labels=[x/10.0 for x in range(240,400,5)])
+    plt.xlabel('$T_{Tx}$ duration[ms]')
+    plt.ylabel('Probability')
     plt.grid(True)
     plt.savefig('dist_Tx.pdf',dpi=300,)
     plt.show()
