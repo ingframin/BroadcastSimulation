@@ -116,6 +116,9 @@ void loop() {
     //if(r < 8889){ //80Tx,20Rx
       unsigned long start = micros();
       //digitalWrite(15, HIGH);
+      for(int i=0;i<26;i++){
+        packet[39+i] = '*';
+      } 
       Serial.println('>'); //Used to synchronize UART communication
       Serial.write(17);//XON
       int b = Serial.readBytesUntil('*',&packet[39], 26);  
@@ -123,7 +126,7 @@ void loop() {
       broadcastSSID();//B   
       //digitalWrite(15, LOW);
       unsigned long stop = micros();
-      Serial.printf("dur: %u\r\n",stop-start);
+      Serial.printf("b-dur: %u\r\n",stop-start);
         }
    else{
     unsigned long start = micros();
