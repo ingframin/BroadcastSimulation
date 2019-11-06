@@ -59,13 +59,13 @@ public class BroadcastSimulator {
 
 	public static void main(String[] args) {
 
-		int n_nodes = 10;
+		int n_nodes = 100;
 		final int points;
 
 		if (args.length > 0) {
 			points = Integer.parseInt(args[0]);
 		} else {
-			points = 1_000_000;
+			points = 2_000_000;
 		}
 		System.out.println("Points: " + points);
 		try (Stream<Path> walk = Files.walk(Paths.get("."))) {
