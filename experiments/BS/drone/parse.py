@@ -1,4 +1,6 @@
 from timestamp import *
+import re
+MSG = re.compile(r'D[0-9]+-.*')
 
 def read_data(filename):
     with open(filename) as f:
@@ -29,17 +31,33 @@ def read_data(filename):
         return points
 
 if __name__=='__main__':
-    data= read_data('drone.txt')
-    sent = []
-    received = []
-    for d in data:
+
+    f = open('drone-1.txt')
+    raw= f.readlines()
+    f.close()
+    nm = 0
+    for l in raw:
+        if 'D1' in l:
+            nm+=1
+
+    print(nm)
+    
+
+"""  data= read_data('drone-1.txt')
+print(data)
+sent = []
+received = []
+for d in data:
+    try:
         if 'sent' in d['data']:
             sent.append(d)
         if 'D1' in d['data']:
             received.append(d)
-        
-    print(len(sent))
-    print(len(received))
-    print(len(received)/((data[-1]['T'] - data[0]['T']).toSeconds()))
+    except:
+        print(d)
+print(len(sent))
+print(len(received))
+print(len(received)/((data[-1]['T'] - data[0]['T']).toSeconds()))
 
-        
+    
+"""
