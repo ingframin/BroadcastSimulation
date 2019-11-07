@@ -31,33 +31,26 @@ def read_data(filename):
         return points
 
 if __name__=='__main__':
-
-    f = open('drone-1.txt')
-    raw= f.readlines()
-    f.close()
-    nm = 0
-    for l in raw:
-        if 'D1' in l:
-            nm+=1
-
-    print(nm)
     
 
-"""  data= read_data('drone-1.txt')
-print(data)
-sent = []
-received = []
-for d in data:
-    try:
-        if 'sent' in d['data']:
-            sent.append(d)
-        if 'D1' in d['data']:
-            received.append(d)
-    except:
-        print(d)
-print(len(sent))
-print(len(received))
-print(len(received)/((data[-1]['T'] - data[0]['T']).toSeconds()))
-
-    
-"""
+    data= read_data('test1.txt')
+    print(data)
+    sent = []
+    received = []
+    bdurs = []
+    for d in data:
+        try:
+            if 'sent' in d['data']:
+                sent.append(d)
+            if 'D1' in d['data']:
+                received.append(d)
+            if 'b-dur' in d['data']:
+                ds = d['data'].split(':')
+                bdurs.append(int(ds[1][0:-5]))
+                
+                
+        except KeyboardInterrupt:
+            break
+        except:
+            pass
+    print(sum(bdurs)/len(bdurs))
