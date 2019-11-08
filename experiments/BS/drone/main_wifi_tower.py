@@ -70,11 +70,10 @@ def read_ssid(wi,n):
         try:
             T = perf_counter()-start
             s = wi.readline()
-            if b'b-dur' in s:
-                print(s)
+            
             if b'>' in s:
 
-                ssid = ("%d-"%n+str(sequence))
+                ssid = ("%d-"%n+str(sequence)+'*')
                 wi.write(ssid.encode())
                 lg.append((T,s,'sent:'+ssid))
                 sequence += 1
@@ -82,8 +81,7 @@ def read_ssid(wi,n):
             else:
                 lg.append((T,s))
         
-            
-                
+ 
             if len(lg)>20:
                 with open('drone-%d.txt'%n,'a') as log:
                     for l in lg:
@@ -106,18 +104,18 @@ if __name__=='__main__':
 
     global running
     running = True
-    #wifi1 = Serial("/dev/serial0",115200)
-    wifi1 = Serial("/dev/ttyUSB1",115200)
+    wifi1 = Serial("/dev/serial0",115200, xonxoff=True)
+    #wifi1 = Serial("/dev/ttyUSB1",115200, xonxoff=True)
     gps_ser = Serial("/dev/ttyUSB0",9600)
 
        
     tr1 = Thread(target=read_ssid,args=(wifi1,1))
-    #tr2 = Thread(target=read_ssid,args=(gps_ser,))
+    tr2 = Thread(target=read_ssid,args=(gps_ser,))
   
     tr1.daemon = True
-    #tr2.daemon = True
+    tr2.daemon = True
     tr1.start()
-    #tr2.start()
+    tr2.start()
 
     start = perf_counter()
     while running:
@@ -130,5 +128,5 @@ if __name__=='__main__':
            running = False
     
     tr1.join()
-    #tr2.join()
+    tr2.join()
     

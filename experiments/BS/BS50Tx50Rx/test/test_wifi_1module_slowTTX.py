@@ -48,14 +48,15 @@ def read_ssid(wi,n):
     while running:
         timestamp = str(datetime.now()).split()[1]
         s = wi.readline()
-        print(s)
+        if b'b-dur' in s:
+            print(s)
         ssid = ("%d-%d"%(n,seq)+'*')
         if b'>' in s:
             wi.write(ssid.encode())
             seq += 1
             lg.append((str(datetime.now()).split()[1],s,'sent:'+ssid))
         else:
-            lg.append((str(datetime.now()).split()[1],s,''))
+            lg.append(,(str(datetime.now()).split()[1],s,''))
         
         if len(lg)> 1000:
             with open('res-%d.txt'%n,'a') as log:
@@ -74,15 +75,15 @@ if __name__=='__main__':
 
     global running
     running = True
-    wifi1 = Serial("COM38",115200,xonxoff = True)
+    #wifi1 = Serial("COM38",115200,xonxoff = True)
     wifi2 = Serial("COM36",115200,xonxoff = True)
 
 
-    tr1 = Thread(target=read_ssid,args=(wifi1,1))
+    #tr1 = Thread(target=read_ssid,args=(wifi1,1))
     tr2 = Thread(target=read_ssid,args=(wifi2,2))
 
     
-    tr1.start()
+    #tr1.start()
     tr2.start()
 
     start = perf_counter()
@@ -97,7 +98,7 @@ if __name__=='__main__':
            print('out')
            running = False
 
-    tr1.join()
+    #tr1.join()
     tr2.join()
 
 
