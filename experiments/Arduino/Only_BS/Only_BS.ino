@@ -105,7 +105,7 @@ void setup() {
 }
 
 void loop() {
-
+    digitalWrite(21, HIGH);
    r = random(0,9999);
     //if(r < 3226){//20Tx, 80Rx
     //if(r < 4615){ //30Tx,70Rx
@@ -116,9 +116,7 @@ void loop() {
     //if(r < 8889){ //80Tx,20Rx
       unsigned long start = micros();
       //digitalWrite(15, HIGH);
-      for(int i=0;i<26;i++){
-        packet[39+i] = '*';
-      } 
+      
       Serial.println('>'); //Used to synchronize UART communication
       Serial.write(17);//XON
       int b = Serial.readBytesUntil('*',&packet[39], 26);  
