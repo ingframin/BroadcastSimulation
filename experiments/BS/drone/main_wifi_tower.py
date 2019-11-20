@@ -67,11 +67,11 @@ def read_ssid(wi,gps_ser,n):
 
                 ssid = ("%d-"%n+str(sequence)+'*')
                 wi.write(ssid.encode())
-                lg.append((curr_pos,s,'sent:'+ssid))
+                lg.append((curr_pos,s,'sent:'+ssid,str(datetime.now())))
                 sequence += 1
 
             else:
-                lg.append((curr_pos,s))
+                lg.append((curr_pos,s,str(datetime.now())))
         
  
             if len(lg)>20:

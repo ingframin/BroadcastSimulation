@@ -35,8 +35,13 @@ from dronekit import connect, VehicleMode, LocationGlobalRelative, LocationGloba
 from time import sleep, perf_counter
 from serial import Serial
 from threading import Thread
-from datetime import datetime
+from datetime import datetime,timedelta
 from drone_ctrl import *
+
+
+global timestamp
+
+timestamp = 0
 
 
 start = perf_counter()
@@ -51,21 +56,26 @@ vehicle = connect(connection_string, wait_ready=True)
 vehicle.wait_ready('autopilot_version')
 print(" Autopilot Firmware version: %s" % vehicle.version)
 vehicle.mode = VehicleMode("STABILIZE")
+time.sleep(10)
+
+@vehicle.on_message('SYSTEM_TIME')
+def listener(self,name,message):
+    global timestamp
+    ts = message.time_unix_usec/1E6
+    tus = (message.time_unix_usec/1E6-int(message.time_unix_usec/1E6))*1E6
+    timestamp = datetime.fromtimestamp(int(ts))
+    timestamp += timedelta(microseconds = tus)
+
 
 curr_pos = getGPS(vehicle)
 
-arm_and_takeoff(vehicle, 25)
-vehicle.airspeed = 2
+#arm_and_takeoff(vehicle, 25)
+#vehicle.airspeed = 2
 
 
 wifi1 = Serial("/dev/serial0",115200, xonxoff=True)
 n = 1
 
-while curr_pos is None:
-    sleep(1)
-    
-    curr_pos = getGPS(vehicle)
-    #print(curr_pos)
 
 while running:
     try:
@@ -74,16 +84,16 @@ while running:
         if coords is not None:
             curr_pos = coords
         s = wifi1.readline()
-        
+        print(timestamp)
         if b'>' in s:
 
             ssid = ("%d-"%n+str(sequence)+'*')
             wifi1.write(ssid.encode())
-            lg.append((curr_pos,s,'sent:'+ssid))
+            lg.append((str(timestamp),curr_pos,s,'sent:'+ssid,str(datetime.now())))
             sequence += 1
 
         else:
-            lg.append((curr_pos,s))
+            lg.append((str(timestamp),curr_pos,s,str(datetime.now())))
     
 
         if len(lg)>20:

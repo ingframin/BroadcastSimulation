@@ -1,16 +1,24 @@
 class TimeStamp:
 
-    def __init__(self,stamp=None,h=-1,m=-1,s=-1):
+    def __init__(self,usec=0,stamp=None,h=-1,m=-1,s=-1):
         if stamp is not None:
             ss = stamp.split(':')
             self.days = 0
             self.hours = int(ss[0])
             self.minutes = int(ss[1])
             self.seconds = float(ss[2])
-        else:
+        elif h>0 and m>0 and s>0:
             self.hours = h
             self.minutes = m
             self.seconds = s
+        else:
+            self.seconds = usec/1E6
+            self.minutes = int(self.seconds/60)
+            self.hours = int(self.seconds/3600)
+            self.seconds -= (self.minutes*60)
+            
+            
+            
 
     def __add__(self,ts):
         seconds = self.seconds + ts.seconds
