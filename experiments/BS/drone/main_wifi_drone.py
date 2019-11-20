@@ -31,93 +31,66 @@ WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWIS
 ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF
 THE POSSIBILITY OF SUCH DAMAGE.
 '''
-
+from dronekit import connect, VehicleMode, LocationGlobalRelative, LocationGlobal, mavutil
 from time import sleep, perf_counter
 from serial import Serial
 from threading import Thread
 from datetime import datetime
-from gps import *
-drones = []
 
 
-def read_ssid(wi,gps_ser,n):
+start = perf_counter()
 
-    start = perf_counter()
+running = True
+lg = []
+sequence = 0
+#this depends from the pi, it needs to be a parameter
+connection_string = '/dev/ttyACM0'
+print("\nConnecting to vehicle on: %s" % connection_string)
+vehicle = connect(connection_string, wait_ready=True)
+vehicle.wait_ready('autopilot_version')
+print(" Autopilot Firmware version: %s" % vehicle.version)
+vehicle.mode = VehicleMode("STABILIZE")
+
+curr_pos = getGPS(vehicle)
+
+
+wifi1 = Serial("/dev/serial0",115200, xonxoff=True)
+n = 1
+
+while curr_pos is None:
+    sleep(1)
     
-    global running
-    lg = []
-    sequence = 0
-    sentence = gps_ser.readline()
-    curr_pos = decode_GPGGA(sentence)
-    while curr_pos is None:
-        sleep(1)
-        sentence = gps_ser.readline()
-        curr_pos = decode_GPGGA(sentence)
-        #print(curr_pos)
-    while running:
-        try:
-            sentence = gps_ser.readline()
-            coords = decode_GPGGA(sentence)
-            
-            if coords is not None:
-                curr_pos = coords
-            s = wi.readline()
-            
-            if b'>' in s:
+    curr_pos = getGPS(vehicle)
+    #print(curr_pos)
 
-                ssid = ("%d-"%n+str(sequence)+'*')
-                wi.write(ssid.encode())
-                lg.append((curr_pos,s,'sent:'+ssid))
-                sequence += 1
-
-            else:
-                lg.append((curr_pos,s))
+while running:
+    try:
+        coords = getGPS(vehicle)
         
- 
-            if len(lg)>20:
-                with open('drone-%d.txt'%n,'a') as log:
-                    for l in lg:
-                        print(l,file=log)
-                lg = []
-
-        except:
-            pass
-
-    with open('drone-%d.txt'%n,'a') as log:
-        for l in lg:
-            print(l,file=log)
-            
+        if coords is not None:
+            curr_pos = coords
+        s = wifi1.readline()
         
+        if b'>' in s:
 
+            ssid = ("%d-"%n+str(sequence)+'*')
+            wifi1.write(ssid.encode())
+            lg.append((curr_pos,s,'sent:'+ssid))
+            sequence += 1
 
-
-'''test script'''
-if __name__=='__main__':
-
-    global running
-    running = True
-    wifi1 = Serial("/dev/serial0",115200, xonxoff=True)
-    #wifi1 = Serial("/dev/ttyUSB1",115200, xonxoff=True)
-    gps_ser = Serial("/dev/ttyUSB0",9600)
-
-       
-    tr1 = Thread(target=read_ssid,args=(wifi1,gps_ser,1))
+        else:
+            lg.append((curr_pos,s))
     
-  
-    tr1.daemon = True
-    
-    tr1.start()
-   
 
-    start = perf_counter()
-    while running:
-       try:
-           print(perf_counter()-start)
-           sleep(1)
-       except:
-           print('out')
-           
-           running = False
-    
-    tr1.join()
-    
+        if len(lg)>20:
+            with open('drone-%d.txt'%n,'a') as log:
+                for l in lg:
+                    print(l,file=log)
+            lg = []
+
+    except:
+        running = False
+
+with open('drone-%d.txt'%n,'a') as log:
+    for l in lg:
+        print(l,file=log)
