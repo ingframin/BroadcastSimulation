@@ -40,47 +40,38 @@ from gps import *
 drones = []
 
 
-def read_gps(gps_ser):
-    start = perf_counter()
-    sentence = gps_ser.readline()
-    curr_pos = decode_GPGGA(sentence)
-    log = []
-    global running
-    while running:
-        T = perf_counter()-start
-        sentence = gps_ser.readline()
-        coords = decode_GPGGA(sentence)
-        log.append((T,coords))
-        if len(log)>20:
-            with open('gps-%d.txt'%n,'a') as log_f:
-                for l in log:
-                    print(l,file=log_f)
-            log = []
-    
-
-def read_ssid(wi,n):
+def read_ssid(wi,gps_ser,n):
 
     start = perf_counter()
     
     global running
     lg = []
     sequence = 0
-    
+    sentence = gps_ser.readline()
+    curr_pos = decode_GPGGA(sentence)
+    while curr_pos is None:
+        sleep(1)
+        sentence = gps_ser.readline()
+        curr_pos = decode_GPGGA(sentence)
+        #print(curr_pos)
     while running:
         try:
-            T = perf_counter()-start
+            sentence = gps_ser.readline()
+            coords = decode_GPGGA(sentence)
+            
+            if coords is not None:
+                curr_pos = coords
             s = wi.readline()
-            if b'b-dur' in s:
-                print(s)
+            
             if b'>' in s:
 
-                ssid = ("%d-"%n+str(sequence))
+                ssid = ("%d-"%n+str(sequence)+'*')
                 wi.write(ssid.encode())
-                lg.append((T,s,'sent:'+ssid))
+                lg.append((curr_pos,s,'sent:'+ssid))
                 sequence += 1
 
             else:
-                lg.append((T,s))
+                lg.append((curr_pos,s))
         
             
                 
@@ -106,18 +97,16 @@ if __name__=='__main__':
 
     global running
     running = True
-    #wifi1 = Serial("/dev/serial0",115200)
-    wifi1 = Serial("/dev/ttyUSB1",115200)
+    wifi1 = Serial("/dev/serial0",115200)
     gps_ser = Serial("/dev/ttyUSB0",9600)
 
        
-    tr1 = Thread(target=read_ssid,args=(wifi1,1))
-    #tr2 = Thread(target=read_ssid,args=(gps_ser,))
+    tr1 = Thread(target=read_ssid,args=(wifi1,gps_ser,1))
   
     tr1.daemon = True
-    #tr2.daemon = True
+   
     tr1.start()
-    #tr2.start()
+    
 
     start = perf_counter()
     while running:
@@ -130,5 +119,5 @@ if __name__=='__main__':
            running = False
     
     tr1.join()
-    #tr2.join()
+
     
