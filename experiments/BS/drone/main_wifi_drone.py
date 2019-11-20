@@ -36,6 +36,7 @@ from time import sleep, perf_counter
 from serial import Serial
 from threading import Thread
 from datetime import datetime
+from drone_ctrl import *
 
 
 start = perf_counter()
@@ -52,6 +53,9 @@ print(" Autopilot Firmware version: %s" % vehicle.version)
 vehicle.mode = VehicleMode("STABILIZE")
 
 curr_pos = getGPS(vehicle)
+
+arm_and_takeoff(vehicle, 25)
+vehicle.airspeed = 2
 
 
 wifi1 = Serial("/dev/serial0",115200, xonxoff=True)
