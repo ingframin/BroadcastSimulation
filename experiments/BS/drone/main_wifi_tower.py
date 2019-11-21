@@ -37,43 +37,47 @@ from serial import Serial
 from threading import Thread
 from datetime import datetime
 from gps import *
-drones = []
+
+global cur_pos
+cur_pos = None
 
 
-def read_ssid(wi,gps_ser,n):
+def read_gps(gps_ser):
+    global cur_pos
+    global running
+    while running:
+        sentence = gps_ser.readline()
+        coords = decode_GPGGA(sentence)
+        if coords is not None:
+            cur_pos = coords
+
+
+def read_ssid(wi,n):
 
     start = perf_counter()
     
     global running
+    global cur_pos
     lg = []
     sequence = 0
-    sentence = gps_ser.readline()
-    curr_pos = decode_GPGGA(sentence)
-    while curr_pos is None:
+    while cur_pos is None:
+        print('Waitig for position...')
         sleep(1)
-        sentence = gps_ser.readline()
-        
-        curr_pos = decode_GPGGA(sentence)
-        #print(curr_pos)
+    
     while running:
         try:
-
-            sentence = gps_ser.readline()
-            coords = decode_GPGGA(sentence)
-            print(coords)
-            if coords is not None:
-                curr_pos = coords
             s = wi.readline()
-            print(s)
+            if b'dur' in s:
+                print(s)
             if b'>' in s:
 
                 ssid = ("%d-"%n+str(sequence)+'*')
                 wi.write(ssid.encode())
-                lg.append((curr_pos,s,'sent:'+ssid,str(datetime.now())))
+                lg.append((cur_pos,s,'sent:'+ssid,str(datetime.now())))
                 sequence += 1
 
             else:
-                lg.append((curr_pos,s,str(datetime.now())))
+                lg.append((cur_pos,s,str(datetime.now())))
         except:
             print('something went wrong!')
 
@@ -105,13 +109,11 @@ if __name__=='__main__':
     gps_ser = Serial("/dev/ttyUSB0",9600)
     #gps_ser = Serial("COM39",9600)
        
-    tr1 = Thread(target=read_ssid,args=(wifi1,gps_ser,1))
-    
+    tr1 = Thread(target=read_ssid,args=(wifi1,1))
+    tr2 = Thread(target=read_gps, args=(gps_ser,))
   
-    tr1.daemon = True
-    
     tr1.start()
-   
+    tr2.start()
 
     start = perf_counter()
     while running:
@@ -124,4 +126,4 @@ if __name__=='__main__':
            running = False
     
     tr1.join()
-    
+    tr2.join()

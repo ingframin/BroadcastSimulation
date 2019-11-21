@@ -5,7 +5,7 @@ def decode_GPGGA(sentence):
     ss = sentence.split(b',')
     c = {}
     if b'GPGGA' not in sentence:
-        print('no gpgga')
+        #print('no gpgga')
         return
     try:
 
@@ -13,7 +13,7 @@ def decode_GPGGA(sentence):
     
         c['T'] = ts
     except:
-        print('T')
+        #print('T')
         return
     try:
         lat_deg = float(ss[2][0:2].decode())+(float(ss[2][2:].decode())/60.0)
@@ -21,7 +21,7 @@ def decode_GPGGA(sentence):
             lat_deg *= -1
         c['Lat'] = lat_deg
     except:
-        print('lat')
+        #print('lat')
         return
     try:
         lon_deg = float(ss[4][0:3].decode())+(float(ss[4][3:].decode())/60.0)
@@ -29,7 +29,7 @@ def decode_GPGGA(sentence):
             lon_deg *= -1
         c['Lon'] = lon_deg
     except:
-        print('lon')
+        #print('lon')
         return
 
     try:
@@ -37,14 +37,14 @@ def decode_GPGGA(sentence):
         
         c['HDOP'] = hdop
     except:
-        print('HDOP')
+        #print('HDOP')
         return
     try:
         h_sea = float(ss[9].decode())
         
         c['Altitude_Sea'] = h_sea
     except:
-        print('hsea')
+        #print('hsea')
         return
 
     try:
@@ -52,9 +52,9 @@ def decode_GPGGA(sentence):
         
         c['Altitude_WGS84'] = h_WGS84
     except:
-        print('h_WGS84')
+        #print('h_WGS84')
         return
-    print(c)
+    #print(c)
     return c
 
    
