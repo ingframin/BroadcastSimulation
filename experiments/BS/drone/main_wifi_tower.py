@@ -52,36 +52,36 @@ def read_ssid(wi,gps_ser,n):
     while curr_pos is None:
         sleep(1)
         sentence = gps_ser.readline()
+        
         curr_pos = decode_GPGGA(sentence)
         #print(curr_pos)
     while running:
-        try:
-            sentence = gps_ser.readline()
-            coords = decode_GPGGA(sentence)
-            
-            if coords is not None:
-                curr_pos = coords
-            s = wi.readline()
-            
-            if b'>' in s:
-
-                ssid = ("%d-"%n+str(sequence)+'*')
-                wi.write(ssid.encode())
-                lg.append((curr_pos,s,'sent:'+ssid,str(datetime.now())))
-                sequence += 1
-
-            else:
-                lg.append((curr_pos,s,str(datetime.now())))
         
- 
-            if len(lg)>20:
-                with open('drone-%d.txt'%n,'a') as log:
-                    for l in lg:
-                        print(l,file=log)
-                lg = []
+        sentence = gps_ser.readline()
+        coords = decode_GPGGA(sentence)
+        print(coords)
+        if coords is not None:
+            curr_pos = coords
+        s = wi.readline()
+        print(s)
+        if b'>' in s:
 
-        except:
-            pass
+            ssid = ("%d-"%n+str(sequence)+'*')
+            wi.write(ssid.encode())
+            lg.append((curr_pos,s,'sent:'+ssid,str(datetime.now())))
+            sequence += 1
+
+        else:
+            lg.append((curr_pos,s,str(datetime.now())))
+    
+
+        if len(lg)>20:
+            with open('drone-%d.txt'%n,'a') as log:
+                for l in lg:
+                    print(l,file=log)
+            lg = []
+
+        
 
     with open('drone-%d.txt'%n,'a') as log:
         for l in lg:
@@ -96,10 +96,12 @@ if __name__=='__main__':
 
     global running
     running = True
-    wifi1 = Serial("/dev/serial0",115200, xonxoff=True)
+    #wifi1 = Serial("/dev/serial0",115200, xonxoff=True)
     #wifi1 = Serial("/dev/ttyUSB1",115200, xonxoff=True)
-    gps_ser = Serial("/dev/ttyUSB0",9600)
-
+    wifi1 = Serial("COM36",115200, xonxoff=True)
+    
+    #gps_ser = Serial("/dev/ttyUSB0",9600)
+    gps_ser = Serial("COM39",9600)
        
     tr1 = Thread(target=read_ssid,args=(wifi1,gps_ser,1))
     
