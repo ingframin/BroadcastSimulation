@@ -55,6 +55,8 @@ def read_drone_data(filename):
         lat = float(ls[1])
         lon = float(ls[2])
         alt = float(ls[3])
+        if alt < 35:
+            continue
         
         strdata = ''.join(ls[4:-1])
 
@@ -64,6 +66,40 @@ def read_drone_data(filename):
         
         drone_data.append({'abs T':ts,'lon':lon,'lat':lat,'alt':alt,'data':strdata,'rasp T':ts_rasp})
     return drone_data
+
+def cluster(data,i=0):
+    clusters = {}
+    ind = 0
+    for rd in data:
+        if rd[i] < 100:
+            ind = 100
+        elif rd[i] >= 100 and rd[i]<200:
+            ind = 200
+        elif rd[i] >=200 and rd[i] <300:
+            ind = 300
+        elif rd[i] >= 300 and rd[i] <400:
+            ind = 400
+        elif rd[i]>=400 and rd[i] <500:
+            ind = 500
+        elif rd[i]>=500 and rd[i] <600:
+            ind = 600
+        elif rd[i] >=600 and rd[i] <700:
+            ind = 700
+        elif rd[i] >= 700 and rd[0]<800:
+            ind = 800
+        elif rd[i] >=800 and rd[i] < 850:
+            ind = 850
+        elif rd[i]>=850 and rd[i]<890:
+            ind =900
+        elif rd[i] >=890:
+            ind = 950
+
+        try:
+            clusters[ind][0].append(rd[0])
+            clusters[ind][1].append(rd[1])
+        except:
+            clusters[ind] = [[rd[0]],[rd[1]]]
+    return clusters
 
 def rssi_vs_position(data):
     rvp = []
@@ -87,6 +123,24 @@ def rssi_vs_distance(rvp,ref=(50.86227366666667, 4.685484, 46.2)):
     rvd.sort()
     return rvd
 
+def received(data):
+    rec = []
+    for d in data:
+        if 'D' in d['data']:
+            rec.append(d)
+    return rec
+
+def msg_vs_distance(rec,ref=(50.86227366666667, 4.685484, 46.2)):
+    
+    mvd = []
+    for r in rec:
+        d = haversine(ref[0],r['lat'],ref[1],r['lon'])
+        mvd.append((d,r['rasp T']))
+
+    mvd.sort()
+    return mvd
+    
+            
 if __name__=='__main__':
     
     dd = []
@@ -97,38 +151,8 @@ if __name__=='__main__':
     rvd = rssi_vs_distance(rvp)
 
     
-    clusters = {}
-    ind = 0
-    for rd in rvd:
-        if rd[0] < 100:
-            ind = 100
-        elif rd[0] >= 100 and rd[0]<200:
-            ind = 200
-        elif rd[0] >=200 and rd[0] <300:
-            ind = 300
-        elif rd[0] >= 300 and rd[0] <400:
-            ind = 400
-        elif rd[0]>=400 and rd[0] <500:
-            ind = 500
-        elif rd[0]>=500 and rd[0] <600:
-            ind = 600
-        elif rd[0] >=600 and rd[0] <700:
-            ind = 700
-        elif rd[0] >= 700 and rd[0]<800:
-            ind = 800
-        elif rd[0] >=800 and rd[0] < 850:
-            ind = 850
-        elif rd[0]>=850 and rd[0]<890:
-            ind =900
-        elif rd[0] >=890:
-            ind = 950
-
-        try:
-            clusters[ind][0].append(rd[0])
-            clusters[ind][1].append(rd[1])
-        except:
-            clusters[ind] = [[rd[0]],[rd[1]]]
-
+    clusters = cluster(rvd)
+    
     res = []
     for k in clusters:
         dist = sum(clusters[k][0])/len(clusters[k][0])
@@ -154,7 +178,6 @@ if __name__=='__main__':
     pt.legend()
     
     pt.show()
-    
     with open('rvd.txt','w') as f:
         for d,r in res:
             
@@ -163,6 +186,25 @@ if __name__=='__main__':
     with open('rssi_vs_dist.txt','w') as f:
         for rd in rvd:
             print(f'{rd[0]};{rd[1]}',file = f)
+
+    rec = received(dd)
+    mvd = msg_vs_distance(rec)
+   
+    cls = cluster(mvd)
+    rate = []
+    distance = []
+    for k in cls:
+        d = sum(clusters[k][0])/len(clusters[k][0])
+        r = (clusters[k][1][-1]-clusters[k][1][0])/len(clusters[k][1])
+        rate.append(r)
+        distance.append(d)
+
+    pt.plot(distance,rate)
+    pt.show()
+        
+    
+    
+    
             
         
         

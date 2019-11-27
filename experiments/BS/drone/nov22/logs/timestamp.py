@@ -67,7 +67,32 @@ class TimeStamp:
             return 1
 
         return 0
+    def __lt__(self,ts):
+        
+        if self.hours < ts.hours:
+            return True
+        elif self.hours > ts.hours:
+            return False
+        
+        if self.minutes < ts.minutes:
+            return True
+        elif self.minutes > ts.minutes:
+            return False
+        
+        if self.seconds < ts.seconds:
+            return True
+        
+        return False
 
+    def __gt__(self,ts):
+        return not self.__lt__(ts)
+
+    def __eq__(self,ts):
+        if self.hours == ts.hours and self.minutes == ts.minutes and self.seconds == ts.seconds:
+            return True
+        return False
+        
+        
     def __str__(self):
         return "%d:%d:%.8f"%(self.hours,self.minutes,self.seconds)
 
