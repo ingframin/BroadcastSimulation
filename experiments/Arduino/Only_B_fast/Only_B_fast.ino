@@ -70,7 +70,7 @@ void broadcastSSID(){
   
   //digitalWrite(21, HIGH);
   random_mac();
-  String msg = "3-"+String(msg_counter);
+  String msg = "1-"+String(msg_counter);
   memcpy(&packet[39],msg.c_str(),msg.length());
   msg_counter++;
   int c = 13;
@@ -83,7 +83,7 @@ void broadcastSSID(){
     //delay(1);  
   //}//14 channels
   
-  delay(20);
+  delayMicroseconds(3333);
   //digitalWrite(21, LOW);
 }
 

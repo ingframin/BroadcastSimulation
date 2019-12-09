@@ -58,12 +58,12 @@ def read_ssid(wi,n):
             lg.append((str(datetime.now()).split()[1],s,''))
         
         if len(lg)> 1000:
-            with open('res-%dBps_new.txt'%n,'a') as log:
+            with open('res-%dMps.txt'%n,'a') as log:
                 for l in lg:
                     print(l,file=log)
             lg = []
 
-    with open('res-%dBps_new.txt'%n,'a') as log:
+    with open('res-%dMps.txt'%n,'a') as log:
         for l in lg:
             print(l,file=log)
 
@@ -78,13 +78,13 @@ if __name__=='__main__':
     #wifi2 = Serial("COM36",115200,xonxoff = True)
     #wifi3 = Serial("COM37",115200,xonxoff = True)
     #wifi4 = Serial("COM10",115200,xonxoff = True)
-    wifi5 = Serial("COM39",115200,xonxoff = True)
+    wifi5 = Serial("COM36",115200,xonxoff = True)
 
     #tr1 = Thread(target=read_ssid,args=(wifi1,1))
     #tr2 = Thread(target=read_ssid,args=(wifi2,2))
     #tr3 = Thread(target=read_ssid,args=(wifi3,3))
     #tr4 = Thread(target=read_ssid,args=(wifi4,4))
-    tr5 = Thread(target=read_ssid,args=(wifi5,50))
+    tr5 = Thread(target=read_ssid,args=(wifi5,300))
     
     #tr1.start()
     #tr2.start()

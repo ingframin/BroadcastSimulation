@@ -172,7 +172,7 @@ def duty_cycle(res,dtx,drx,f=None):
     
 if __name__=='__main__':
 
-    res = read_file('res-50Bps_new.txt')
+    res = read_file('res-200Mps.txt')
 
     
     trx = compute_trx(res)
@@ -180,14 +180,11 @@ if __name__=='__main__':
     plt.show()
     rec = [cleanup(l) for l in res if 'rssi' in l]
     r0 = []
-
+    print(sum(trx)/(1000*len(trx)),'ms')
     for r in rec:
-        if 'D3' in r:
+        if 'D1' in r:
             r0.append(r)
-        
-       
-    
-    
+      
     ts0 = r0[0].split(',')[0]
     
     t0 = datetime.strptime(ts0,"%H:%M:%S.%f")
@@ -195,6 +192,23 @@ if __name__=='__main__':
     ts1 = r0[-1].split(',')[0]
     t1 = datetime.strptime(ts1,"%H:%M:%S.%f")
     dt = (t1-t0).total_seconds()
-    print(len(r0)/dt)
+    print(len(r0)/dt,'msg/s')
+
+    counters = []
     
+    for line in res:
+        
+        if "S" in line:
+            counters.append(0)
+            
+        elif 's-dur' in line:
+            if counters[-1] > 0:
+                counters[-1] -= 1
+        else:
+            
+            counters[-1] += 1
+
+    cnt = list(filter(lambda x: x>0,counters))
+    print(sum(cnt)/len(cnt),'msg/scan')
+            
         
