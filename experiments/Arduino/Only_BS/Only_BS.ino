@@ -80,7 +80,7 @@ void broadcastSSID(){
     
     delay(1);  
   }//14 channels
-  delay(8);
+  delay(30);
   //digitalWrite(21, LOW);
 }
 
@@ -110,10 +110,11 @@ void loop() {
     //if(r < 3226){//20Tx, 80Rx
     //if(r < 4615){ //30Tx,70Rx
     //if(r < 5714){ //40Tx,60Rx
-    if(r < 6667){ //50Tx,50Rx
+    //if(r < 6667){ //50Tx,50Rx
     //if(r < 7500){ //60Tx,40Rx
     //if(r < 8235){ //70Tx,30Rx
     //if(r < 8889){ //80Tx,20Rx
+    if(r < 5000){ //50Tx,50Rx; Trx = Ttx
       unsigned long start = micros();
       //digitalWrite(15, HIGH);
       

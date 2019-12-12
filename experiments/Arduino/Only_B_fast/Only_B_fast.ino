@@ -83,7 +83,8 @@ void broadcastSSID(){
     //delay(1);  
   //}//14 channels
   
-  delayMicroseconds(3333);
+  //delayMicroseconds(3333);
+  delay(60);
   //digitalWrite(21, LOW);
 }
 

@@ -1,0 +1,138 @@
+----------------------------------------
+Results for: res-0,res-1
+Reception rate:  13.542970517153183
+Success: 39.575225%
+Transmission rate [msg/s]: 8.67099890412986
+----------------------------------------
+Results for: res-0,res-2
+Reception rate:  12.580450396094877
+Success: 36.996460%
+Transmission rate [msg/s]: 8.67099890412986
+----------------------------------------
+Results for: res-0,res-3
+Reception rate:  17.58259123297431
+Success: 50.211427%
+Transmission rate [msg/s]: 8.67099890412986
+----------------------------------------
+Results for: res-0,res-4
+Reception rate:  13.008556484171718
+Success: 38.309868%
+Transmission rate [msg/s]: 8.67099890412986
+----------------------------------------
+Results for: res-1,res-0
+Reception rate:  11.111540879823918
+Success: 31.142349%
+Transmission rate [msg/s]: 8.704315554459205
+----------------------------------------
+Results for: res-1,res-2
+Reception rate:  12.580450396094877
+Success: 34.686909%
+Transmission rate [msg/s]: 8.704315554459205
+----------------------------------------
+Results for: res-1,res-3
+Reception rate:  17.58259123297431
+Success: 50.580389%
+Transmission rate [msg/s]: 8.704315554459205
+----------------------------------------
+Results for: res-1,res-4
+Reception rate:  13.008556484171718
+Success: 36.438846%
+Transmission rate [msg/s]: 8.704315554459205
+----------------------------------------
+Results for: res-2,res-0
+Reception rate:  11.111540879823918
+Success: 32.577385%
+Transmission rate [msg/s]: 8.693160453515372
+----------------------------------------
+Results for: res-2,res-1
+Reception rate:  13.542970517153183
+Success: 39.103726%
+Transmission rate [msg/s]: 8.693160453515372
+----------------------------------------
+Results for: res-2,res-3
+Reception rate:  17.58259123297431
+Success: 50.402205%
+Transmission rate [msg/s]: 8.693160453515372
+----------------------------------------
+Results for: res-2,res-4
+Reception rate:  13.008556484171718
+Success: 36.698486%
+Transmission rate [msg/s]: 8.693160453515372
+----------------------------------------
+Results for: res-3,res-0
+Reception rate:  11.111540879823918
+Success: 33.023652%
+Transmission rate [msg/s]: 8.558534782906209
+----------------------------------------
+Results for: res-3,res-1
+Reception rate:  13.542970517153183
+Success: 39.739543%
+Transmission rate [msg/s]: 8.558534782906209
+----------------------------------------
+Results for: res-3,res-2
+Reception rate:  12.580450396094877
+Success: 38.987383%
+Transmission rate [msg/s]: 8.558534782906209
+----------------------------------------
+Results for: res-3,res-4
+Reception rate:  13.008556484171718
+Success: 38.844578%
+Transmission rate [msg/s]: 8.558534782906209
+----------------------------------------
+Results for: res-4,res-0
+Reception rate:  11.111540879823918
+Success: 31.602996%
+Transmission rate [msg/s]: 8.678150173825571
+----------------------------------------
+Results for: res-4,res-1
+Reception rate:  13.542970517153183
+Success: 38.153578%
+Transmission rate [msg/s]: 8.678150173825571
+----------------------------------------
+Results for: res-4,res-2
+Reception rate:  12.580450396094877
+Success: 34.757454%
+Transmission rate [msg/s]: 8.678150173825571
+----------------------------------------
+Results for: res-4,res-3
+Reception rate:  17.58259123297431
+Success: 51.214730%
+Transmission rate [msg/s]: 8.678150173825571
+----------------------------------------
+Average success rate:  39.15235947013973 %
+----------------------------------------
+Results for: 0
+scan freq(res-0):  8.679243493687819
+Average Ttx (res-0):  53.996102213572954
+Average Trx (res-0):  61.15403762111647
+B(%):  46.86819050688791
+S(%):  53.13180949311209
+----------------------------------------
+Results for: 1
+scan freq(res-1):  8.720183002701862
+Average Ttx (res-1):  53.741655276951185
+Average Trx (res-1):  60.877095983244935
+B(%):  46.84225976320624
+S(%):  53.157740236793764
+----------------------------------------
+Results for: 2
+scan freq(res-2):  8.70609821823625
+Average Ttx (res-2):  53.60314851619603
+Average Trx (res-2):  61.19824725410588
+B(%):  46.65551424566968
+S(%):  53.344485754330336
+----------------------------------------
+Results for: 3
+scan freq(res-3):  8.52175316570018
+Average Ttx (res-3):  55.397980615846485
+Average Trx (res-3):  61.42924349101577
+B(%):  47.52558165274668
+S(%):  52.47441834725332
+----------------------------------------
+Results for: 4
+scan freq(res-4):  8.713064979190188
+Average Ttx (res-4):  53.6126860025927
+Average Trx (res-4):  61.22461743538245
+B(%):  46.58560674528216
+S(%):  53.41439325471784
+----------------------------------------

@@ -172,7 +172,7 @@ def duty_cycle(res,dtx,drx,f=None):
     
 if __name__=='__main__':
 
-    res = read_file('res-200Mps.txt')
+    res = read_file('res-20Mps.txt')
 
     
     trx = compute_trx(res)
@@ -184,15 +184,18 @@ if __name__=='__main__':
     for r in rec:
         if 'D1' in r:
             r0.append(r)
-      
-    ts0 = r0[0].split(',')[0]
-    
-    t0 = datetime.strptime(ts0,"%H:%M:%S.%f")
-    
-    ts1 = r0[-1].split(',')[0]
-    t1 = datetime.strptime(ts1,"%H:%M:%S.%f")
-    dt = (t1-t0).total_seconds()
-    print(len(r0)/dt,'msg/s')
+    dts = []
+    for i in range(1,len(r0)):
+        ts0 = r0[i-1].split(',')[0]
+        t0 = datetime.strptime(ts0,"%H:%M:%S.%f")
+        ts1 = r0[i].split(',')[0]
+        t1 = datetime.strptime(ts1,"%H:%M:%S.%f")
+        dt = (t1-t0).total_seconds()
+        if dt > 10:
+            continue
+        dts.append(dt)
+        
+    print(len(r0)/sum(dts),'msg/s')
 
     counters = []
     
@@ -201,14 +204,11 @@ if __name__=='__main__':
         if "S" in line:
             counters.append(0)
             
-        elif 's-dur' in line:
-            if counters[-1] > 0:
-                counters[-1] -= 1
-        else:
-            
+        elif 's-dur' not in line:
             counters[-1] += 1
 
     cnt = list(filter(lambda x: x>0,counters))
+    
     print(sum(cnt)/len(cnt),'msg/scan')
             
         

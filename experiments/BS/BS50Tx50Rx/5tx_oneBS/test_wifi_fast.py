@@ -84,7 +84,7 @@ if __name__=='__main__':
     #tr2 = Thread(target=read_ssid,args=(wifi2,2))
     #tr3 = Thread(target=read_ssid,args=(wifi3,3))
     #tr4 = Thread(target=read_ssid,args=(wifi4,4))
-    tr5 = Thread(target=read_ssid,args=(wifi5,300))
+    tr5 = Thread(target=read_ssid,args=(wifi5,20))
     
     #tr1.start()
     #tr2.start()
