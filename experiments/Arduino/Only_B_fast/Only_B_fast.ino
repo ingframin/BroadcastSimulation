@@ -84,7 +84,11 @@ void broadcastSSID(){
   //}//14 channels
   
   //delayMicroseconds(3333);
-  delay(60);
+  //delay(5); //200
+  //delay(10); //100
+  //delay(20); //50
+  delay(40); //25
+  //delay(80); //12.5
   //digitalWrite(21, LOW);
 }
 
@@ -109,7 +113,7 @@ void setup() {
 }
 
 void loop() {
-         unsigned long start = micros();
+      unsigned long start = micros();
       broadcastSSID();//B   
       unsigned long stop = micros();
       Serial.printf("b-dur: %u\r\n",stop-start);
