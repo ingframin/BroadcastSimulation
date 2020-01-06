@@ -7,6 +7,11 @@ esp_err_t esp_wifi_80211_tx(wifi_interface_t ifx, const void *buffer, int len, b
 uint8_t channel = 0;
 long msg_counter = 0;
 int r;
+unsigned long start = micros();
+unsigned long stop;
+int del_i = 0;
+int del[] = {5,10,20,40,80};
+bool tx = true;
 
 // Beacon Packet buffer
 uint8_t packet[] = { 0x80, 0x00, 0x00, 0x00,
@@ -70,9 +75,39 @@ void broadcastSSID(){
   
   //digitalWrite(21, HIGH);
   random_mac();
-  String msg = "1-"+String(msg_counter);
-  memcpy(&packet[39],msg.c_str(),msg.length());
+  
   msg_counter++;
+  if(msg_counter == 100000){
+    Serial.printf("end: %u\r\n",del_i);
+    String msg = "1-end:"+String(del_i);
+    stop = micros();
+    Serial.printf("b-dur: %u\r\n",stop-start);
+    memcpy(&packet[39],msg.c_str(),msg.length());
+    del_i++;
+    msg_counter = 0;
+    
+    start = micros();
+    packet[80] = 13;
+    if(tx){
+      esp_wifi_set_channel(13,WIFI_SECOND_CHAN_NONE); 
+      for(int i=0;i<100;i++){
+         esp_wifi_80211_tx(WIFI_IF_AP, packet, 81, false);   
+         delay(20); 
+      }
+    }
+    
+    if(del_i == 5){
+      tx = false;
+    }
+    
+    msg = "1-**********";
+    memcpy(&packet[39],msg.c_str(),msg.length());
+  }
+  else{
+    String msg = "1-"+String(msg_counter);
+    memcpy(&packet[39],msg.c_str(),msg.length());
+  }
+  
   int c = 13;
   //for(int c = 1;c<15;c++){
     
@@ -83,13 +118,9 @@ void broadcastSSID(){
     //delay(1);  
   //}//14 channels
   
-  //delayMicroseconds(3333);
-  //delay(5); //200
-  //delay(10); //100
-  //delay(20); //50
-  delay(40); //25
-  //delay(80); //12.5
-  //digitalWrite(21, LOW);
+ 
+  delay(del[del_i]); 
+  
 }
 
 void setup() {
@@ -113,10 +144,10 @@ void setup() {
 }
 
 void loop() {
-      unsigned long start = micros();
+      //unsigned long start = micros();
       broadcastSSID();//B   
-      unsigned long stop = micros();
-      Serial.printf("b-dur: %u\r\n",stop-start);
+      //unsigned long stop = micros();
+      //Serial.printf("b-dur: %u\r\n",stop-start);
     
   
 }

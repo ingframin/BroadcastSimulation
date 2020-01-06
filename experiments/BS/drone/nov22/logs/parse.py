@@ -171,6 +171,7 @@ if __name__=='__main__':
     rssi = [p[1] for p in rvd]
     dist = [p[0] for p in rvd]
     pt.rcParams['figure.figsize'] = 15, 10
+    pt.grid(True)
     pt.plot(dist,rssi,'o',markersize=5,label="Measurement")
     pt.plot(d,pl,'g',linewidth=3.0,label="$P_{t}-K-10\gamma log_{10}(d/d_{0})$")
     pt.plot(d,r,'r*',markersize=16, label = "Average")
