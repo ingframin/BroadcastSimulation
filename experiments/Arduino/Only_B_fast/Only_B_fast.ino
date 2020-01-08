@@ -9,9 +9,7 @@ long msg_counter = 0;
 int r;
 unsigned long start = micros();
 unsigned long stop;
-int del_i = 0;
-int del[] = {5,10,20,40,80};
-bool tx = true;
+
 
 // Beacon Packet buffer
 uint8_t packet[] = { 0x80, 0x00, 0x00, 0x00,
@@ -68,7 +66,7 @@ void scan(uint8_t ch, uint8_t Ts){
     }
   
   }//for
- //digitalWrite(21, LOW);
+
 }//scan()
 
 void broadcastSSID(){
@@ -77,49 +75,25 @@ void broadcastSSID(){
   random_mac();
   
   msg_counter++;
-  if(msg_counter == 100000){
-    Serial.printf("end: %u\r\n",del_i);
-    String msg = "1-end:"+String(del_i);
-    stop = micros();
-    Serial.printf("b-dur: %u\r\n",stop-start);
-    memcpy(&packet[39],msg.c_str(),msg.length());
-    del_i++;
-    msg_counter = 0;
     
-    start = micros();
-    packet[80] = 13;
-    if(tx){
-      esp_wifi_set_channel(13,WIFI_SECOND_CHAN_NONE); 
-      for(int i=0;i<100;i++){
-         esp_wifi_80211_tx(WIFI_IF_AP, packet, 81, false);   
-         delay(20); 
-      }
-    }
-    
-    if(del_i == 5){
-      tx = false;
-    }
-    
-    msg = "1-**********";
-    memcpy(&packet[39],msg.c_str(),msg.length());
-  }
-  else{
-    String msg = "1-"+String(msg_counter);
-    memcpy(&packet[39],msg.c_str(),msg.length());
-  }
+  String msg = "2-"+String(msg_counter);
+  memcpy(&packet[39],msg.c_str(),msg.length());
+ 
   
   int c = 13;
-  //for(int c = 1;c<15;c++){
+
     
-    packet[80] = c;
-    esp_wifi_set_channel(c,WIFI_SECOND_CHAN_NONE);      
-    esp_wifi_80211_tx(WIFI_IF_AP, packet, 81, false);
-    
-    //delay(1);  
-  //}//14 channels
+  packet[80] = c;
+  esp_wifi_set_channel(c,WIFI_SECOND_CHAN_NONE);      
+  esp_wifi_80211_tx(WIFI_IF_AP, packet, 81, false);
+ 
   
  
-  delay(del[del_i]); 
+  //delay(5); //200 
+  //delay(10); //100
+  //delay(20); //50
+  //delay(40); //25
+  delay(80); //12.5
   
 }
 
@@ -144,10 +118,9 @@ void setup() {
 }
 
 void loop() {
-      //unsigned long start = micros();
+
       broadcastSSID();//B   
-      //unsigned long stop = micros();
-      //Serial.printf("b-dur: %u\r\n",stop-start);
+      
     
   
 }

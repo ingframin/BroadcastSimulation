@@ -37,12 +37,13 @@ from serial import Serial
 from threading import Thread
 from datetime import datetime
 
-drones = []
 
 
 def read_ssid(wi,n):
 
     global running
+    global msg_counter
+    
     lg = []
     seq = 0
     while running:
@@ -56,12 +57,16 @@ def read_ssid(wi,n):
             lg.append((str(datetime.now()).split()[1],s,'sent:'+ssid))
         else:
             lg.append((str(datetime.now()).split()[1],s,''))
+            if b'D1' in s or b'D2' in s:
+                msg_counter+=1
         
         if len(lg)> 1000:
             with open('res-%dMps.txt'%n,'a') as log:
                 for l in lg:
                     print(l,file=log)
             lg = []
+            
+            
 
     with open('res-%dMps.txt'%n,'a') as log:
         for l in lg:
@@ -74,11 +79,13 @@ def read_ssid(wi,n):
 if __name__=='__main__':
 
     global running
+    global msg_counter
+    msg_counter = 0
     running = True
 
-    wifi5 = Serial("COM39",115200,xonxoff = True)
+    wifi5 = Serial("COM36",115200,xonxoff = True)
 
-    tr5 = Thread(target=read_ssid,args=(wifi5,0))
+    tr5 = Thread(target=read_ssid,args=(wifi5,12))
     
 
     tr5.start()
@@ -86,6 +93,9 @@ if __name__=='__main__':
     start = perf_counter()
     while running:
        try:
+           if msg_counter > 1e5:
+               running = False
+           print(msg_counter)
            print(perf_counter()-start)
            sleep(1)
        except:
