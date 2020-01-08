@@ -172,7 +172,7 @@ def duty_cycle(res,dtx,drx,f=None):
     
 if __name__=='__main__':
 
-    res = read_file('res-25Mps.txt')
+    res = read_file('res-12Mps.txt')
 
     
     trx = compute_trx(res)
