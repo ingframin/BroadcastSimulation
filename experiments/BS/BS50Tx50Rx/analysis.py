@@ -161,7 +161,7 @@ def duty_cycle(res,dtx,drx):
     print('S(%): ',100*Stime/(Btime+Stime))
     
 if __name__=='__main__':
-
+    plt.rcParams["figure.figsize"] = (20,10)
     res = []
     n = 2
 
@@ -209,12 +209,13 @@ if __name__=='__main__':
 
     #for dtx in diff_tx:
     plt.hist(diff_tx[0],bins=32,histtype='bar',density=True)
-    plt.axis([24000,40000,0,0.0006])
-    plt.xticks(range(24000,40000,500),labels=[x/10.0 for x in range(240,400,5)])
-    plt.xlabel('$T_{Tx}$ duration[ms]')
-    plt.ylabel('Probability')
+    plt.axis([24000,40000,0,6e-4])
+    plt.yticks(ticks=[x*1e-4 for x in range(0,7)],labels=["%dE-4"%x for x in range(0,7)],fontsize=20)
+    plt.xticks(range(24000,40000,1000),labels=[x/10.0 for x in range(240,400,10)],fontsize=20)
+    plt.xlabel('$T_{Tx}$ duration[ms]',fontsize=20)
+    plt.ylabel('PDF',fontsize=20)
     plt.grid(True)
-    plt.savefig('dist_Tx.pdf',dpi=300,)
+    plt.savefig('dist_Tx.pdf',dpi=300,bbox_inches='tight')
     plt.show()
 
     

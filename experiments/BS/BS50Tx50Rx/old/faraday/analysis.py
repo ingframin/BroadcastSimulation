@@ -138,7 +138,7 @@ if __name__=='__main__':
     res2 = read_file('res-2.txt')
 
     h1 = analysis(res1,res2,'res-1','res-2')
-    h2 = analysis(res2,res1,'res2','res-1')
+    h2 = analysis(res2,res1,'res-2','res-1')
     plt.hist(h1,density=True,histtype='step')
     plt.hist(h2,density=True,histtype='step')
     plt.show()
@@ -151,10 +151,4 @@ if __name__=='__main__':
     print(np.std(diff1)/1000)
     print(np.std(diff2)/1000)
         
-    plt.hist(diff1,color='blue',density=True)
-    #plt.hist(diff2,histtype='step',color='green',density=False)
-    plt.xticks(ticks=range(15000,35000,1000), labels=range(15,35))
-    plt.yticks(ticks=[0,0.5e-4,1e-4,1.5e-4,2e-4,2.5e-4,3e-4], labels=['0.0','0.5e-4','1e-4','1.5e-4','2e-4','2.5e-4','3e-4'])
-    plt.axis([15000,35000,0,0.0003])
-    plt.grid(True)
-    plt.show()
+    
