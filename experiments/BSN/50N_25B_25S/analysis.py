@@ -242,7 +242,7 @@ if __name__=='__main__':
     
     
     for h in h_xy:
-        plt.hist(h,bins=30,density=True,histtype='step')
+        plt.hist(h,bins=12,density=True,histtype='step')
     plt.savefig('rx_dist.pdf',dpi=300,bbox_inches='tight')
     plt.grid(True)
     plt.show()

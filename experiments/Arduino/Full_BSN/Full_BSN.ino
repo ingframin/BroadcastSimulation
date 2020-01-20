@@ -9,13 +9,13 @@ const char* password =  "hi64nyvy";
 //IP address to send UDP data to:
 // either use the ip address of the server or 
 // a network broadcast address
-const char * host = "192.168.4.6";
+const char * host = "192.168.4.1";
 const int port = 8000;
 
 //The udp library class
 WiFiUDP udp;
 char incomingPacket[80];  // buffer for incoming packets
-IPAddress local_IP(192, 168, 4, 11);
+IPAddress local_IP(192, 168, 4, 12);
 IPAddress gateway(192, 168, 4, 1);
 IPAddress subnet(255, 255, 255, 0);
 
@@ -89,7 +89,7 @@ void broadcastSSID(){
   
   msg_counter++;
     
-  String msg = "1-"+String(msg_counter);
+  String msg = "2-"+String(msg_counter);
   memcpy(&packet[39],msg.c_str(),msg.length());
  
   esp_wifi_set_promiscuous(true);
@@ -111,7 +111,8 @@ void netCom(){
    //Send a packet
    //for(net_counter = 0;net_counter <2; net_counter++){
     udp.beginPacket(host,port);
-    udp.printf("*P-%u-Heap: %u**",net_counter,ESP.getFreeHeap());
+    udp.printf("*P-%u-Heap: %u*T: %u*",net_counter,ESP.getFreeHeap(),micros());
+    net_counter++;
     udp.endPacket();
     delay(100);
    //}
@@ -157,7 +158,7 @@ void loop() {
     
     r = random(1,10000);
 
-    if(r < 5556){
+    if(r < 6515){
       //Broadcast
       for(int k=0;k < 26; k++){
         packet[39+k] = '*';
@@ -166,10 +167,10 @@ void loop() {
       unsigned long start = micros();
       broadcastSSID();//B   
       unsigned long stop = micros();
-      Serial.printf("B-dur: %u\r\n",stop-start);
+      Serial.printf("B-dur: %u; ssid: %s\r\n",stop-start,"2-"+String(msg_counter));
       
     }
-    else if(r > 5555 && r < 7223){
+    else if(r > 6514 && r < 6733){
       //Network
       unsigned long start = micros();
       
