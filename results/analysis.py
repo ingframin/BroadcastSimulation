@@ -112,7 +112,7 @@ def expand(raw, Ttx, Trx, Tn):
                     buffer.append('X')
     return buffer
     
-def compute_histogram(r1, r2, Trx, Ttx, Tn):
+def compute_histogram(r1, r2, Trx=60, Ttx=30, Tn=100):
 
     Eb1, Es1, En1 = computeEvents(r1, Ttx, Trx, Tn)
     Eb2, Es2, En2 = computeEvents(r2, Ttx, Trx, Tn)
