@@ -18,7 +18,7 @@ char incomingPacket[80];  // buffer for incoming packets
 IPAddress local_IP(192, 168, 4, 12);
 IPAddress gateway(192, 168, 4, 1);
 IPAddress subnet(255, 255, 255, 0);
-
+String ns = "2-";
 //Broadcast parameters
 uint8_t channel = 0;
 int r;
@@ -89,7 +89,7 @@ void broadcastSSID(){
   
   msg_counter++;
     
-  String msg = "2-"+String(msg_counter);
+  String msg = ns+String(msg_counter);
   memcpy(&packet[39],msg.c_str(),msg.length());
  
   esp_wifi_set_promiscuous(true);
@@ -114,7 +114,7 @@ void netCom(){
     udp.printf("*P-%u-Heap: %u*T: %u*",net_counter,ESP.getFreeHeap(),micros());
     net_counter++;
     udp.endPacket();
-    delay(100);
+    delay(50);
    //}
     udp.flush();
     udp.stop();
@@ -158,7 +158,7 @@ void loop() {
     
     r = random(1,10000);
 
-    if(r < 6515){
+    if(r < 6062){
       //Broadcast
       for(int k=0;k < 26; k++){
         packet[39+k] = '*';
@@ -167,15 +167,15 @@ void loop() {
       unsigned long start = micros();
       broadcastSSID();//B   
       unsigned long stop = micros();
-      Serial.printf("B-dur: %u; ssid: %s\r\n",stop-start,"2-"+String(msg_counter));
+      Serial.printf("B-dur: %u; ssid: %s\r\n",stop-start,ns+String(msg_counter));
       
     }
-    else if(r > 6514 && r < 6733){
+    else if(r > 6061 && r < 6970){
       //Network
       unsigned long start = micros();
       
       netCom();
-      delay(100);
+      delay(50);
       
       unsigned long stop = micros();
       Serial.printf("N-dur: %u\r\n",stop-start);

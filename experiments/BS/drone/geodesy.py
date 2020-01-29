@@ -88,9 +88,18 @@ def ECEF2ENU(Latr,Lonr,Xr,Yr,Zr,Xu,Yu,Zu):
 
     return (x,y,z)
 
+
+    
 def haversine(lat1,lat2,lon1,lon2):
     '''Gets latitude and longitude in degrees and returns the distance in meters
     See https://en.wikipedia.org/wiki/Haversine_formula for the details'''
+##    l1 = radians(lat1)
+##    l2 = radians(lat2)
+##    R1 = N(lat1)*(1-e**2)*sin(l1)
+##    R2 = N(lat2)*(1-e**2)*sin(l2)
+##    R = (R1+R2)/2
+##    print(R)
+    
     DPhi = radians(lat2 - lat1)
     DLam = radians(lon2 - lon1)
     a = sin(DPhi/2)**2 + cos(lat1)*cos(lat2)*sin(DLam/2)**2
