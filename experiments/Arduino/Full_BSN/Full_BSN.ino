@@ -15,10 +15,10 @@ const int port = 8000;
 //The udp library class
 WiFiUDP udp;
 char incomingPacket[80];  // buffer for incoming packets
-IPAddress local_IP(192, 168, 4, 11);
+IPAddress local_IP(192, 168, 4, 12);
 IPAddress gateway(192, 168, 4, 1);
 IPAddress subnet(255, 255, 255, 0);
-String ns = "1-";
+String ns = "2-";
 //Broadcast parameters
 uint8_t channel = 0;
 int r;
@@ -158,7 +158,7 @@ void loop() {
     
     r = random(1,10000);
 
-    if(r < 6383){
+    if(r < 5691){
       //Broadcast
       for(int k=0;k < 26; k++){
         packet[39+k] = '*';
@@ -170,7 +170,7 @@ void loop() {
       Serial.printf("B-dur: %u; ssid: %s\r\n",stop-start,ns+String(msg_counter));
       
     }
-    else if(r > 6382 && r < 6810){
+    else if(r > 5691 && r < 7156){
       //Network
       unsigned long start = micros();
       
